@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/VRP_TW.iml" filepath="$PROJECT_DIR$/VRP_TW.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vrptw.iml" filepath="$PROJECT_DIR$/vrptw.iml" />
     </modules>
   </component>
 </project>

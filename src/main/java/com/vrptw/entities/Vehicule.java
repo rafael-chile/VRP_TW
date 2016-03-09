@@ -1,16 +1,19 @@
-/**
- * Created by Usuario2 on 06/03/2016.
- */
+package com.vrptw.entities;
+
+
 public class Vehicule {
-    String idVehicle;
-    String licensePlate;
-    String maxWeight;
-    String description;
-    String driverType;
+    private String idVehicle;
+    private String licensePlate;
+    private String maxWeight;
+    private String description;
+    private String driverType;
 
     public Vehicule(String idVehicle, String licensePlate, String maxWeight, String description, String driverType){
         this.idVehicle = idVehicle;
-        //todo. qgregqr cq;pos fqltqntes
+        this.licensePlate = licensePlate;
+        this.maxWeight = maxWeight;
+        this.description = description;
+        this.driverType = driverType;
     }
 
 
@@ -52,5 +55,16 @@ public class Vehicule {
 
     public void setDriverType(String driverType) {
         this.driverType = driverType;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle: {"
+                    + "idVehicle: " + idVehicle
+                    + "licensePlate: " + licensePlate
+                    + "maxWeight: " + maxWeight
+                    + "description: " + description
+                    + "driverType: " + driverType
+                + "}";
     }
 }

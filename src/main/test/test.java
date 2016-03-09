@@ -9,9 +9,6 @@ import java.sql.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/**
- * Created by Usuario2 on 30/12/2015.
- */
 
 public class test {
     public static void main(String [] arg){

@@ -1,7 +1,8 @@
+package com.vrptw;
+
 import java.sql.*;
-/**
- * Created by Usuario2 on 06/03/2016.
- */
+
+
 public class DB_example {
     private static Connection conn;
 

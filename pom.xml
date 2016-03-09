@@ -57,7 +57,7 @@
                     <archive>
                         <manifest>
                             <!-- Jar file entry point -->
-                            <mainClass>FirstExample</mainClass>
+                            <mainClass>com.vrptw.FirstExample</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
