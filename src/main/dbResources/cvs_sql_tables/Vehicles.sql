@@ -1,0 +1,16 @@
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('1', '23-91-QT', '27000', 'DAF grande', 'motorista');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('2', '47-50-QZ', '7500', 'Carrinha DAF', 'motorista');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('3', '93-MR-66', '15000', 'Volvo nova', 'motorista');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('4', '50-DN-12', '15000', 'Volvo usada', 'motorista');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('5', '84-61-XF', '1150', 'Mitsubishi Canter', 'motorista');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('6', '15-NL-46', '400', 'Carrinha Eng. Jose Julio', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('7', '02-JT-76', '600', 'Carrinha Eng. Filipe', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('8', '13-NO-83', '600', 'Carrinha Eng. Sardinha', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('9', '61-GZ-56', '600', 'Carrinha Eng. Luis Sequeira', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('10', '61-GZ-57', '600', 'Carrinha Eng. Marta', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('11', '69-OP-05', '400', 'Carrinha Francisco', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('12', '65-NJ-22', '1000', 'Luís Marques', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('13', '49-LJ-95', '600', 'Carrinha Eng. Navalhinhas', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('14', '04-PF-23', '400', 'Carrinha Eng. João Gregório', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('15', '94-PC-37', '400', 'Carrinha Eng. Carlos Leonardo', 'vendedor');
+INSERT INTO `borrego`.`vehicles` (`idVehicle`, `license_plate`, `max_weight`, `description`, `driver_type`) VALUES ('16', '37-IZ-65', '10000', 'IVECO', 'motorista');
