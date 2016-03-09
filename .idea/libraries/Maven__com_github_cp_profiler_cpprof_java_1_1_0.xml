@@ -3,11 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/github/cp-profiler/cpprof-java/1.1.0/cpprof-java-1.1.0.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/com/github/cp-profiler/cpprof-java/1.1.0/cpprof-java-1.1.0-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/github/cp-profiler/cpprof-java/1.1.0/cpprof-java-1.1.0-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>
