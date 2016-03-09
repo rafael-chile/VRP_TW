@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -11,14 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.choco-solver:choco-solver:3.3.3" level="project" />
-    <orderEntry type="library" name="Maven: dk.brics.automaton:automaton:1.11-8" level="project" />
-    <orderEntry type="library" name="Maven: org.javabits.jgrapht:jgrapht-core:0.9.3" level="project" />
-    <orderEntry type="library" name="Maven: args4j:args4j:2.32" level="project" />
-    <orderEntry type="library" name="Maven: com.github.cp-profiler:cpprof-java:1.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.zeromq:jeromq:0.3.4" level="project" />
-    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.6.1" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -29,5 +21,14 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="mysql-connector-java-5.1.35-bin" level="project" />
+    <orderEntry type="library" name="Maven: org.choco-solver:choco-solver:3.3.3" level="project" />
+    <orderEntry type="library" name="Maven: dk.brics.automaton:automaton:1.11-8" level="project" />
+    <orderEntry type="library" name="Maven: org.javabits.jgrapht:jgrapht-core:0.9.3" level="project" />
+    <orderEntry type="library" name="Maven: args4j:args4j:2.32" level="project" />
+    <orderEntry type="library" name="Maven: com.github.cp-profiler:cpprof-java:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.zeromq:jeromq:0.3.4" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.6.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.35" level="project" />
   </component>
 </module>
