@@ -1,9 +1,12 @@
-package com.vrptw;//STEP 1. Import required packages
+package com.vrptw;
 
 import com.vrptw.dao.ConnectionManager;
 import com.vrptw.entities.Vehicule;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +22,13 @@ public class FirstExample {
             cm = new ConnectionManager();
             conn = cm.connect();
 
-            //STEP 4: Execute a query
+            // Execute a query
             System.out.println("Creating statement...");
             stmt = conn.createStatement();
             String sql = "SELECT * FROM vehicles";
             ResultSet rs = stmt.executeQuery(sql);
 
-            //STEP 5: Extract data from result set
+            // Extract data from result set
             while (rs.next()){
                 String idVehicle = rs.getString("idVehicle");
                 String licensePlate = rs.getString("license_plate");
@@ -43,7 +46,7 @@ public class FirstExample {
                 System.out.println("Result added: " + vh);
 
             }
-            //STEP 6: Clean-up environment
+            // Clean-up environment
             rs.close();
             stmt.close();
             cm.disconnect();
