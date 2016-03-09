@@ -17,6 +17,7 @@ public class FirstExample {
         ConnectionManager cm = null;
         Connection conn;
         Statement stmt = null;
+        List<Vehicule> vehiculeLst = new ArrayList<>();
 
         try{
             cm = new ConnectionManager();
@@ -28,6 +29,7 @@ public class FirstExample {
             String sql = "SELECT * FROM vehicles";
             ResultSet rs = stmt.executeQuery(sql);
 
+
             // Extract data from result set
             while (rs.next()){
                 String idVehicle = rs.getString("idVehicle");
@@ -36,16 +38,15 @@ public class FirstExample {
                 String description = rs.getString("description");
                 String driverType = rs.getString("driver_type");
 
-                // print the results
-                //System.out.format("%s, %s, %s, %s, %s\n", idVehicle, licensePlate, maxWeight, description, driverType);
-
-                List<Vehicule> vehiculeLst = new ArrayList<>();
                 Vehicule vh = new Vehicule(idVehicle, licensePlate,maxWeight, description, driverType);
                 vehiculeLst.add(vh);
 
                 System.out.println("Result added: " + vh);
 
             }
+
+            vehiculeLst.toString();
+
             // Clean-up environment
             rs.close();
             stmt.close();

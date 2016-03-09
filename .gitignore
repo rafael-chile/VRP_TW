@@ -47,7 +47,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-.idea/*
+.idea/
 *.iml
 .gitignore
-target/*
+target/
