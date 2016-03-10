@@ -5,10 +5,6 @@ import org.chocosolver.solver.trace.Chatterbox;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VariableFactory;
 
-import java.sql.*;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 
 public class test {
     public static void main(String [] arg){
@@ -31,14 +27,5 @@ public class test {
         System.out.println("x:" + x);
         System.out.println("y:" + y);
 
-     /*   private static Connection c;
-
-        public static List<Vehicles> getVehiclesByPlate(String license_plate) throws SQLException {
-            PreparedStatement ps;
-            ps = c.prepareCall("SELECT FROM vehicles");
-            ps.execute();getResultSet();
-            List<Vehicles>
-            ResultSet rs = ps.
-        }*/
     }
 }

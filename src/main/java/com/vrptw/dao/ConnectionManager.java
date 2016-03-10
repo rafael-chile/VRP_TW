@@ -37,6 +37,7 @@ public class ConnectionManager {
         if (con != null) {
             try {
                 con.close();
+                con = null;
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -1,14 +1,14 @@
 package com.vrptw.entities;
 
 
-public class Vehicule {
+public class Vehicle {
     private String idVehicle;
     private String licensePlate;
     private String maxWeight;
     private String description;
     private String driverType;
 
-    public Vehicule(String idVehicle, String licensePlate, String maxWeight, String description, String driverType){
+    public Vehicle(String idVehicle, String licensePlate, String maxWeight, String description, String driverType){
         this.idVehicle = idVehicle;
         this.licensePlate = licensePlate;
         this.maxWeight = maxWeight;
