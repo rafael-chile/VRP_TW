@@ -13,7 +13,6 @@ public class VehicleDao extends GenericDao{
 
     public VehicleDao() {}
 
-    @Override
     public List<Vehicle> getList() throws SQLException{
         String query = "SELECT * FROM vehicles";
         return getList(query);
@@ -25,7 +24,6 @@ public class VehicleDao extends GenericDao{
      * @param query the query that will be run
      * @return the list of Vehicles found in DB
      */
-    @Override
     public List<Vehicle> getList(String query) throws SQLException{
         List<Vehicle> vehicleLst = new ArrayList<>();
         Connection con = connectionManager.connect();

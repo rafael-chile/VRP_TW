@@ -3,22 +3,24 @@ package com.vrptw.entities;
 
 public class Location {
     private String idLocation;
-    private String latitude;
-    private String longitude;
-    private String googleMapLoc;
-    private String isMainLocation;
-    private String isReal;
+    private String location_lat;
+    private String location_lng;
+    private String google_map;
+    private String main_location;
+    private String is_real;
     private String client;
+
+    public Location(){}
 
     public Location(String idLocation, String latitude, String longitude, String googleMapLoc,
                     String isMainLocation,String isReal, String client){
 
         this.idLocation = idLocation;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.googleMapLoc = googleMapLoc;
-        this.isMainLocation = isMainLocation;
-        this.isReal = isReal;
+        this.location_lat = latitude;
+        this.location_lng = longitude;
+        this.google_map = googleMapLoc;
+        this.main_location = isMainLocation;
+        this.is_real = isReal;
         this.client = client;
     }
 
@@ -30,45 +32,46 @@ public class Location {
         this.idLocation = idLocation;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public String getLocation_lat() {
+        return location_lat;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
+    public void setLocation_lat(String location_lat) {
+        this.location_lat = location_lat;
     }
 
-    public String getLongitude() {
-        return longitude;
+    public String getLocation_lng() {
+        return location_lng;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setLocation_lng(String location_lng) {
+        this.location_lng = location_lng;
     }
 
-    public String getGoogleMapLoc() {
-        return googleMapLoc;
+    public String getGoogle_map() {
+        return google_map;
     }
 
-    public void setGoogleMapLoc(String googleMapLoc) {
-        this.googleMapLoc = googleMapLoc;
+    public void setGoogle_map(String google_map) {
+        this.google_map = google_map;
     }
 
-    public String getIsMainLocation() {
-        return isMainLocation;
+    public String getMain_location() {
+        return main_location;
     }
 
-    public void setIsMainLocation(String isMainLocation) {
-        this.isMainLocation = isMainLocation;
+    public void setMain_location(String main_location) {
+        this.main_location = main_location;
     }
 
-    public String getIsReal() {
-        return isReal;
+    public String getIs_real() {
+        return is_real;
     }
 
-    public void setIsReal(String isReal) {
-        this.isReal = isReal;
+    public void setIs_real(String is_real) {
+        this.is_real = is_real;
     }
+
     public String getClient() {
         return client;
     }
@@ -83,11 +86,11 @@ public class Location {
     public String toString() {
         return "Location: {"
                 + "idLocation: " + idLocation
-                + ", latitude: " + latitude
-                + ", longitude: " + longitude
-                + ", googleMapLoc: " + googleMapLoc
-                + ", isMainLocation: " + isMainLocation
-                + ", isReal: " + isReal
+                + ", location_lat: " + location_lat
+                + ", location_lng: " + location_lng
+                + ", google_map: " + google_map
+                + ", main_location: " + main_location
+                + ", is_real: " + is_real
                 + ", client: " + client
                 + "}";
     }

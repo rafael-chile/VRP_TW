@@ -12,7 +12,6 @@ import java.util.List;
 
 public class LocationDao extends GenericDao {
 
-    @Override
     public List<Location> getList() throws SQLException{
         String query = "SELECT * FROM locations";
         return getList(query);
@@ -24,7 +23,6 @@ public class LocationDao extends GenericDao {
      * @param query The query to be run
      * @return A list of Locations found in the DB
      */
-    @Override
     public List<Location> getList(String query) throws SQLException{
         List<Location> locationLst = new ArrayList<>();
         Connection con = connectionManager.connect();

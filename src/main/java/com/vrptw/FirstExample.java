@@ -1,16 +1,20 @@
 package com.vrptw;
 
+import com.vrptw.dao.ClientDao;
 import com.vrptw.dao.LocationDao;
 import com.vrptw.dao.VehicleDao;
+import com.vrptw.entities.Clients;
 import com.vrptw.entities.Location;
 import com.vrptw.entities.Vehicle;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
 public class FirstExample {
 
 
+    @SuppressWarnings(value = "unchecked")
     public static void main(String[] args) {
 
         VehicleDao vehicleDao = new VehicleDao();
@@ -30,6 +34,19 @@ public class FirstExample {
 
             System.out.println("Filtered vehicles resulset count:" + vechiclesFiltered.size());
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        //Other example using a very generic DAO
+        try {
+            List l = (new LocationDao()).runQuery(Location.class, "SELECT * from locations");
+            l.stream().forEach(System.out::println);
+
+            l = (new ClientDao()).runQuery(Clients.class, "SELECT * from clients");
+            l.stream().forEach(System.out::println);
+
+        } catch (SQLException | IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
 

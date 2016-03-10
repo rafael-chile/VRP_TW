@@ -3,17 +3,19 @@ package com.vrptw.entities;
 
 public class Vehicle {
     private String idVehicle;
-    private String licensePlate;
-    private String maxWeight;
+    private String license_plate;
+    private String max_weight;
     private String description;
-    private String driverType;
+    private String driver_type;
+
+    public Vehicle(){}
 
     public Vehicle(String idVehicle, String licensePlate, String maxWeight, String description, String driverType){
         this.idVehicle = idVehicle;
-        this.licensePlate = licensePlate;
-        this.maxWeight = maxWeight;
+        this.license_plate = licensePlate;
+        this.max_weight = maxWeight;
         this.description = description;
-        this.driverType = driverType;
+        this.driver_type = driverType;
     }
 
 
@@ -25,20 +27,20 @@ public class Vehicle {
         this.idVehicle = idVehicle;
     }
 
-    public String getLicensePlate() {
-        return licensePlate;
+    public String getLicense_plate() {
+        return license_plate;
     }
 
-    public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
+    public void setLicense_plate(String licensePlate) {
+        this.license_plate = licensePlate;
     }
 
-    public String getMaxWeight() {
-        return maxWeight;
+    public String getMax_weight() {
+        return max_weight;
     }
 
-    public void setMaxWeight(String maxWeight) {
-        this.maxWeight = maxWeight;
+    public void setMax_weight(String maxWeight) {
+        this.max_weight = maxWeight;
     }
 
     public String getDescription() {
@@ -49,22 +51,22 @@ public class Vehicle {
         this.description = description;
     }
 
-    public String getDriverType() {
-        return driverType;
+    public String getDriver_type() {
+        return driver_type;
     }
 
-    public void setDriverType(String driverType) {
-        this.driverType = driverType;
+    public void setDriver_type(String driverType) {
+        this.driver_type = driverType;
     }
 
     @Override
     public String toString() {
         return "Vehicle: {"
                     + "idVehicle: " + idVehicle
-                    + ", licensePlate: " + licensePlate
-                    + ", maxWeight: " + maxWeight
+                    + ", license_plate: " + license_plate
+                    + ", max_weight: " + max_weight
                     + ", description: " + description
-                    + ", driverType: " + driverType
+                    + ", driver_Type: " + driver_type
                 + "}";
     }
 }
