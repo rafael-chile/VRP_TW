@@ -84,16 +84,16 @@ public class VRPTW extends JFrame {
                     panel3Layout.setHorizontalGroup(
                         panel3Layout.createParallelGroup()
                             .addGroup(panel3Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 544, GroupLayout.PREFERRED_SIZE)
-                                    .addContainerGap(101, Short.MAX_VALUE))
+                                .addContainerGap()
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 544, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(101, Short.MAX_VALUE))
                     );
                     panel3Layout.setVerticalGroup(
                         panel3Layout.createParallelGroup()
                             .addGroup(panel3Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE)
-                                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap()
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
 
