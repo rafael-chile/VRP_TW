@@ -4,12 +4,20 @@
 
 package com.vrptw.forms;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Properties;
 
 /**
  * @author Rafael Santana
@@ -24,7 +32,32 @@ public class VRPTW extends JFrame {
     }
 
     private void fieldSelectionMouseClicked(MouseEvent e) {
-         // TODO add your code here
+        int row = table1.rowAtPoint(e.getPoint());
+        int col = table1.columnAtPoint(e.getPoint());
+        Object o = table1.getValueAt(row, col);
+        System.out.print(o); // TODO: use the value selection to load order data (maybe call a specialized class/method)
+    }
+
+    public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+
+        private String datePattern = "yyyy-MM-dd";
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+
+            return "";
+        }
+
     }
 
     private void initComponents() {
@@ -34,12 +67,27 @@ public class VRPTW extends JFrame {
         panel2 = new JPanel();
         panel3 = new JPanel();
         scrollPane1 = new JScrollPane();
-        table1 = new JTable();
+
+        String[] columnNames = {"First Name", "Last Name", "Age"};
+        Object[][] data = {
+                {"Kathy", "Smith", 60},
+                {"John", "Doe", 3},
+        };
+        table1 = new JTable(data, columnNames);
+
         selectDate = new JPanel();
-        dateFrom = new JTextField();
+
+
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+        dateFrom = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter()); //new JTextField();
         fromDate = new JLabel();
-        dateTo = new JTextField();
+
+        dateTo = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter()); //new JTextField();
         toDate = new JLabel();
+
         searchDate = new JButton();
 
         //======== this ========
@@ -56,9 +104,14 @@ public class VRPTW extends JFrame {
                 // JFormDesigner evaluation mark
                 panel2.setBorder(new javax.swing.border.CompoundBorder(
                     new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                        "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                        "By Rafael Mejia", javax.swing.border.TitledBorder.CENTER,
                         javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                        java.awt.Color.red), panel2.getBorder())); panel2.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
+                        java.awt.Color.red), panel2.getBorder())); panel2.addPropertyChangeListener(
+                            e -> {
+                                if("border".equals(e.getPropertyName()))
+                                    throw new RuntimeException();
+                            }
+                        );
 
 
                 //======== panel3 ========
@@ -129,7 +182,7 @@ public class VRPTW extends JFrame {
 
             //---- searchDate ----
             searchDate.setText("Search");
-            searchDate.addActionListener(e -> sActionPerformed(e));
+            searchDate.addActionListener(this::sActionPerformed);
 
             GroupLayout selectDateLayout = new GroupLayout(selectDate);
             selectDate.setLayout(selectDateLayout);
@@ -194,9 +247,11 @@ public class VRPTW extends JFrame {
     private JScrollPane scrollPane1;
     private JTable table1;
     private JPanel selectDate;
-    private JTextField dateFrom;
+    //private JTextField dateFrom;
+    private JDatePickerImpl dateFrom;
     private JLabel fromDate;
-    private JTextField dateTo;
+    //private JTextField dateTo;
+    private JDatePickerImpl dateTo;
     private JLabel toDate;
     private JButton searchDate;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
