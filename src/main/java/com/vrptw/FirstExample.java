@@ -6,7 +6,9 @@ import com.vrptw.dao.VehicleDao;
 import com.vrptw.entities.Clients;
 import com.vrptw.entities.Location;
 import com.vrptw.entities.Vehicle;
+import com.vrptw.forms.VRPTW;
 
+import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
@@ -41,15 +43,18 @@ public class FirstExample {
         //Other example using a very generic DAO
         try {
             List l = (new LocationDao()).runQuery(Location.class, "SELECT * from locations");
-            l.stream().forEach(System.out::println);
+            //l.stream().forEach(System.out::println);
 
             l = (new ClientDao()).runQuery(Clients.class, "SELECT * from clients");
-            l.stream().forEach(System.out::println);
+            //l.stream().forEach(System.out::println);
 
         } catch (SQLException | IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
+        VRPTW v = new VRPTW();
+        v.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        v.setVisible(true);
     }
 
 }
