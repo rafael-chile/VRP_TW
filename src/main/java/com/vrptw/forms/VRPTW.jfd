@@ -1,0 +1,70 @@
+JFDML JFormDesigner: "5.2.3.0.281" Java: "1.8.0_25" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp tabbedPane1:::::x, comp selectDate:::::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p:14:p, comp selectDate:::p::p, space u:::p, comp tabbedPane1:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			"title": "VRP with TW"
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, comp panel3:::::x, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp panel3:::p:155:p, space ::390:x}}"
+				} ) {
+					name: "panel2"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:544:p, space ::101:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:124:p, space :::x}}"
+					} ) {
+						name: "panel3"
+						"border": new javax.swing.border.TitledBorder( "Orders" )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane1"
+							add( new FormComponent( "javax.swing.JTable" ) {
+								name: "table1"
+								"cellSelectionEnabled": true
+								addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "fieldSelectionMouseClicked", true ) )
+							} )
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Result"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :p:65:p, comp fromDate:::p::p, space :::p, comp dateFrom:::p:174:p, space u:::p, comp toDate:::p::p, space :::p, comp dateTo:::p:174:p, space s:::p, comp searchDate:::p:91:p, space :::x}}"
+				"$verticalGroup": "par l {seq l {par b {comp searchDate::b:p::p, comp fromDate::b:p::p, comp toDate::b:p::p, comp dateFrom::b:p::p, comp dateTo::b:p::p}, space :0:15:x}}"
+			} ) {
+				name: "selectDate"
+				"border": new javax.swing.border.TitledBorder( "Select Date" )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "dateFrom"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "fromDate"
+					"text": "From:"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "dateTo"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "toDate"
+					"text": "To:"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "searchDate"
+					"text": "Search"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sActionPerformed", true ) )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 705, 715 )
+		} )
+	}
+}
