@@ -47,9 +47,9 @@ public class ConnectionManager {
     public String toString() {
         return "ConnectionConfiguration: {"
                     + "driverName:" + driverName
-                    + "connectionUrl:" + connectionUrl
-                    + "userName:" + userName
-                    + "userPass:" + userPass
+                    + ", connectionUrl:" + connectionUrl
+                    + ", userName:" + userName
+                    + ", userPass:" + userPass
                 + "}";
     }
 }

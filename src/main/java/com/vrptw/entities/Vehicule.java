@@ -61,10 +61,10 @@ public class Vehicule {
     public String toString() {
         return "Vehicle: {"
                     + "idVehicle: " + idVehicle
-                    + "licensePlate: " + licensePlate
-                    + "maxWeight: " + maxWeight
-                    + "description: " + description
-                    + "driverType: " + driverType
+                    + ", licensePlate: " + licensePlate
+                    + ", maxWeight: " + maxWeight
+                    + ", description: " + description
+                    + ", driverType: " + driverType
                 + "}";
     }
 }
