@@ -26,15 +26,13 @@ public class FirstExample {
 
 
             System.out.println("Complete vehicles resulset count:" + allVechicles.size());
-            System.out.println("Complete locations resulset count:" + allVechicles.size());
+            System.out.println("Complete locations resulset count:" + alllocations.size());
 
             System.out.println("Filtered vehicles resulset count:" + vechiclesFiltered.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Goodbye!");
-
-    }//end main
+    }
 
 }
