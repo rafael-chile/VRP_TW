@@ -14,11 +14,11 @@ new FormModel {
 				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq l {space :::p, comp panel3:::::x, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp panel3:::p:155:p, space ::390:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp panel3:::p:155:p, space ::392:x}}"
 				} ) {
 					name: "panel2"
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:544:p, space ::101:x}}"
+						"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:555:p, space ::92:x}}"
 						"$verticalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:124:p, space :::x}}"
 					} ) {
 						name: "panel3"

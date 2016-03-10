@@ -85,8 +85,8 @@ public class VRPTW extends JFrame {
                         panel3Layout.createParallelGroup()
                             .addGroup(panel3Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 544, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(101, Short.MAX_VALUE))
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 555, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(92, Short.MAX_VALUE))
                     );
                     panel3Layout.setVerticalGroup(
                         panel3Layout.createParallelGroup()
@@ -111,7 +111,7 @@ public class VRPTW extends JFrame {
                         .addGroup(panel2Layout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(panel3, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(390, Short.MAX_VALUE))
+                            .addContainerGap(392, Short.MAX_VALUE))
                 );
             }
             tabbedPane1.addTab("Result", panel2);
