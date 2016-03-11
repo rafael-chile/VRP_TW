@@ -18,25 +18,69 @@ import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 /**
  * @author Rafael Santana
  */
 public class VRPTW extends JFrame {
+
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner Evaluation license - Rafael Santana
+    private JTabbedPane tabbedPane1;
+    private JPanel panel2;
+    private JPanel panel3;
+    private JScrollPane scrollPane1;
+    private JTable table1;
+    private JPanel panel1;
+    private JScrollPane scrollPane2;
+    private JTable table2;
+    private JPanel panel4;
+    private JScrollPane scrollPane3;
+    private JTable table3;
+    private JTabbedPane tabbedPane2;
+    private JTabbedPane tabbedPane3;
+    private JPanel selectDate;
+    //private JTextField dateFrom;
+    private JDatePickerImpl dateFrom;
+    private JLabel fromDate;
+    //private JTextField dateTo;
+    private JDatePickerImpl dateTo;
+    private JLabel toDate;
+    private JButton searchDate;
+    private JLabel numOrders;
+    private JLabel numClients;
+    private JLabel totalLocations;
+    private JLabel numOrdersValue;
+    private JLabel numClientsValue;
+    private JLabel totalLocationsValue;
+    private JLabel searchSummary;
+    private JLabel totalArticles;
+    private JLabel totalArticlesValue;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
+
     public VRPTW() {
         initComponents();
     }
 
+    /** Action for the Action button */
     private void sActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        Date fromDate = (Date) dateFrom.getModel().getValue();
+        Date toDate = (Date) dateTo.getModel().getValue();
+
+        Form_Actions.LoadOrderdsIntoTable(fromDate, toDate, table1);
     }
 
+    /** Action Event when clicked on Orders' table row */
     private void fieldSelectionMouseClicked(MouseEvent e) {
-        int row = table1.rowAtPoint(e.getPoint());
-        int col = table1.columnAtPoint(e.getPoint());
-        Object o = table1.getValueAt(row, col);
-        System.out.print(o); // TODO: use the value selection to load order data (maybe call a specialized class/method)
+        int row = table1.getSelectedRow(); //table1.rowAtPoint(e.getPoint());
+        int col = 5; // table1.columnAtPoint(e.getPoint());
+        String idClient = table1.getValueAt(row, col).toString();
+        System.out.println("Selected row with IdClient:"+ idClient);
+
+        // TODO: use the value selection to load order data into whatever is required in a second jtable/jtext object
+        //Form_Actions.LoadFacturasIntoTable(idClient, table2);
     }
 
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
@@ -69,11 +113,9 @@ public class VRPTW extends JFrame {
         panel3 = new JPanel();
         scrollPane1 = new JScrollPane();
 
-        String[] columnNames = {"First Name", "Last Name", "Age"};
-        Object[][] data = {
-                {"Kathy", "Smith", 60},
-                {"John", "Doe", 3},
-        };
+        String[] columnNames = {"IdDoc Final", "Encomenda", "Qtd Pedida","Unit Measure", "Date Emissao", "Client"};
+        Object[][] data = { };
+
         table1 = new JTable(data, columnNames);
 
         selectDate = new JPanel();
@@ -105,9 +147,10 @@ public class VRPTW extends JFrame {
         totalArticlesValue = new JLabel();
         dateFrom = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter()); //new JTextField();
         fromDate = new JLabel();
-
+        dateFrom.getModel().setSelected(true);
         dateTo = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter()); //new JTextField();
         toDate = new JLabel();
+        dateTo.getModel().setSelected(true);
 
         searchDate = new JButton();
 
@@ -143,7 +186,8 @@ public class VRPTW extends JFrame {
                     {
 
                         //---- table1 ----
-                        table1.setCellSelectionEnabled(true);
+                        table1.setRowSelectionAllowed(true);
+                        //table1.setCellSelectionEnabled(true);
                         table1.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
@@ -398,37 +442,5 @@ public class VRPTW extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Rafael Santana
-    private JTabbedPane tabbedPane1;
-    private JPanel panel2;
-    private JPanel panel3;
-    private JScrollPane scrollPane1;
-    private JTable table1;
-    private JPanel panel1;
-    private JScrollPane scrollPane2;
-    private JTable table2;
-    private JPanel panel4;
-    private JScrollPane scrollPane3;
-    private JTable table3;
-    private JTabbedPane tabbedPane2;
-    private JTabbedPane tabbedPane3;
-    private JPanel selectDate;
-    //private JTextField dateFrom;
-    private JDatePickerImpl dateFrom;
-    private JLabel fromDate;
-    //private JTextField dateTo;
-    private JDatePickerImpl dateTo;
-    private JLabel toDate;
-    private JButton searchDate;
-    private JLabel numOrders;
-    private JLabel numClients;
-    private JLabel totalLocations;
-    private JLabel numOrdersValue;
-    private JLabel numClientsValue;
-    private JLabel totalLocationsValue;
-    private JLabel searchSummary;
-    private JLabel totalArticles;
-    private JLabel totalArticlesValue;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }
