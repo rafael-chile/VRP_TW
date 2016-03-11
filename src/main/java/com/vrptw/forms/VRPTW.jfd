@@ -4,22 +4,22 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp tabbedPane1:::::x, comp selectDate:::::x}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :p:14:p, comp selectDate:::p::p, space u:::p, comp tabbedPane1:::::x, space :::p}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp selectDate:::::x, comp tabbedPane1::t:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp selectDate:::p::p, space :::p, comp tabbedPane1:::p:643:p, space :::x}}"
 		} ) {
 			name: "this"
-			"title": "VRP with TW"
+			"title": "Borrego Leonor & Irmão S.A."
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, comp panel3:::::x, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp panel3:::p:155:p, space ::392:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp panel3::l:::x, comp panel1::t:::x, comp panel4::l:::x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp panel3:::p::p, space :::p, comp panel1:::p::p, space :::p, comp panel4:::::x, space :::p}}"
 				} ) {
 					name: "panel2"
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:555:p, space ::92:x}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:124:p, space :::x}}"
+						"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1::::1071:x, space :::p}}"
+						"$verticalGroup": "par l {seq l {comp scrollPane1::::169:x, space :::p}}"
 					} ) {
 						name: "panel3"
 						"border": new javax.swing.border.TitledBorder( "Orders" )
@@ -32,16 +32,52 @@ new FormModel {
 							} )
 						} )
 					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane2::::1071:x, space :::p}}"
+						"$verticalGroup": "par l {seq t {comp scrollPane2::::169:x, space :::p}}"
+					} ) {
+						name: "panel1"
+						"border": new javax.swing.border.TitledBorder( "Articles (Selected Order Details)" )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane2"
+							add( new FormComponent( "javax.swing.JTable" ) {
+								name: "table2"
+							} )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq t {space :::p, comp scrollPane3::::1071:x, space :::p}}"
+						"$verticalGroup": "par l {seq l {comp scrollPane3::::170:x, space :::p}}"
+					} ) {
+						name: "panel4"
+						"border": new javax.swing.border.TitledBorder( "Client (Selected Order Details)" )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane3"
+							add( new FormComponent( "javax.swing.JTable" ) {
+								name: "table3"
+							} )
+						} )
+					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Result"
+					"title": "Search Results"
+				} )
+				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+					name: "tabbedPane2"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Solution"
+				} )
+				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+					name: "tabbedPane3"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Text"
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :p:65:p, comp fromDate:::p::p, space :::p, comp dateFrom:::p:174:p, space u:::p, comp toDate:::p::p, space :::p, comp dateTo:::p:174:p, space s:::p, comp searchDate:::p:91:p, space :::x}}"
-				"$verticalGroup": "par l {seq l {par b {comp searchDate::b:p::p, comp fromDate::b:p::p, comp toDate::b:p::p, comp dateFrom::b:p::p, comp dateTo::b:p::p}, space :0:15:x}}"
+				"$horizontalGroup": "par l {seq t {space :::p, comp fromDate:::p::p, space :::p, comp dateFrom:::p:127:p, space u:::p, comp toDate:::p::p, space :::p, comp dateTo:::p:174:p, space :::p, comp searchDate:::p:91:p, space :::x, par l {seq {comp numOrders:::p::p, space :::p, comp numOrdersValue:::p:56:p, space :p:18:p, comp numClients:::p::p, space :::p, comp numClientsValue:::p:56:p, space u:::p, comp totalArticles:::p::p, space :::p, comp totalArticlesValue:::p:56:p, space :p:18:p, comp totalLocations:::p::p, space :::p, comp totalLocationsValue:::p:56:p}, comp searchSummary:::p::p}, space :::p}}"
+				"$verticalGroup": "par l {seq {par l {seq l {space :p:10:p, comp searchSummary:::p::p, space u:::p, par b {comp numOrders::b:p::p, comp totalLocations::b:p::p, comp totalLocationsValue::b:p::p, comp numClients::b:p::p, comp numClientsValue::b:p::p, comp totalArticles::b:p::p, comp numOrdersValue::b:p::p, comp totalArticlesValue::b:p::p}}, seq l {space :p:20:p, par b {comp fromDate::b:p::p, comp dateFrom::b:p::p, comp toDate::b:p::p, comp dateTo::b:p::p, comp searchDate::b:p::p}}}, space ::18:x}}"
 			} ) {
 				name: "selectDate"
-				"border": new javax.swing.border.TitledBorder( "Select Date" )
+				"border": new javax.swing.border.TitledBorder( "Search by Date" )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "dateFrom"
 				} )
@@ -61,10 +97,62 @@ new FormModel {
 					"text": "Search"
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sActionPerformed", true ) )
 				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "numOrders"
+					"text": "Num. Orders:"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "numClients"
+					"text": "Num.Clients:"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "totalLocations"
+					"text": "Total Locations:"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "numOrdersValue"
+					"background": sfield java.awt.Color lightGray
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"text": "text"
+					"horizontalAlignment": 2
+					"foreground": sfield java.awt.Color gray
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "numClientsValue"
+					"background": sfield java.awt.Color lightGray
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"text": "text"
+					"horizontalAlignment": 2
+					"foreground": sfield java.awt.Color gray
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "totalLocationsValue"
+					"background": sfield java.awt.Color lightGray
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"text": "text"
+					"horizontalAlignment": 2
+					"foreground": sfield java.awt.Color gray
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "searchSummary"
+					"text": "Search Summary:"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "totalArticles"
+					"text": "Total Articles:"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "totalArticlesValue"
+					"background": sfield java.awt.Color lightGray
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"text": "text"
+					"horizontalAlignment": 2
+					"foreground": sfield java.awt.Color gray
+				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 705, 715 )
+			"size": new java.awt.Dimension( 1135, 785 )
 		} )
 	}
 }
