@@ -4,10 +4,6 @@
 
 package com.vrptw.forms;
 
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -17,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Properties;
 
 /**
  * @author Rafael Santana
@@ -67,22 +62,6 @@ public class VRPTW extends JFrame {
         panel2 = new JPanel();
         panel3 = new JPanel();
         scrollPane1 = new JScrollPane();
-
-        String[] columnNames = {"First Name", "Last Name", "Age"};
-        Object[][] data = {
-                {"Kathy", "Smith", 60},
-                {"John", "Doe", 3},
-        };
-        table1 = new JTable(data, columnNames);
-
-        selectDate = new JPanel();
-
-
-        Properties p = new Properties();
-        p.put("text.today", "Today");
-        p.put("text.month", "Month");
-        p.put("text.year", "Year");
-
         table1 = new JTable();
         panel1 = new JPanel();
         scrollPane2 = new JScrollPane();
@@ -93,6 +72,11 @@ public class VRPTW extends JFrame {
         tabbedPane2 = new JTabbedPane();
         tabbedPane3 = new JTabbedPane();
         selectDate = new JPanel();
+        dateFrom = new JTextField();
+        fromDate = new JLabel();
+        dateTo = new JTextField();
+        toDate = new JLabel();
+        searchDate = new JButton();
         numOrders = new JLabel();
         numClients = new JLabel();
         totalLocations = new JLabel();
@@ -102,13 +86,6 @@ public class VRPTW extends JFrame {
         searchSummary = new JLabel();
         totalArticles = new JLabel();
         totalArticlesValue = new JLabel();
-        dateFrom = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter()); //new JTextField();
-        fromDate = new JLabel();
-
-        dateTo = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter()); //new JTextField();
-        toDate = new JLabel();
-
-        searchDate = new JButton();
 
         //======== this ========
         setTitle("Borrego Leonor & Irm\u00e3o S.A.");
@@ -123,15 +100,10 @@ public class VRPTW extends JFrame {
 
                 // JFormDesigner evaluation mark
                 panel2.setBorder(new javax.swing.border.CompoundBorder(
-                        new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                                "", javax.swing.border.TitledBorder.CENTER,
-                                javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                                java.awt.Color.red), panel2.getBorder())); panel2.addPropertyChangeListener(
-                    e -> {
-                        if("border".equals(e.getPropertyName()))
-                            throw new RuntimeException();
-                    }
-            );
+                    new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
+                        "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                        javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
+                        java.awt.Color.red), panel2.getBorder())); panel2.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
 
 
                 //======== panel3 ========
@@ -155,17 +127,17 @@ public class VRPTW extends JFrame {
                     GroupLayout panel3Layout = new GroupLayout(panel3);
                     panel3.setLayout(panel3Layout);
                     panel3Layout.setHorizontalGroup(
-                            panel3Layout.createParallelGroup()
-                                    .addGroup(panel3Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 1071, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel3Layout.createParallelGroup()
+                            .addGroup(panel3Layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 1071, Short.MAX_VALUE)
+                                    .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
-                            panel3Layout.createParallelGroup()
-                                    .addGroup(panel3Layout.createSequentialGroup()
-                                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel3Layout.createParallelGroup()
+                            .addGroup(panel3Layout.createSequentialGroup()
+                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                                    .addContainerGap())
                     );
                 }
 
@@ -181,17 +153,17 @@ public class VRPTW extends JFrame {
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                            panel1Layout.createParallelGroup()
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 1071, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 1071, Short.MAX_VALUE)
+                                    .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
-                            panel1Layout.createParallelGroup()
-                                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                                            .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel1Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                                    .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                                    .addContainerGap())
                     );
                 }
 
@@ -207,42 +179,42 @@ public class VRPTW extends JFrame {
                     GroupLayout panel4Layout = new GroupLayout(panel4);
                     panel4.setLayout(panel4Layout);
                     panel4Layout.setHorizontalGroup(
-                            panel4Layout.createParallelGroup()
-                                    .addGroup(GroupLayout.Alignment.TRAILING, panel4Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(scrollPane3, GroupLayout.DEFAULT_SIZE, 1071, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel4Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, panel4Layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(scrollPane3, GroupLayout.DEFAULT_SIZE, 1071, Short.MAX_VALUE)
+                                    .addContainerGap())
                     );
                     panel4Layout.setVerticalGroup(
-                            panel4Layout.createParallelGroup()
-                                    .addGroup(panel4Layout.createSequentialGroup()
-                                            .addComponent(scrollPane3, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel4Layout.createParallelGroup()
+                            .addGroup(panel4Layout.createSequentialGroup()
+                                    .addComponent(scrollPane3, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                                    .addContainerGap())
                     );
                 }
 
                 GroupLayout panel2Layout = new GroupLayout(panel2);
                 panel2.setLayout(panel2Layout);
                 panel2Layout.setHorizontalGroup(
-                        panel2Layout.createParallelGroup()
-                                .addGroup(panel2Layout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(panel2Layout.createParallelGroup()
-                                                .addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(panel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addContainerGap())
+                    panel2Layout.createParallelGroup()
+                        .addGroup(panel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel2Layout.createParallelGroup()
+                                        .addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(panel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
                 );
                 panel2Layout.setVerticalGroup(
-                        panel2Layout.createParallelGroup()
-                                .addGroup(panel2Layout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addContainerGap())
+                    panel2Layout.createParallelGroup()
+                        .addGroup(panel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())
                 );
             }
             tabbedPane1.addTab("Search Results", panel2);
@@ -262,7 +234,7 @@ public class VRPTW extends JFrame {
 
             //---- searchDate ----
             searchDate.setText("Search");
-            searchDate.addActionListener(this::sActionPerformed);
+            searchDate.addActionListener(e -> sActionPerformed(e));
 
             //---- numOrders ----
             numOrders.setText("Num. Orders:");
@@ -276,21 +248,21 @@ public class VRPTW extends JFrame {
             //---- numOrdersValue ----
             numOrdersValue.setBackground(Color.lightGray);
             numOrdersValue.setBorder(null);
-            numOrdersValue.setText("0");
+            numOrdersValue.setText("text");
             numOrdersValue.setHorizontalAlignment(SwingConstants.LEFT);
             numOrdersValue.setForeground(Color.gray);
 
             //---- numClientsValue ----
             numClientsValue.setBackground(Color.lightGray);
             numClientsValue.setBorder(null);
-            numClientsValue.setText("0");
+            numClientsValue.setText("text");
             numClientsValue.setHorizontalAlignment(SwingConstants.LEFT);
             numClientsValue.setForeground(Color.gray);
 
             //---- totalLocationsValue ----
             totalLocationsValue.setBackground(Color.lightGray);
             totalLocationsValue.setBorder(null);
-            totalLocationsValue.setText("0");
+            totalLocationsValue.setText("text");
             totalLocationsValue.setHorizontalAlignment(SwingConstants.LEFT);
             totalLocationsValue.setForeground(Color.gray);
 
@@ -303,94 +275,94 @@ public class VRPTW extends JFrame {
             //---- totalArticlesValue ----
             totalArticlesValue.setBackground(Color.lightGray);
             totalArticlesValue.setBorder(null);
-            totalArticlesValue.setText("0");
+            totalArticlesValue.setText("text");
             totalArticlesValue.setHorizontalAlignment(SwingConstants.LEFT);
             totalArticlesValue.setForeground(Color.gray);
 
             GroupLayout selectDateLayout = new GroupLayout(selectDate);
             selectDate.setLayout(selectDateLayout);
             selectDateLayout.setHorizontalGroup(
-                    selectDateLayout.createParallelGroup()
-                            .addGroup(GroupLayout.Alignment.TRAILING, selectDateLayout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(fromDate)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(dateFrom, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(toDate)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(dateTo, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(searchDate, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(selectDateLayout.createParallelGroup()
-                                            .addGroup(selectDateLayout.createSequentialGroup()
-                                                    .addComponent(numOrders)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(numOrdersValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                    .addGap(18, 18, 18)
-                                                    .addComponent(numClients)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(numClientsValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(totalArticles)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(totalArticlesValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                    .addGap(18, 18, 18)
-                                                    .addComponent(totalLocations)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(totalLocationsValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(searchSummary))
-                                    .addContainerGap())
+                selectDateLayout.createParallelGroup()
+                    .addGroup(GroupLayout.Alignment.TRAILING, selectDateLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(fromDate)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(dateFrom, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(toDate)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(dateTo, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(searchDate, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(selectDateLayout.createParallelGroup()
+                                    .addGroup(selectDateLayout.createSequentialGroup()
+                                            .addComponent(numOrders)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(numOrdersValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(numClients)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(numClientsValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(totalArticles)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(totalArticlesValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(totalLocations)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(totalLocationsValue, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(searchSummary))
+                            .addContainerGap())
             );
             selectDateLayout.setVerticalGroup(
-                    selectDateLayout.createParallelGroup()
-                            .addGroup(selectDateLayout.createSequentialGroup()
-                                    .addGroup(selectDateLayout.createParallelGroup()
-                                            .addGroup(selectDateLayout.createSequentialGroup()
-                                                    .addGap(10, 10, 10)
-                                                    .addComponent(searchSummary)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addGroup(selectDateLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                            .addComponent(numOrders)
-                                                            .addComponent(totalLocations)
-                                                            .addComponent(totalLocationsValue)
-                                                            .addComponent(numClients)
-                                                            .addComponent(numClientsValue)
-                                                            .addComponent(totalArticles)
-                                                            .addComponent(numOrdersValue)
-                                                            .addComponent(totalArticlesValue)))
-                                            .addGroup(selectDateLayout.createSequentialGroup()
-                                                    .addGap(20, 20, 20)
-                                                    .addGroup(selectDateLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                            .addComponent(fromDate)
-                                                            .addComponent(dateFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(toDate)
-                                                            .addComponent(dateTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(searchDate))))
-                                    .addContainerGap(18, Short.MAX_VALUE))
+                selectDateLayout.createParallelGroup()
+                    .addGroup(selectDateLayout.createSequentialGroup()
+                            .addGroup(selectDateLayout.createParallelGroup()
+                                    .addGroup(selectDateLayout.createSequentialGroup()
+                                            .addGap(10, 10, 10)
+                                            .addComponent(searchSummary)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(selectDateLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(numOrders)
+                                                    .addComponent(totalLocations)
+                                                    .addComponent(totalLocationsValue)
+                                                    .addComponent(numClients)
+                                                    .addComponent(numClientsValue)
+                                                    .addComponent(totalArticles)
+                                                    .addComponent(numOrdersValue)
+                                                    .addComponent(totalArticlesValue)))
+                                    .addGroup(selectDateLayout.createSequentialGroup()
+                                            .addGap(20, 20, 20)
+                                            .addGroup(selectDateLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(fromDate)
+                                                    .addComponent(dateFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(toDate)
+                                                    .addComponent(dateTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(searchDate))))
+                            .addContainerGap(18, Short.MAX_VALUE))
             );
         }
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup()
-                                        .addComponent(selectDate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(tabbedPane1, GroupLayout.Alignment.TRAILING))
-                                .addContainerGap())
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(contentPaneLayout.createParallelGroup()
+                                .addComponent(selectDate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(tabbedPane1, GroupLayout.Alignment.TRAILING))
+                        .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(selectDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tabbedPane1, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(selectDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tabbedPane1, GroupLayout.PREFERRED_SIZE, 643, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -413,11 +385,9 @@ public class VRPTW extends JFrame {
     private JTabbedPane tabbedPane2;
     private JTabbedPane tabbedPane3;
     private JPanel selectDate;
-    //private JTextField dateFrom;
-    private JDatePickerImpl dateFrom;
+    private JTextField dateFrom;
     private JLabel fromDate;
-    //private JTextField dateTo;
-    private JDatePickerImpl dateTo;
+    private JTextField dateTo;
     private JLabel toDate;
     private JButton searchDate;
     private JLabel numOrders;
