@@ -42,8 +42,6 @@ public class VehicleDao extends GenericDao{
 
             Vehicle vh = new Vehicle(idVehicle, licensePlate, maxWeight, description, driverType);
             vehicleLst.add(vh);
-
-            System.out.println("Result added: " + vh);
         }
 
         //finally block used to close resources
