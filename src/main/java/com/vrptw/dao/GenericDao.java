@@ -45,7 +45,7 @@ public abstract class GenericDao<T> {
                         //retrieve the data
                         try {
                             Object rsField = rs.getObject(f.getName());
-                            method.invoke(classInstance, rsField);
+                            if (rsField != null){ method.invoke(classInstance, rsField);}
                         }catch (SQLException e){ /* do nothing */}
                     }
                 }

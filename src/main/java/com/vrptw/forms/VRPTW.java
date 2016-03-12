@@ -74,10 +74,16 @@ public class VRPTW extends JFrame {
     /** Action Event when clicked on Orders' table row */
     private void fieldSelectionMouseClicked(MouseEvent e) {
         int row = table1.getSelectedRow(); //table1.rowAtPoint(e.getPoint());
-        int col = 2; // table1.columnAtPoint(e.getPoint());
-        String idClient = table1.getValueAt(row, col).toString();
+        //int col = table1.columnAtPoint(e.getPoint());
+        int colEncomienda = 0;
+        int colClient= 2;
 
+        String idEncomienda = table1.getValueAt(row, colEncomienda).toString();
+        Form_Actions.LoadArticlesIntoTable(idEncomienda, table2);
+
+        String idClient = table1.getValueAt(row, colClient).toString();
         Form_Actions.LoadClientIntoTable(idClient, table3);
+
     }
 
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {

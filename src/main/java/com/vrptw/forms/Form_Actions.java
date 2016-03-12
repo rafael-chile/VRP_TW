@@ -1,8 +1,10 @@
 package com.vrptw.forms;
 
+import com.vrptw.dao.ArticleDao;
 import com.vrptw.dao.ClientDao;
 import com.vrptw.dao.OrderdsDao;
-import com.vrptw.entities.Clients;
+import com.vrptw.entities.Article;
+import com.vrptw.entities.Client;
 import com.vrptw.entities.Orders;
 
 import javax.swing.*;
@@ -16,8 +18,9 @@ public class Form_Actions {
 
     private static final String orderdsTable_Header[] = new String[] { "Encomenda", "Date Emissao", "Client" };
     private static final String articlesTable_Header[] = new String[] { "id Doc Final", "id Article", "Desc Article",
-            "quantity", "Qtd Pedida", "Unit Measure" };
-    private static final String clientsTable_Header[] = new String[] { "idClient", "Localidade", "Localidade_postal" };
+            "quantity", "Qtd Pedida", "Unit Measure", "Encomenda" };
+    private static final String clientsTable_Header[] = new String[] { "id Client", "Localidade Postal",
+            "TW From", "TW To", "Loc Lat","Loc Lon"};
 
     public static void LoadOrderdsIntoTable(Date dateFrom, Date dateTo, JTable table1){
         if (dateFrom == null || dateTo == null){ return; }
@@ -48,16 +51,26 @@ public class Form_Actions {
     }
 
     public static void LoadArticlesIntoTable(String idEncomenda, JTable table){
+        try {
+            List<Article> ordersList = (new ArticleDao()).getList(idEncomenda);
 
-        DefaultTableModel dtm = new DefaultTableModel(0, 0);
-        dtm.setColumnIdentifiers(articlesTable_Header);
-        table.setModel(dtm);
+            DefaultTableModel dtm = new DefaultTableModel(0, 0);
+            dtm.setColumnIdentifiers(articlesTable_Header);
+            table.setModel(dtm);
 
+            // add row dynamically into the table
+            ordersList.stream().forEach(val -> dtm.addRow(new Object[] {
+                    val.getDocumento_final(), val.getIdArtigo(), val.getDescription_artigo(), val.getQuantity(),
+                    val.getQtd_pedida(), val.getUnit_measure(), val.getEncomenda()
+            }));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void LoadClientIntoTable(String idClient, JTable table){
         try {
-            List<Clients> ordersList = (new ClientDao()).getList(idClient);
+            List<Client> ordersList = (new ClientDao()).getList(idClient);
 
             DefaultTableModel dtm = new DefaultTableModel(0, 0);
             dtm.setColumnIdentifiers(clientsTable_Header);
@@ -65,7 +78,8 @@ public class Form_Actions {
 
             // add row dynamically into the table
             ordersList.stream().forEach(val -> dtm.addRow(new Object[] {
-                    val.getIdClient(), val.getLocalidade(), val.getLocalidade_postal()
+                    val.getIdClient(), val.getLocalidade_postal(), val.getTw_from(), val.getTw_to(),
+                    val.getLocation_lat(), val.getLocation_lng()
             }));
 
         } catch (SQLException e) {
