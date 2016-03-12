@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>            
+	<script src="http://www.mapquestapi.com/sdk/js/v7.2.s/mqa.toolkit.js?key=pWVuV1gQyrHTRys07TGATGD9vJO7udqM"></script>
+    
+    
+    <script type="text/javascript">
+	
+			// An example of using the MQA.EventUtil to hook into the window load event and execute the defined
+			// function passed in as the last parameter. You could alternatively create a plain function here and
+			// have it executed whenever you like (e.g. <body onload="yourfunction">).
+			 
+			MQA.EventUtil.observe(window, 'load', function() {
+			 
+			  // download the modules
+			  MQA.withModule('directions', 'longurl', function() {
+			 
+				// executes a callback to the Directions Service for a route matrix with 3 parameters
+				MQA.Directions.routeMatrix(
+			 
+				  // an array of location objects as the first parameter
+				  [
+				  //{ latLng: { lat: 39.00296, lng: -8.80369 }}, 
+				  //{ latLng: { lat: 39.0584, lng: -8.52109}},
+				  { city: 'Coimbra', country:'Portugal' }, 
+				  { city: 'Alentejo', country:'Portugal' }, 
+				  { city: 'Lisboa', country:'Portugal' }
+				  //{ latLng: { lat: 39.43842, lng: -8.43517 }}
+				  //{ city: 'Silverthorn', state: 'CO' },
+				  //{ city: 'Kremmling', state: 'CO' },
+				  //{ city: 'Steamboat Springs', state: 'CO' }
+				  ],
+			 
+				  // an object for route options as the second parameter
+				  { routeOptions: { allToAll: true }},
+			 
+				  // callback function to be executed after completion
+				  renderMatrixResults
+				);
+			  });
+			});
+			 
+			// example callback function to render the matrix in a table
+			function renderMatrixResults(response) {
+			  var allToAll = response.allToAll;
+			  var distances = response.distance;
+			  var times = response.time;
+			  var locations = response.locations;
+			 
+			  timeHtml = '<table><thead>';
+			  timeHtml += '<tr>';
+			  timeHtml += "<th><table><tr><td style='border: 0'></td>";
+			  timeHtml += '<td style="border: 0">TO</td></tr><tr><td style="border: 0">';
+			  timeHtml += 'FROM</td><td style="border: 0"></td></tr></table></th>';
+			 
+			  for (i = 0; i < locations.length; i++) {
+				var location = locations[i];
+				timeHtml += '<th>' + location.adminArea5 + ', ' + location.adminArea3 + '</th>';
+			  }
+			 
+			  timeHtml += '</tr></thead><tbody>';
+			  distanceHtml = '<p>Driving distances (in miles):</p>' + timeHtml;
+			  timeHtml = '<p>Driving times (in seconds):</p>' + timeHtml;
+			  var numRows = allToAll ? times.length : 1;
+			 
+			  for (i = 0; i < numRows; i++) {
+				var location = locations[i];
+				var newRow = '<tr><td style="font-weight: bold; background-color: #cccccc;">' +
+				  location.adminArea5 + ', ' + location.adminArea3 + '</td>';
+				timeHtml += newRow;
+				distanceHtml += newRow;
+				var timeList = allToAll ? times[i] : times;
+				var distanceList = allToAll ? distances[i] : distances;
+			 
+				for (j = 0; j < timeList.length; j++) {
+				  timeHtml += '<td>' + timeList[j] + '</td>';
+				  distanceHtml += '<td>' + distanceList[j].toFixed(2) + '</td>';
+				}
+			 
+				timeHtml += '</tr>';
+				distanceHtml += '</tr>';
+			  }
+			 
+			  timeHtml += '</tbody></table>';
+			  distanceHtml += '</tbody></table>';
+			 
+			  document.getElementById('matrix-times').innerHTML = timeHtml;
+			  document.getElementById('matrix-distances').innerHTML = distanceHtml;
+			}
+	</script>
+</head>
+<body>
+
+<p>VRP-TW Times/Distances:</p>
+
+<div id="matrix-times"></div>
+<div id="matrix-distances"></div>
+
+<div id="map" style="width:1000px; height:400px;"></div>
+
+<script type="text/javascript" src="basic2.js"></script>
+<script type="text/javascript" src="basic.js"></script>
+</body>
+</html>
+
+

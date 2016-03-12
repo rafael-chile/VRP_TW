@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>            
+	<script src="http://www.mapquestapi.com/sdk/js/v7.2.s/mqa.toolkit.js?key=pWVuV1gQyrHTRys07TGATGD9vJO7udqM"></script>
+    
+    <script type="text/javascript">
+             
+              // An example of using the MQA.EventUtil to hook into the window load event and execute the defined
+              // function passed in as the last parameter. You could alternatively create a plain function here and
+              // have it executed whenever you like (e.g. <body onload="yourfunction">).
+             
+              MQA.EventUtil.observe(window, 'load', function() {
+             
+                // create an object for options
+                var options = {
+                  elt: document.getElementById('map'),       // ID of map element on page
+                  zoom: 10,                                  // initial zoom level of the map
+                  latLng: { lat: 39.7439, lng: -105.0200 },  // center of map in latitude/longitude
+                  mtype: 'map',                              // map type (map, sat, hyb); defaults to map
+                  bestFitMargin: 0,                          // margin offset from map viewport when applying a bestfit on shapes
+                  zoomOnDoubleClick: true                    // enable map to be zoomed in when double-clicking
+                };
+				
+				
+				// download the modules
+				MQA.withModule('largezoom', 'mousewheel', 'htmlpoi', 'new-route', function() {
+				 
+				  // add the Large Zoom control
+				  map.addControl(
+					new MQA.LargeZoom(),
+					new MQA.MapCornerPlacement(MQA.MapCorner.TOP_LEFT, new MQA.Size(5,5))
+				  );
+				 
+				  // enable zooming with your mouse
+				  map.enableMouseWheelZoom();
+				  
+				  //'htmlpoi'
+				  // create an HTML POI by passing in a lat/lng object to the MQA.HtmlPoi constructor
+				  var poi = new MQA.HtmlPoi({ lat: 39.743943, lng: -105.020089 });
+				   
+				  // The lat/lng provided in the constructor will become the upper left corner of the MQA.HtmlPoi.
+				  // Use the xOffset and yOffset to reposition.
+				  //  - parameters include the HTML content, xOffset, yOffset, and the CSS class name to be used
+				  poi.setHtml('Sports Authority Field at Mile High', 0, 0, 'mqa_htmlpoi');
+				   
+				  // set rollover and info content
+				  poi.setRolloverContent('Sports Authority Field at Mile High');
+				  poi.setInfoContentHTML('Home of the Denver Broncos');
+				  
+				  //'new-route'
+				  // uses the MQA.TileMap.addRoute function to pass in an array
+				  // of locations as part of the request parameter
+					  map.addRoute({
+						request: {
+						  locations: [
+							{ latLng: { lat: 39.637433, lng: -105.163867 }}, 
+							'Silverthorne, CO',
+							{ city: 'Kremmling', state: 'CO' },
+							{ city: 'Steamboat Springs', state: 'CO' },
+							{ city: 'Rifle', state: 'CO' },
+							'Silverthorne, CO'
+						  ]
+						}
+					  });
+					  
+					 
+					 //'new-route' 
+					  // uses the MQA.TileMap.addOptimizedRoute function to pass in an array
+					  // of locations as part of the request parameter
+					  map.addOptimizedRoute({
+						request: {
+						  locations: [
+							{ city: 'Sedalia', state: 'CO' },
+							{ city: 'Denver', state: 'CO' },
+							{ city: 'Aurora', state: 'CO' },
+							{ city: 'Boulder', state: 'CO' },
+							{ city: 'Evergreen', state: 'CO' },
+							{ city: 'Brighton', state: 'CO' },
+							{ city: 'Conifer', state: 'CO' },
+							{ city: 'Littleton', state: 'CO' },
+							{ city: 'Parker', state: 'CO' }
+						  ],
+					 
+						  // add route options
+						  options: {
+							avoids: [ 'toll road' ]
+						  }
+						}
+					  });
+					  
+									   
+				  // add POI to the map's default shape collection
+				  map.addShape(poi);
+				 
+				});
+				
+				
+				
+
+             
+                // construct an instance of MQA.TileMap with the options object
+                window.map = new MQA.TileMap(options);
+				
+				
+				
+				
+				
+              });
+     
+    </script>
+</head>
+<body>
+
+<p>myObject.fullName() will return John Doe:</p>
+
+<p id="demo2"></p>
+<p id="demo"></p>
+
+<p id="basicSampleUrl"></p>
+
+<div id="map" style="width:1000px; height:400px;"></div>
+
+<script type="text/javascript" src="basic2.js"></script>
+<script type="text/javascript" src="basic.js"></script>
+</body>
+</html>
+
+
