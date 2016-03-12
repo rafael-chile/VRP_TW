@@ -12,7 +12,8 @@ public class OrderdsDao extends GenericDao {
 
     @SuppressWarnings(value = "unchecked")
     public List<Orders> getList(String from, String to) throws SQLException {
-        String sqlQuery = "SELECT * FROM encomendas WHERE date_emissao >= '" + from + "' and date_emissao <= '" + to + "'";
+        String sqlQuery = "SELECT DISTINCT encomenda, date_emissao, client FROM encomendas " +
+                "WHERE date_emissao >= '" + from + "' AND date_emissao <= '" + to + "'";
         List<Orders> ordersList = null;
         try {
             ordersList = (new OrderdsDao()).runQuery(Orders.class, sqlQuery );

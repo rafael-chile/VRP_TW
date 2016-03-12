@@ -1,9 +1,9 @@
 package com.vrptw.entities;
 
 public class Clients {
-    public String idClient;
-    public String localidade;
-    public String localidade_postal;
+    private String idClient;
+    private String localidade;
+    private String localidade_postal;
 
     public Clients(){}
 

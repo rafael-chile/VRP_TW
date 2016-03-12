@@ -4,7 +4,6 @@
 
 package com.vrptw.forms;
 
-import javax.swing.border.*;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -75,12 +74,10 @@ public class VRPTW extends JFrame {
     /** Action Event when clicked on Orders' table row */
     private void fieldSelectionMouseClicked(MouseEvent e) {
         int row = table1.getSelectedRow(); //table1.rowAtPoint(e.getPoint());
-        int col = 5; // table1.columnAtPoint(e.getPoint());
+        int col = 2; // table1.columnAtPoint(e.getPoint());
         String idClient = table1.getValueAt(row, col).toString();
-        System.out.println("Selected row with IdClient:"+ idClient);
 
-        // TODO: use the value selection to load order data into whatever is required in a second jtable/jtext object
-        //Form_Actions.LoadFacturasIntoTable(idClient, table2);
+        Form_Actions.LoadClientIntoTable(idClient, table3);
     }
 
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
