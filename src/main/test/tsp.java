@@ -9,8 +9,8 @@ public class tsp {
     public static void main(String [] arg){
 
         Solver solver = new Solver();
-        IntVar[] VS = VF.enumeratedArray("VS", 4, 0, 4, solver);
-        IntVar CO = VF.enumerated("CO", 0, 15, solver);
+        IntVar[] VS = VF.enumeratedArray("VS", 4, 0, 4, solver);  // la variable puede tomar del 0 al 4
+        IntVar CO = VF.enumerated("CO", 0, 15, solver);   // 15 is the maximum cost accepted
         int[][] costs = new int[][]{{0, 1, 3, 7},
                                     {1, 0, 1, 3},
                                     {3, 1, 0, 1},
