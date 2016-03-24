@@ -2,28 +2,41 @@ package com.vrptw.dao;
 
 import com.vrptw.entities.Location;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LocationDao extends GenericDao {
 
-    public List<Location> getList() throws SQLException{
-        String query = "SELECT * FROM locations";
-        return getList(query);
+
+    @SuppressWarnings(value = "unchecked")
+    public List<Location> getList(String idClient) throws SQLException {
+        String sqlQuery = "SELECT * FROM locations " +
+                " WHERE client = '" + idClient +"'" ;
+        List<Location> dataList = null;
+        try {
+            dataList = this.runQuery(Location.class, sqlQuery );
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        //dataList.stream().forEach(System.out::println);
+        return dataList ;
     }
 
-    /**
+
+    /*public List<Location> getList() throws SQLException{
+        String query = "SELECT * FROM locations";
+        return getList(query);
+    }*/
+
+    /*
      *  WARNING: the parameter resulset of the executed query passed by parameter could no match with the parsed data
      *  in this method, so in case any modification it should be also updated.
      * @param query The query to be run
      * @return A list of Locations found in the DB
      */
-    public List<Location> getList(String query) throws SQLException{
+   /* public List<Location> getList(String query) throws SQLException{
         List<Location> locationLst = new ArrayList<>();
         Connection con = connectionManager.connect();
 
@@ -62,6 +75,8 @@ public class LocationDao extends GenericDao {
 
 
         return locationLst;
-    }
+    }*/
+
+
 
 }

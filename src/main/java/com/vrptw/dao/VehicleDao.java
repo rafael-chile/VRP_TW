@@ -2,29 +2,39 @@ package com.vrptw.dao;
 
 import com.vrptw.entities.Vehicle;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleDao extends GenericDao{
 
-    public VehicleDao() {}
+    @SuppressWarnings(value = "unchecked")
+    public List<Vehicle> getList() throws SQLException {
+        String sqlQuery = "SELECT * FROM vehicles";
+        List<Vehicle> dataList = null;
+        try {
+            dataList = this.runQuery(Vehicle.class, sqlQuery );
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
-    public List<Vehicle> getList() throws SQLException{
-        String query = "SELECT * FROM vehicles";
-        return getList(query);
+        //dataList.stream().forEach(System.out::println);
+        return dataList ;
     }
 
-    /**
+
+/*    public List<Vehicle> getList() throws SQLException{
+        String query = "SELECT * FROM vehicles";
+        return getList(query);
+    }*/
+
+    /*
      *  WARNING: the parameter resulset of the executed query passed by parameter could no match with the parsed data
      *  in this method, so in case any modification it should be also updated.
      * @param query the query that will be run
      * @return the list of Vehicles found in DB
      */
-    public List<Vehicle> getList(String query) throws SQLException{
+  /*  public List<Vehicle> getList(String query) throws SQLException{
         List<Vehicle> vehicleLst = new ArrayList<>();
         Connection con = connectionManager.connect();
 
@@ -55,7 +65,7 @@ public class VehicleDao extends GenericDao{
 
 
         return vehicleLst;
-    }
+    }*/
 
 
 }
