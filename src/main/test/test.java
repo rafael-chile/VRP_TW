@@ -2,18 +2,10 @@ import org.chocosolver.solver.ResolutionPolicy;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
-import org.chocosolver.solver.constraints.LogicalConstraintFactory;
-import org.chocosolver.solver.constraints.real.Ibex;
-import org.chocosolver.solver.constraints.real.RealConstraint;
 import org.chocosolver.solver.search.loop.monitors.SearchMonitorFactory;
-import org.chocosolver.solver.search.strategy.IntStrategyFactory;
 import org.chocosolver.solver.trace.Chatterbox;
 import org.chocosolver.solver.variables.*;
 import org.chocosolver.util.tools.ArrayUtils;
-
-import static org.chocosolver.solver.constraints.IntConstraintFactory.arithm;
-import static org.chocosolver.solver.constraints.LogicalConstraintFactory.ifThenElse;
-import static org.chocosolver.solver.constraints.LogicalConstraintFactory.not;
 
 
 public class test {
@@ -68,9 +60,10 @@ public class test {
             }while(solver.nextSolution());
         }*/
         //solver.findSolution();
-        //int numFailures = 200000;
-        //SearchMonitorFactory.limitFail(solver, numFailures);
-        solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
+        /*int numFailures = 200000;
+        SearchMonitorFactory.limitFail(solver, numFailures);
+        solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);*/
+        solver.findSolution();
         //long nbSol = solver.getMeasures().getSolutionCount();
 
         Chatterbox.printStatistics(solver);
@@ -218,48 +211,49 @@ public class test {
         // also guarantees that there will be no sub tours. The constant M_ij  is a large enough number
 
         int servTime = 10;
-        IntVar[][] servStart;
         int[][] travTime = new int[][]     /* costs in time ALL to ALL customers */        //consumptions
-                {   {0, 22, 12, 19, 20, 15},
-                    {22, 0, 32, 12, 11, 17},
-                    {12, 32, 0, 30, 31, 27},
-                    {19, 12, 30, 0, 7, 10},
-                    {19, 10, 31, 6, 0, 11},
-                    {15, 17, 27, 10, 11, 0}};
-        int[][] M_ij;
+                         /*0  1  2  3  4  5*/
+                {   /*0*/ {0, 2, 2, 2, 2, 2},
+                    /*1*/ {2, 0, 2, 2, 2, 2},
+                    /*2*/ {2, 2, 0, 2, 2, 2},
+                    /*3*/ {2, 2, 2, 0, 2, 2},
+                    /*4*/ {2, 2, 2, 2, 0, 2},
+                    /*5*/ {2, 2, 2, 2, 2, 0}};
 
-        int[][] timeWindows = new int[][]
-                {   {0, 50},    // [earliest_i, latest_j]
-                    {10, 60},
-                    {20, 70},
-                    {30, 80},
-                    {0, 90},
-                    {40,100}};
+        int[][] M_ij = new int[nbCustomers][nbCustomers];
 
+        int[][] tWin = new int[][] // [earliest_i, latest_j]
+                /*0*/ {{0, 500}, /*1*/  {0, 500}, /*2*/  {0, 500}, /*3*/  {0, 500}, /*4*/  {0, 500}, /*5*/  {0, 500}};
 
-
-
+        IntVar[][] servStart;
+        servStart = VF.enumeratedMatrix("servStart", nbCustomers, nbVehicles, 0, 1000, solver);
+        IntVar[][][] edgesM_ij = new IntVar[nbVehicles][nbCustomers][nbCustomers];
+        for (int k = 0; k < nbVehicles; k++)
+            edgesM_ij[k] = VF.enumeratedMatrix("edgeM_ij" + k, nbCustomers, nbCustomers, 0, 1000, solver);
 
         for (int k = 0; k < nbVehicles; k++) {
             for (int i = 0; i < nbCustomers; i++) {
                 for (int j = 0; j < nbCustomers; j++) {
-
-
+                    M_ij[i][j] = tWin[i][1] + travTime[i][j] - tWin[j][0];
+                    int stM_ij = servTime + travTime[i][j] - M_ij[i][j];                   // s_i + t_ij - M_ij (servTime[i] when you have different values per client)
+                    solver.post(ICF.times(edges[k][i][j], M_ij[i][j], edgesM_ij[k][i][j]));  //  edges*Mij
+                    solver.post(ICF.sum(new IntVar[]{VF.fixed(stM_ij,solver),servStart[i][k],edgesM_ij[k][i][j]}, "<=", servStart[j][k]));
                 }
             }
         }
-
-
-
-
-
-
         // Constraint(7): all customers will be served within their time windows
+        for (int k = 0; k < nbVehicles; k++) {
+            for (int i = 0; i < nbCustomers; i++) {
+                solver.post(ICF.arithm(servStart[i][k],">=",tWin[i][0]));
+                solver.post(ICF.arithm(servStart[i][k],"<=",tWin[i][1]));
+            }
+        }
 
         // Equation (8): the decision variables y[k][i] and b[k][i] are positive.
+                /**done in declaration*/
 
         // Equation (9): the decision variables x[k][i][j] is binary.
-
+                /**done in declaration*/
 
 
     }
