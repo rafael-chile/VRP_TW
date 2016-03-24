@@ -3,9 +3,25 @@ import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.trace.Chatterbox;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
+import org.chocosolver.solver.variables.VariableFactory;
+import org.chocosolver.util.tools.ArrayUtils;
 // API:   Constraint[] tsp(IntVar[] SUCCS, IntVar COST, int[][] COST_MATRIX)
 
 public class tsp {
+
+    public void test_sum(Solver solver) {
+        IntVar[] VS = VariableFactory.enumeratedArray("VS", 4, new int[]{1, 3, 5, 7, 11, 13, 15}, solver);
+        solver.post(ICF.sum(VS, "=", VariableFactory.fixed(30, solver)));
+    }
+
+    public void const1_test(Solver solver) {
+        int nbCustomers = 5;
+        IntVar[][] edges;
+        edges = VariableFactory.enumeratedMatrix("edges", nbCustomers, nbCustomers, new int[]{0,1}, solver);
+        solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers - 1, edges), "=", VariableFactory.fixed(1, solver)));
+        //starts in [3,0] and the length in x=1 and in y=4
+        solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(3, 1, 0, nbCustomers, edges), "=", VariableFactory.fixed(4, solver)));
+    }
     public static void main(String [] arg){
 
         Solver solver = new Solver();
