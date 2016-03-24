@@ -16,7 +16,7 @@ public class OrderdsDao extends GenericDao {
                 "WHERE date_emissao >= '" + from + "' AND date_emissao <= '" + to + "'";
         List<Orders> ordersList = null;
         try {
-            ordersList = this.runQuery(Orders.class, sqlQuery );
+            ordersList = this.read(Orders.class, sqlQuery );
 
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();

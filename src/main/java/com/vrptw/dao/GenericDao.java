@@ -17,7 +17,7 @@ public abstract class GenericDao<T> {
     public GenericDao(){}
 
     @SuppressWarnings(value = "unchecked")
-    public List<T> runQuery(Class nClass, String query) throws SQLException, IllegalAccessException,
+    public List<T> read(Class nClass, String query) throws SQLException, IllegalAccessException,
             InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         List<T> objList = new ArrayList<>();
@@ -59,16 +59,35 @@ public abstract class GenericDao<T> {
         //finally block used to close resources
         try {
             // Clean-up environment
-            stmt.close();
-            if (rs != null ){ rs.close(); }
-
-            connectionManager.disconnect(); // don't disconnect using "con.close()" form
+            this.closeAllConnections(rs, stmt);
         } catch (SQLException ignored) {}// nothing we can do
-
 
         return objList;
 
     }
 
+    public int runInsertQuery( String query) throws SQLException, IllegalAccessException,
+            InstantiationException, NoSuchMethodException, InvocationTargetException {
 
+        List<T> objList = new ArrayList<>();
+        Connection con = this.connectionManager.connect();
+
+        // Execute a query
+        Statement stmt = con.createStatement();
+        int result = stmt.executeUpdate(query);
+
+        //finally block used to close resources
+        try {
+            // Clean-up environment
+            this.closeAllConnections(null, stmt);
+        } catch (SQLException ignored) {}// nothing we can do
+
+        return result;
+    }
+
+    private void closeAllConnections(ResultSet rs, Statement stmt) throws SQLException {
+        if (stmt != null) { stmt.close(); }
+        if (rs != null ){ rs.close(); }
+        connectionManager.disconnect(); // don't disconnect using "con.close()" form
+    }
 }

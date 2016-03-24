@@ -22,7 +22,7 @@ public class ArticleDao extends GenericDao{
                 "WHERE E.encomenda = '"+ idOrder +"';";
         List<Article> dataList = null;
         try {
-            dataList = this.runQuery(Article.class, sqlQuery );
+            dataList = this.read(Article.class, sqlQuery );
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

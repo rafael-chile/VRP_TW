@@ -15,7 +15,7 @@ public class LocationDao extends GenericDao {
                 " WHERE client = '" + idClient +"'" ;
         List<Location> dataList = null;
         try {
-            dataList = this.runQuery(Location.class, sqlQuery );
+            dataList = this.read(Location.class, sqlQuery );
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }

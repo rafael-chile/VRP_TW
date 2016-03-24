@@ -13,7 +13,7 @@ public class VehicleDao extends GenericDao{
         String sqlQuery = "SELECT * FROM vehicles";
         List<Vehicle> dataList = null;
         try {
-            dataList = this.runQuery(Vehicle.class, sqlQuery );
+            dataList = this.read(Vehicle.class, sqlQuery );
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
