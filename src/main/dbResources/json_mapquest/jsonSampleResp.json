@@ -1,0 +1,73 @@
+{
+  "allToAll": true,
+  "distance": [
+    [0, 37.628],
+    [37.63, 0]
+  ],
+  "time": [
+    [0, 3824],
+    [3817, 0]
+  ],
+  "locations": [{
+    "latLng": {
+      "lng": -8.30988,
+      "lat": 38.75831
+    },
+    "adminArea4": "",
+    "adminArea5Type": "City",
+    "adminArea4Type": "County",
+    "adminArea5": "",
+    "street": "",
+    "adminArea1": "",
+    "adminArea3": "",
+    "type": "s",
+    "displayLatLng": {
+      "lng": -8.30988,
+      "lat": 38.75831
+    },
+    "linkId": 0,
+    "postalCode": "",
+    "sideOfStreet": "N",
+    "dragPoint": false,
+    "adminArea1Type": "Country",
+    "geocodeQuality": "LATLNG",
+    "geocodeQualityCode": "XXXXX",
+    "adminArea3Type": "State"
+  },
+    {
+      "latLng": {
+        "lng": -8.77501,
+        "lat": 39.02721
+      },
+      "adminArea4": "",
+      "adminArea5Type": "City",
+      "adminArea4Type": "County",
+      "adminArea5": "",
+      "street": "",
+      "adminArea1": "",
+      "adminArea3": "",
+      "type": "s",
+      "displayLatLng": {
+        "lng": -8.77501,
+        "lat": 39.02721
+      },
+      "linkId": 0,
+      "postalCode": "",
+      "sideOfStreet": "N",
+      "dragPoint": false,
+      "adminArea1Type": "Country",
+      "geocodeQuality": "LATLNG",
+      "geocodeQualityCode": "XXXXX",
+      "adminArea3Type": "State"
+    }],
+  "manyToOne": false,
+  "info": {
+    "copyright": {
+      "text": "© 2016 MapQuest, Inc.",
+      "imageUrl": "http://api.mqcdn.com/res/mqlogo.gif",
+      "imageAltText": "© 2016 MapQuest, Inc."
+    },
+    "statuscode": 0,
+    "messages": []
+  }
+}

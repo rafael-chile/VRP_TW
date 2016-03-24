@@ -32,7 +32,7 @@ public class ClientDao extends GenericDao{
     }
 
     @SuppressWarnings(value = "unchecked")
-    public List<Client> getListIDsBetweenDates(Date from, Date until) throws SQLException {
+    public List<String> getListIDsBetweenDates(Date from, Date until) throws SQLException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String fromDate = formatter.format(from);
         String toDate = formatter.format(until);
@@ -42,9 +42,9 @@ public class ClientDao extends GenericDao{
                 " AND encomendas.date_emissao >= \""+fromDate+"\" AND encomendas.date_emissao <= \""+toDate+"\" " +
                 "group by clients.idClient ;" ;
 
-        List<Client> dataList = null;
+        List<String> dataList = null;
         try {
-            dataList = this.read(Client.class, sqlQuery );
+            dataList = this.read(String.class, sqlQuery );
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

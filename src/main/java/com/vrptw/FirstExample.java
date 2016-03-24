@@ -31,11 +31,12 @@ public class FirstExample {
             allocations.stream().forEach(System.out::println);
             */
 
+            List<Client> allocations = clientDao.getList("0"); // client0 -> DEPOT
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            List<Client> allocations = clientDao.getListIDsBetweenDates(sdf.parse("2015-06-22"), sdf.parse("2015-06-27"));
-            allocations = clientDao.getList("0"); // client0 -> DEPOT
+            List<String> allocationsStr = clientDao.getListIDsBetweenDates(sdf.parse("2015-06-22"), sdf.parse("2015-06-27"));
             allocations.stream().forEach(System.out::println);
-            System.out.println("Found Client Ids:" + allocations.size());
+            allocationsStr.stream().forEach(System.out::println);
+            //System.out.println("Found Client Ids:" + allocations.size());
 
 
             /*List<RouteCost> allRouteCost = routeCostDao.getList("2844");

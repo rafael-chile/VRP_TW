@@ -29,29 +29,33 @@ public abstract class GenericDao<T> {
 
         // Extract data from result set
         while (rs != null && rs.next()) {
-            // create a new instance of class to insert data from db
-            Object classInstance = nClass.newInstance();
-            Method[] methods = nClass.getDeclaredMethods();
+            if(nClass.equals(String.class)) {  // if is a String
+                objList.add((T)rs.getObject(1));
+            } else{
+                // create a new instance of class to insert data from db
+                Object classInstance = nClass.newInstance();
+                Method[] methods = nClass.getDeclaredMethods();
 
-            for(Field f : nClass.getDeclaredFields()) {
+                for(Field f : nClass.getDeclaredFields()) {
 
-                String setterName = Character.toUpperCase(f.getName().charAt(0)) + f.getName().substring(1);
-                //System.out.println("METHOD NAME:"+methodName);
-                for(Method m : methods) {
-                    String methodName = "set" + setterName;
-                    if(m.getName().equals(methodName)) {
-                        Method method = nClass.getDeclaredMethod(methodName, m.getParameterTypes());
+                    String setterName = Character.toUpperCase(f.getName().charAt(0)) + f.getName().substring(1);
+                    //System.out.println("METHOD NAME:"+methodName);
+                    for(Method m : methods) {
+                        String methodName = "set" + setterName;
+                        if(m.getName().equals(methodName)) {
+                            Method method = nClass.getDeclaredMethod(methodName, m.getParameterTypes());
 
-                        //retrieve the data
-                        try {
-                            Object rsField = rs.getObject(f.getName());
-                            if (rsField != null){ method.invoke(classInstance, rsField);}
-                        }catch (SQLException e){ /* do nothing */}
+                            //retrieve the data
+                            try {
+                                Object rsField = rs.getObject(f.getName());
+                                if (rsField != null){ method.invoke(classInstance, rsField);}
+                            }catch (SQLException e){ /* do nothing */}
+                        }
                     }
                 }
-            }
 
-            objList.add((T) classInstance);
+                objList.add((T) classInstance);
+            }
 
             // System.out.println("Result added: " + longitude);
         }

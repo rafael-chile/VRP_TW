@@ -40,6 +40,25 @@
             <version>1.9.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+
+        <!-- Dependencies for the HTTP REST Client -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20151123</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -75,7 +94,7 @@
                     <archive>
                         <manifest>
                             <!-- Jar file entry point -->
-                            <mainClass>com.vrptw.FirstExample</mainClass>
+                            <mainClass>com.vrptw.App_Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
