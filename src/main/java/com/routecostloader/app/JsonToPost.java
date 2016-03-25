@@ -3,16 +3,19 @@ package com.routecostloader.app;
 import java.io.Serializable;
 
 public class JsonToPost implements Serializable{
+    private static final long serialVersionUID = 6529685098267757690L;
+
     private String fromClient;
     private String toClient;
-    private String json;
+    private String jsonRequest;
+    private String jsonResponse;
 
     private JsonToPost(){}
 
     public JsonToPost(String fromClient, String toClient, String json){
         this.fromClient = fromClient;
         this.toClient = toClient;
-        this.json = json;
+        this.jsonRequest = json;
     }
 
     public String getFromClient() {
@@ -23,12 +26,20 @@ public class JsonToPost implements Serializable{
         return toClient;
     }
 
-    public String getJson() {
-        return json;
+    public String getJsonRequest() {
+        return jsonRequest;
+    }
+
+    public String getJsonResponse() {
+        return jsonRequest;
+    }
+
+    public void setJsonResponse(String jsonResponse) {
+        this.jsonResponse = jsonResponse;
     }
 
     @Override
     public String toString() {
-        return ("JsonToPost=> From_Client:" + fromClient + ", To_Client:" + toClient + ", JSON: " + json);
+        return ("JsonToPost=> From_Client:" + fromClient + ", To_Client:" + toClient + ", JSONRequest: " + jsonRequest);
     }
 }

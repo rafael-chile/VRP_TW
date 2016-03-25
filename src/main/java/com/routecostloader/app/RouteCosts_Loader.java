@@ -2,12 +2,14 @@ package com.routecostloader.app;
 
 import com.vrptw.dao.ClientDao;
 import com.vrptw.entities.Client;
+import com.vrptw.entities.RouteCost;
 
 import java.io.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -21,6 +23,7 @@ public class RouteCosts_Loader {
     static String MAPQUEST_KEY = "jf5LPPtU2cMyidCPhPv9wVOMpjuKbPIX";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
     static boolean PRINT_IN_TERMINAL = true;
+    static boolean IS_TEST = true;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException {
@@ -29,17 +32,18 @@ public class RouteCosts_Loader {
         String loggerFile = System.getProperty("user.dir")+"/src/main/java/com/routecostloader/app/logs/rc-log.%u.%g.log";
         logger.addHandler(new FileHandler(loggerFile , 1024 * 1024, 10, true));
 
-        // Load Data to process
-        //TODO: generate a list json to send to mapquest (from all to all: base-depot/loc-pnt1, base-depot/loc-pnt2,...,base-pntN-1/loc-pntN)
-        List<JsonToPost> locJsonLst;
+        // LOAD DATA TO PROCESS
+        List<JsonToPost> locJsonLst = null;
         String fileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocReqList";
         File file = new File(fileName);
 
         if( !file.exists() ) {
+            /* Generate a list of json request to send to mapquest
+                (from all to all: base-depot/loc-pnt1, base-depot/loc-pnt2,...,base-pntN-1/loc-pntN) */
             List<Client> clientIdLst = RouteCosts_Loader.loadClientIdToProcess();
             System.out.println("Total Clients to process (including depot): " + clientIdLst.size());
 
-            locJsonLst = generateJsonToPost(clientIdLst);
+            locJsonLst = RouteCosts_Loader.generateJsonToPost(clientIdLst);
             locJsonLst.stream().forEach(msg -> logger.info(msg.toString()));
             saveList(locJsonLst, fileName);
             System.out.println("Total Clients saved infile: " + locJsonLst.size());
@@ -47,26 +51,52 @@ public class RouteCosts_Loader {
         }else{
             try {
                 locJsonLst = RouteCosts_Loader.readList(fileName);
-                System.out.println("Total Clients found infile: " + locJsonLst.size());
+                System.out.println("Total Clients found in filed list: " + locJsonLst.size());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
         //TODO: process calls to mapquest for each element in the list (json), TODO2: save json responses into files
-        //TODO: process responses and generate (in file) insert queries
+        String jsonRespFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocRespList";
+        if( !IS_TEST ){
+            String errorOn = "";
+            try {
+                for(JsonToPost jsonReq : locJsonLst) {
+                    errorOn = jsonReq.toString();
+                    String resp = restServicesConsumer.POST(HTTP_REST_POST_URL, jsonReq.getJsonRequest());
+                    jsonReq.setJsonResponse(resp);
+                }
+                saveList(locJsonLst, jsonRespFileName);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                logger.info("ERROR while processing :> " + errorOn);
+                saveList(locJsonLst, jsonRespFileName); // the post returned an error, so it saves the responses list
+            }
+        }
+
+        // get distance and time to insert into db
+        List<RouteCost> routeCostsList = new ArrayList<>();
+        locJsonLst.stream().forEach(jsonToPost->{
+            try {
+                double[][] distanceEtTime =  IS_TEST ? JSONProcessing.loadJSONResponse_Stub()
+                        : JSONProcessing.loadDistanceEtTimeFromJSON(jsonToPost.getJsonResponse());
+
+                String comments = "Processed at (" + new Date() + ") with: " + jsonToPost.getFromClient() + " & " + jsonToPost.getToClient();
+
+                RouteCost rc_base_to_loc = new RouteCost(jsonToPost.getFromClient(), jsonToPost.getToClient(),
+                        distanceEtTime[1][0], distanceEtTime[0][0], comments);
+                routeCostsList.add(rc_base_to_loc);
+
+                RouteCost rc_loc_to_base = new RouteCost(jsonToPost.getFromClient(), jsonToPost.getToClient(),
+                        distanceEtTime[1][1], distanceEtTime[0][1], comments);
+                routeCostsList.add(rc_loc_to_base);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+
         //TODO: run insert queries
-
-        // get json
-/*        String baseLocLat = "38.75831", baseLoclong = "-8.30988";
-        String locLat = "39.02721", locLong = "-8.77501";
-        String jsonString = JSONProcessing.toJSON(new Location(baseLocLat,baseLoclong), new Location(locLat,locLong));
-        System.out.println("JSON to send:" + jsonString);
-*/
-       // String resp = restServicesConsumer.POST(HTTP_REST_POST_URL, json);
-        //System.out.println("Response:" +resp);
-
-
-        //JSONProcessing.loadJSON_Sample();
 
 
     }

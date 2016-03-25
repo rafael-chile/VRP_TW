@@ -72,10 +72,10 @@ public class JSONProcessing {
     }
 
 
-    public static void loadJSON_Sample() throws IOException {
+    public static double[][] loadJSONResponse_Stub() throws IOException {
         String filePath = directory + "/src/main/dbResources/json_mapquest/jsonSampleResp.json";
         String jsonString = readFile(filePath, StandardCharsets.UTF_8);
-        loadJSON(jsonString);
+        return JSONProcessing.loadDistanceEtTimeFromJSON(jsonString);
     }
 
     /**
@@ -84,7 +84,7 @@ public class JSONProcessing {
      * @return return A 2x2 matrix containing in the first array of the matrix the distance, and the time in the second.
      * @throws IOException
      */
-    public static double[][] loadJSON(String jsonString) throws IOException {
+    public static double[][] loadDistanceEtTimeFromJSON(String jsonString) throws IOException {
         double[][] parsedResp = new double[2][2];
         JSONObject input = new JSONObject(jsonString);
         System.out.println("JSON found:" + input);

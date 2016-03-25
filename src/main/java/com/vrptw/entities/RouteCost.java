@@ -12,8 +12,8 @@ public class RouteCost {
 
     public RouteCost(){}
 
-    public RouteCost(String idroute_cost, String idclient_from, String idclient_to, double time_cost, double distance_cost, String comments){
-        this.idroute_cost = idroute_cost;
+    public RouteCost(/*String idroute_cost,*/ String idclient_from, String idclient_to, double time_cost, double distance_cost, String comments){
+        //this.idroute_cost = idroute_cost;
         this.idclient_from = idclient_from;
         this.idclient_to = idclient_to;
         this.time_cost = time_cost;
