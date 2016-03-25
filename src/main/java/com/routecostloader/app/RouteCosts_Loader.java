@@ -22,7 +22,7 @@ public class RouteCosts_Loader {
 
     static String MAPQUEST_KEY = "jf5LPPtU2cMyidCPhPv9wVOMpjuKbPIX";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
-    static boolean PRINT_IN_TERMINAL = true;
+    static boolean PRINT_IN_TERMINAL = false;
     static boolean IS_TEST = true;
 
     @SuppressWarnings("unchecked")
@@ -56,7 +56,8 @@ public class RouteCosts_Loader {
                 e.printStackTrace();
             }
         }
-        //TODO: process calls to mapquest for each element in the list (json), TODO2: save json responses into files
+
+        /* Process calls to mapquest for each element in the list (json), TODO2: save json responses into files */
         String jsonRespFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocRespList";
         if( !IS_TEST ){
             String errorOn = "";
@@ -87,7 +88,7 @@ public class RouteCosts_Loader {
                         distanceEtTime[1][0], distanceEtTime[0][0], comments);
                 routeCostsList.add(rc_base_to_loc);
 
-                RouteCost rc_loc_to_base = new RouteCost(jsonToPost.getFromClient(), jsonToPost.getToClient(),
+                RouteCost rc_loc_to_base = new RouteCost(jsonToPost.getToClient(), jsonToPost.getFromClient(),
                         distanceEtTime[1][1], distanceEtTime[0][1], comments);
                 routeCostsList.add(rc_loc_to_base);
             } catch (IOException e) {
@@ -97,7 +98,14 @@ public class RouteCosts_Loader {
         });
 
         //TODO: run insert queries
-
+        System.out.println("Creating insert. Total lines to create:" + routeCostsList.size());
+        String sqlInsertsFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/insertIntoRouteCosts.sql";
+        PrintWriter insertIntoDB = new PrintWriter(sqlInsertsFileName);
+        routeCostsList.stream().forEach(rc->{
+            insertIntoDB.println( rc.getInsertQery() );
+        });
+        insertIntoDB.flush();
+        insertIntoDB.close();
 
     }
 

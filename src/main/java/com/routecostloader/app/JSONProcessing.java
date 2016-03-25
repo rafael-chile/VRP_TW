@@ -87,7 +87,7 @@ public class JSONProcessing {
     public static double[][] loadDistanceEtTimeFromJSON(String jsonString) throws IOException {
         double[][] parsedResp = new double[2][2];
         JSONObject input = new JSONObject(jsonString);
-        System.out.println("JSON found:" + input);
+        if(RouteCosts_Loader.PRINT_IN_TERMINAL) {System.out.println("JSON found:" + input);}
 
         // GET DISTANCES
         JSONArray distance = input.getJSONArray("distance");
