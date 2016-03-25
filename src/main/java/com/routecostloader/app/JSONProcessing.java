@@ -16,10 +16,10 @@ public class JSONProcessing {
 
     private JSONProcessing(){}
 
-    public static boolean JSON2Filed(String clientIdFrom, String clientIdTo, String jsonString){
+    public static boolean JSON2File(String clientIdFrom, String clientIdTo, String namef, String jsonString){
 
         try {
-            String fileName = clientIdFrom + "_"+ clientIdTo /*+ "_" +(new Date()).getTime()*/;
+            String fileName = clientIdFrom + "_"+ clientIdTo + "_" + namef/*(new Date()).getTime()*/;
             File file = new File(directory+"/src/main/dbResources/json_mapquest/"+fileName+".json");
             FileUtils.writeStringToFile(file, jsonString);
             return true;

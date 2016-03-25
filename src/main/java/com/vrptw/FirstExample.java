@@ -33,7 +33,7 @@ public class FirstExample {
 
             List<Client> allocations = clientDao.getList("0"); // client0 -> DEPOT
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            List<String> allocationsStr = clientDao.getListIDsBetweenDates(sdf.parse("2015-06-22"), sdf.parse("2015-06-27"));
+            List<Client> allocationsStr = clientDao.getListIDsBetweenDates(sdf.parse("2015-06-22"), sdf.parse("2015-06-27"));
             allocations.stream().forEach(System.out::println);
             allocationsStr.stream().forEach(System.out::println);
             //System.out.println("Found Client Ids:" + allocations.size());

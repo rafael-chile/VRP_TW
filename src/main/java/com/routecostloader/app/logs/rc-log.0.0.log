@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887727</millis>
+  <sequence>6077</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:2611, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.74044,"lat":39.10504}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887727</millis>
+  <sequence>6078</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:401, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.75195,"lat":38.98051}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6079</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:8126, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.75222,"lat":38.97537}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6080</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:6411, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.31776,"lat":39.41696}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6081</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:2381, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.77501,"lat":39.02721}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6082</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:6341, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.70549,"lat":38.9876}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6083</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2611, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.74044,"lat":39.10504}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6084</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:401, To_Client:401, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75195,"lat":38.98051}},{"latLng":{"lng":-8.75195,"lat":38.98051}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887728</millis>
+  <sequence>6085</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:401, To_Client:8126, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75195,"lat":38.98051}},{"latLng":{"lng":-8.75222,"lat":38.97537}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887729</millis>
+  <sequence>6086</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:401, To_Client:6411, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75195,"lat":38.98051}},{"latLng":{"lng":-8.31776,"lat":39.41696}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887729</millis>
+  <sequence>6087</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:401, To_Client:2381, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75195,"lat":38.98051}},{"latLng":{"lng":-8.77501,"lat":39.02721}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887729</millis>
+  <sequence>6088</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:401, To_Client:6341, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75195,"lat":38.98051}},{"latLng":{"lng":-8.70549,"lat":38.9876}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887729</millis>
+  <sequence>6089</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:401, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75195,"lat":38.98051}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887729</millis>
+  <sequence>6090</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:8126, To_Client:8126, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75222,"lat":38.97537}},{"latLng":{"lng":-8.75222,"lat":38.97537}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887729</millis>
+  <sequence>6091</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:8126, To_Client:6411, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75222,"lat":38.97537}},{"latLng":{"lng":-8.31776,"lat":39.41696}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887731</millis>
+  <sequence>6092</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:8126, To_Client:2381, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75222,"lat":38.97537}},{"latLng":{"lng":-8.77501,"lat":39.02721}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887731</millis>
+  <sequence>6093</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:8126, To_Client:6341, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75222,"lat":38.97537}},{"latLng":{"lng":-8.70549,"lat":38.9876}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887731</millis>
+  <sequence>6094</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:8126, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.75222,"lat":38.97537}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887731</millis>
+  <sequence>6095</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:6411, To_Client:6411, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.31776,"lat":39.41696}},{"latLng":{"lng":-8.31776,"lat":39.41696}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887731</millis>
+  <sequence>6096</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:6411, To_Client:2381, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.31776,"lat":39.41696}},{"latLng":{"lng":-8.77501,"lat":39.02721}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887732</millis>
+  <sequence>6097</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:6411, To_Client:6341, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.31776,"lat":39.41696}},{"latLng":{"lng":-8.70549,"lat":38.9876}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887732</millis>
+  <sequence>6098</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:6411, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.31776,"lat":39.41696}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887732</millis>
+  <sequence>6099</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2381, To_Client:2381, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.77501,"lat":39.02721}},{"latLng":{"lng":-8.77501,"lat":39.02721}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887732</millis>
+  <sequence>6100</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2381, To_Client:6341, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.77501,"lat":39.02721}},{"latLng":{"lng":-8.70549,"lat":38.9876}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887732</millis>
+  <sequence>6101</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:2381, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.77501,"lat":39.02721}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887732</millis>
+  <sequence>6102</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:6341, To_Client:6341, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.70549,"lat":38.9876}},{"latLng":{"lng":-8.70549,"lat":38.9876}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887733</millis>
+  <sequence>6103</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:6341, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.70549,"lat":38.9876}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+<record>
+  <date>2016-03-25T12:21:27</date>
+  <millis>1458904887733</millis>
+  <sequence>6104</sequence>
+  <logger>com.routecostloader.app.RouteCosts_Loader</logger>
+  <level>INFO</level>
+  <class>com.routecostloader.app.RouteCosts_Loader</class>
+  <method>lambda$main$0</method>
+  <thread>1</thread>
+  <message>JsonToPost=&gt; From_Client:4676, To_Client:4676, JSON: {"options":{"allToAll":true},"locations":[{"latLng":{"lng":-8.73845,"lat":39.142}},{"latLng":{"lng":-8.73845,"lat":39.142}}]}</message>
+</record>
+</log>

@@ -32,19 +32,27 @@ public class ClientDao extends GenericDao{
     }
 
     @SuppressWarnings(value = "unchecked")
-    public List<String> getListIDsBetweenDates(Date from, Date until) throws SQLException {
+    public List<Client> getListIDsBetweenDates(Date from, Date until) throws SQLException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String fromDate = formatter.format(from);
         String toDate = formatter.format(until);
 
-        String sqlQuery = "SELECT clients.idClient  FROM clients " +
+        /*String sqlQuery = "SELECT clients.idClient  FROM clients " +
                 "INNER JOIN encomendas ON encomendas.client = clients.idClient " +
                 " AND encomendas.date_emissao >= \""+fromDate+"\" AND encomendas.date_emissao <= \""+toDate+"\" " +
-                "group by clients.idClient ;" ;
+                "group by clients.idClient ;" ;*/
+        String sqlQuery = "SELECT C.idClient, C.localidade_postal, C.tw_from, C.tw_to, L.location_lat, L.location_lng " +
+                "FROM clients AS C " +
+                "LEFT JOIN locations AS L " +
+                "  ON C.idClient = L.client AND L.main_location = 'TRUE' " +
+                "WHERE C.idClient IN (SELECT clients.idClient  FROM clients " +
+                "  INNER JOIN encomendas ON encomendas.client = clients.idClient " +
+                "             AND encomendas.date_emissao >= \""+fromDate+"\" AND encomendas.date_emissao <= \""+toDate+"\"" +
+                "group by clients.idClient );" ;
 
-        List<String> dataList = null;
+        List<Client> dataList = null;
         try {
-            dataList = this.read(String.class, sqlQuery );
+            dataList = this.read(Client.class, sqlQuery );
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

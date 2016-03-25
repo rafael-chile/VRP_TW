@@ -12,9 +12,9 @@ import java.io.InputStreamReader;
 /**
  * This class can implement a GoF like proxy to redirect to the real method that will process the diff info (not only suggested positions)
  */
-public class RESTServicesConsommer{
+public class RESTServicesConsumer {
 
-    public RESTServicesConsommer(){}
+    public RESTServicesConsumer(){}
 
     // Call the services in the provided URL
     // NB. CAn be improved as the GoF to divide the diff kind of data published by the API
