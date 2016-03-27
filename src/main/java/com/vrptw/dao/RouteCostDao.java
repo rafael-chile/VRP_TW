@@ -23,4 +23,14 @@ public class RouteCostDao extends GenericDao {
         return dataList ;
     }
 
+    @SuppressWarnings(value = "unchecked")
+    public double[][] getDistanceCostMatrix(List<String> idclientLst) throws SQLException {
+        //idclientLst
+        //List<RouteCost> rcList = this.getList();
+
+        //dataList.stream().forEach(System.out::println);
+        return new double[0][0] ;
+    }
+
+
 }
