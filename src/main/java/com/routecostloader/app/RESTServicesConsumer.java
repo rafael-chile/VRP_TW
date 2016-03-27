@@ -21,15 +21,18 @@ public class RESTServicesConsumer {
     public String POST(String url, String json) throws IOException {
         StringBuilder resp = new StringBuilder();
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpPost postRequest = new HttpPost(url);
 
-        StringEntity input = new StringEntity("json");
+        HttpPost postRequest = new HttpPost(url);
+        //postRequest.addHeader("content-type", "application/x-www-form-urlencoded"); // MUST NOT BE INCLUDED
+
+        System.out.println("\nJSON TO SEND: " + json);
+        StringEntity input = new StringEntity(json);
         input.setContentType("application/json");
         postRequest.setEntity(input);
 
         HttpResponse response = httpClient.execute(postRequest);
 
-        if (response.getStatusLine().getStatusCode() != 201) {
+        if (response.getStatusLine().getStatusCode() > 201) {
             throw new IOException("Failed : HTTP error code : "
                     + response.getStatusLine().getStatusCode());
         }
@@ -37,11 +40,12 @@ public class RESTServicesConsumer {
         BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
         String output;
-        System.out.println("Output from Server .... \n");
+        System.out.println("Output from Server:");
         while ((output = br.readLine()) != null) {
             System.out.println(output);
             resp.append(output);
         }
+        System.out.print("\n");
 
         return resp.toString();
     }

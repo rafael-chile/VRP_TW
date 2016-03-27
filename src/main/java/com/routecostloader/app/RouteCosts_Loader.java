@@ -23,7 +23,9 @@ public class RouteCosts_Loader {
     static String MAPQUEST_KEY = "jf5LPPtU2cMyidCPhPv9wVOMpjuKbPIX";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
     static boolean PRINT_IN_TERMINAL = false;
-    static boolean IS_TEST = true;
+    static boolean IS_TEST = false;
+    static String FETCH_FROM_DATE = "2015-06-22";
+    static String FETCH_UNTIL_DATE = "2015-06-27";
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException {
@@ -57,6 +59,20 @@ public class RouteCosts_Loader {
             }
         }
 
+        // FILTER THE LIST
+        /*List<JsonToPost> locJsonLst_2 = new ArrayList<>();
+        locJsonLst.stream().forEach(jlp ->{
+            if( (jlp.getToClient().contentEquals("1879") && jlp.getFromClient().contentEquals("6264"))
+                    || (jlp.getToClient().contentEquals("2848") && jlp.getFromClient().contentEquals("6264"))
+            ){
+                System.out.println("FOUND FromClient: " + jlp.getFromClient() + ", ToClient:" + jlp.getToClient());
+                locJsonLst_2.add(jlp);
+            }
+        });
+        locJsonLst = locJsonLst_2;
+        */
+        // END FILTERING
+
         /* Process calls to mapquest for each element in the list (json), TODO2: save json responses into files */
         String jsonRespFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocRespList";
         if( !IS_TEST ){
@@ -64,8 +80,11 @@ public class RouteCosts_Loader {
             try {
                 for(JsonToPost jsonReq : locJsonLst) {
                     errorOn = jsonReq.toString();
-                    String resp = restServicesConsumer.POST(HTTP_REST_POST_URL, jsonReq.getJsonRequest());
-                    jsonReq.setJsonResponse(resp);
+                    if(jsonReq.getJsonResponse() == null || jsonReq.getJsonResponse().isEmpty()) { // if response has never being fetch
+                        String resp = restServicesConsumer.POST(HTTP_REST_POST_URL, jsonReq.getJsonRequest());
+                        jsonReq.setJsonResponse(resp);
+                    }
+                    //break;
                 }
                 saveList(locJsonLst, jsonRespFileName);
             } catch (IOException e1) {
@@ -74,36 +93,41 @@ public class RouteCosts_Loader {
                 saveList(locJsonLst, jsonRespFileName); // the post returned an error, so it saves the responses list
             }
         }
-
+        if(PRINT_IN_TERMINAL) {
+            for (JsonToPost jsonReq : locJsonLst) {
+                if (jsonReq.getJsonResponse() == null || !jsonReq.getJsonResponse().isEmpty()) { // if response has never being fetch
+                    System.out.println("SAVED JSON RESP:" + jsonReq.getJsonResponse());
+                }
+            }
+        }
         // get distance and time to insert into db
         List<RouteCost> routeCostsList = new ArrayList<>();
         locJsonLst.stream().forEach(jsonToPost->{
-            try {
-                double[][] distanceEtTime =  IS_TEST ? JSONProcessing.loadJSONResponse_Stub()
-                        : JSONProcessing.loadDistanceEtTimeFromJSON(jsonToPost.getJsonResponse());
+            if(jsonToPost.getJsonResponse() != null) { // in case any response got errors
+                try {
+                    double[][] distanceEtTime = IS_TEST ? JSONProcessing.loadJSONResponse_Stub()
+                            : JSONProcessing.loadDistanceEtTimeFromJSON(jsonToPost.getJsonResponse());
 
-                String comments = "Processed at (" + new Date() + ") with: " + jsonToPost.getFromClient() + " & " + jsonToPost.getToClient();
+                    String comments = "Processed at (" + new Date() + ") with: " + jsonToPost.getFromClient() + " & " + jsonToPost.getToClient();
 
-                RouteCost rc_base_to_loc = new RouteCost(jsonToPost.getFromClient(), jsonToPost.getToClient(),
-                        distanceEtTime[1][0], distanceEtTime[0][0], comments);
-                routeCostsList.add(rc_base_to_loc);
+                    RouteCost rc_base_to_loc = new RouteCost(jsonToPost.getFromClient(), jsonToPost.getToClient(),
+                            distanceEtTime[1][0], distanceEtTime[0][0], comments);
+                    routeCostsList.add(rc_base_to_loc);
 
-                RouteCost rc_loc_to_base = new RouteCost(jsonToPost.getToClient(), jsonToPost.getFromClient(),
-                        distanceEtTime[1][1], distanceEtTime[0][1], comments);
-                routeCostsList.add(rc_loc_to_base);
-            } catch (IOException e) {
-                e.printStackTrace();
+                    RouteCost rc_loc_to_base = new RouteCost(jsonToPost.getToClient(), jsonToPost.getFromClient(),
+                            distanceEtTime[1][1], distanceEtTime[0][1], comments);
+                    routeCostsList.add(rc_loc_to_base);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
         });
 
-        //TODO: run insert queries
+        // run insert queries
         System.out.println("Creating insert. Total lines to create:" + routeCostsList.size());
         String sqlInsertsFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/insertIntoRouteCosts.sql";
         PrintWriter insertIntoDB = new PrintWriter(sqlInsertsFileName);
-        routeCostsList.stream().forEach(rc->{
-            insertIntoDB.println( rc.getInsertQery() );
-        });
+        routeCostsList.stream().forEach(rc-> insertIntoDB.println( rc.getInsertQery() ));
         insertIntoDB.flush();
         insertIntoDB.close();
 
@@ -116,7 +140,7 @@ public class RouteCosts_Loader {
 
             // get clients with orders from date A to date B
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            clientIdLst.addAll( (new ClientDao()).getListIDsBetweenDates(sdf.parse("2015-06-22"),sdf.parse("2015-06-27")));
+            clientIdLst.addAll( (new ClientDao()).getListIDsBetweenDates(sdf.parse(FETCH_FROM_DATE),sdf.parse(FETCH_UNTIL_DATE)));
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
         }

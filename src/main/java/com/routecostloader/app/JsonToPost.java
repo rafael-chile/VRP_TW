@@ -31,7 +31,7 @@ public class JsonToPost implements Serializable{
     }
 
     public String getJsonResponse() {
-        return jsonRequest;
+        return jsonResponse;
     }
 
     public void setJsonResponse(String jsonResponse) {
