@@ -1,12 +1,15 @@
 import org.chocosolver.solver.ResolutionPolicy;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.constraints.real.Ibex;
+import org.chocosolver.solver.constraints.real.RealConstraint;
+import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
+import org.chocosolver.solver.search.strategy.IntStrategyFactory;
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
 import org.chocosolver.solver.trace.Chatterbox;
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.VF;
-import org.chocosolver.solver.variables.VariableFactory;
+import org.chocosolver.solver.variables.*;
 import org.chocosolver.util.tools.ArrayUtils;
 
 
@@ -30,10 +33,10 @@ public class vrp_main {
 
     private int max_cap_big = 1000;       /* Max vehicle capacity: Biggest truck (auxiliary variable) */
     private int max_cap = 100;             /* Max vehicle capacity: Biggest truck  */
-                                            /* Homogeneous and limited fleet that leave and return to the depot
-                                            R[i] = {r[i](1),...,r[i](n[i])} denote the route for vehicle 'i',
-                                            where r[i](j) is the index of the jth customer visited and n[i] is the nb. of customers in the route.
-                                            r[i](n[i] + 1) = 0, every route finishes at the depot  */
+    /* Homogeneous and limited fleet that leave and return to the depot
+    R[i] = {r[i](1),...,r[i](n[i])} denote the route for vehicle 'i',
+    where r[i](j) is the index of the jth customer visited and n[i] is the nb. of customers in the route.
+    r[i](n[i] + 1) = 0, every route finishes at the depot  */
     private int vclCapacity = 100;          // a[k] is total vehicle capacity, of each vehicle k ∈ V
 
                                     /* Split deliveries: the demand of a customer may be fulfilled by more than one vehicle.
@@ -68,8 +71,10 @@ public class vrp_main {
     private IntVar[] totalVehicleCosts;
     private IntVar[][] flowsEdges;
     private IntVar[] capacityUsed;
+    //private IntVar[][] next;
     private IntVar[][] serve;
     private BoolVar[][][] edges;
+    private BoolVar[][] edges_test;
     private IntVar[][] servStart;           /* when service begins for each customer [i][k]*/
     private IntVar[][][] edgesM_ij;         /* auxiliary variable with the product edge * M_ij  */
 
@@ -140,22 +145,22 @@ public class vrp_main {
         //solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost); /* OBJECTIVE FUNCTION * Minimize the total cost of the route */
         //long nbSol = solver.getMeasures().getSolutionCount();
 
-        //solver.findAllSolutions();
+        solver.findAllSolutions();
 
-        		/* Heuristic choices */
+                /* Heuristic choices */
         /**  AbstractStrategy strat = IntStrategyFactory.minDom_LB(serve);
          solver.set(IntStrategyFactory.lastConflict(solver,strat));
-         //		solver.set(strat);    */
+         //     solver.set(strat);    */
 
         //   LNSFactory.rlns(solver, aux3, 30, 20140909L, new FailCounter(solver, 100));
-        solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
+        //solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
 
 
         //solver.findSolution();
 
         Chatterbox.printStatistics(solver);
         Chatterbox.showSolutions(solver);
-        // System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
+        System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
     }
 
     /************** P R I N T   T H E   O U T P U T   D A T A  **************/
@@ -211,7 +216,40 @@ public class vrp_main {
                 System.out.print("\n");
             }System.out.print("\n");
         }
+/**    System.out.print("\n====== Edges test ======\n");
+ System.out.print("|0　1　2 3 4　5 \n");
+ for (int i = 0; i < nbCustomers; i++) {
+ System.out.print(i+"|");
+ for (int j = 0; j < nbCustomers; j++)
+ if(edges_test[i][j].getValue()==0){
+ System.out.print("□ ");
+ }else {
+ System.out.print("■ ");
+ }
+ System.out.print("\n");
+ }System.out.print("\n");*/
+
     }
+
+
+    public void configureSearch(Solver solver) {
+        /* Listeners */
+        solver.plugMonitor(new IMonitorSolution() {
+            private static final long serialVersionUID = 1L;
+            public void onSolution() {
+                prettyOut();
+            }
+        });
+        /* Heuristic choices */
+        //       AbstractStrategy strat = IntStrategyFactory.minDom_LB(next);
+        //       solver.set(IntStrategyFactory.lastConflict(solver,strat));
+    }
+
+    public void prettyOut() {
+        /* log out the solution of the problem founded */
+        System.out.println((int) ((globalCost.getValue() + 0d) / (nbCustomers + 0d) * 100) + " % globalCost");
+    }
+
 
     /************** C O N S T R A I N T S  **************/
     public void constraints(Solver solver) {
@@ -225,36 +263,100 @@ public class vrp_main {
         /* Calculate total costs for each vehicle: The scalar constraint to compute global cost performed in all paths */
         totalVehicleCosts = VF.enumeratedArray("cost", nbVehicles, 0, 99999, solver);
         for (int k = 0; k < nbVehicles; k++)
-            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]),ArrayUtils.flatten(costs),totalVehicleCosts[k]));
+            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]), ArrayUtils.flatten(costs), totalVehicleCosts[k]));
         globalCost = VF.enumerated("global_cost", 0, 999999, solver);
         solver.post(IntConstraintFactory.sum(totalVehicleCosts, globalCost)); // compute global cost
 
         /** Constraint (1): each vehicle will leave the depot and arrive at a determined customer */
         for (int k = 0; k < nbVehicles; k++)
-            solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers-1, edges[k]), "=", VariableFactory.fixed(1, solver)));
+            solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers - 1, edges[k]), "=", VariableFactory.fixed(1, solver)));
 
 
-         /** Constraint (2): entrance and exit flows, guarantees that each vehicle will leave a customer and arrive to the depot*/
-
+        /** Constraint (2): flowsEdges - entrance and exit flows, guarantees that each vehicle will leave a customer and arrive to the depot*/
         flowsEdges = new IntVar[nbVehicles][nbCustomers];
-        //     for (int k = 0; k < nbVehicles; k++)
-        //     flowsEdges[k] = VariableFactory.enumeratedArray("flowsEdges" + k, nbCustomers, 0, nbCustomers, solver);
-
-        //IntVar[] aux1 = VariableFactory.enumeratedArray("aux", nbCustomers, 0, nbCustomers, solver);
-
         for (int k = 0; k < nbVehicles; k++)
             flowsEdges[k] = VariableFactory.enumeratedArray("flowsEdges" + k, nbCustomers, 0, nbCustomers, solver);
 
-
-            for (int p = 0; p < nbCustomers; p++) {
-                for (int k = 0; k < nbVehicles; k++) {
-                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, p, 1, edges[0]), "=",  flowsEdges[k][p]));
-                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(p, 1, 0, nbCustomers, edges[0]), "=",  flowsEdges[k][p]));
-                solver.post(ICF.arithm(edges[k][p][p],"=", VariableFactory.fixed(false, solver)));   // Edge from 'i' to 'j' when 'i'='j' is equal to 0
+        for (int p = 0; p < nbCustomers; p++) {
+            for (int k = 0; k < nbVehicles; k++) {
+                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, p, 1, edges[k]), "=", flowsEdges[k][p]));
+                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(p, 1, 0, nbCustomers, edges[k]), "=", flowsEdges[k][p]));
+                solver.post(ICF.arithm(edges[k][p][p], "=", VariableFactory.fixed(false, solver)));   // Edge from 'i' to 'j' when 'i'='j' is equal to 0
             }
         }
 
-        /** Constraint (3): the total demand of each customer will be fulfilled */
+        /** Constraint (2.2): The last constraints enforce that there is only a single tour covering all cities, and not two or more disjointed tours
+         * that only collectively cover all cities (https://en.wikipedia.org/wiki/Travelling_salesman_problem)*/
+        IntVar[] dummyU ;
+        dummyU = VariableFactory.enumeratedArray("dummyU", nbCustomers, 0, VariableFactory.MAX_INT_BOUND, solver);
+
+/**
+        for (int i = 1; i < nbCustomers; i++) {
+            for (int j = 1; j < nbCustomers; j++) {
+                // u_i - u_j + nX_ij <= n-1  then invar - intvar + int*intvar <= int - 1
+                //IntVar a = dummyU[i];
+                //IntVar b = VariableFactory.minus(dummyU[j]);
+                //IntVar c = VF.scale(edges[0][i][j], nbCustomers);   //k
+                //IntVar d = VF.fixed(nbCustomers - 1, solver);
+                //solver.post(ICF.sum(new IntVar[]{a, b, c}, "<=", d));
+                if (i!=j) {
+
+                    solver.post(ICF.sum(new IntVar[]{dummyU[i], VariableFactory.minus(dummyU[j]), VF.scale(edges[0][i][j], nbCustomers)}, "<=", VF.fixed(nbCustomers - 1, solver)));
+                }
+            }
+        }
+
+ Generate RealVar
+ double precision = 1.0e-6;
+ RealVar[] dummyU = VariableFactory.realArray("dummyU", nbCustomers, 0, Double.POSITIVE_INFINITY, precision, solver);
+
+ *
+ // views as real variables to be used by Ibex
+ //borraaaaaa int nodesClients = nbCustomers-1;
+ for (int i = 1; i < nbCustomers; i++){
+ for (int j = 1; j < nbCustomers; j++) {
+ if (i!=j) {
+ StringBuilder constraintBuilder = new StringBuilder("");
+ constraintBuilder.append("{0}-{1}").append("<=").append(nbCustomers - 1);
+ //constraintBuilder.append("{0}-{1}+({2}*").append(nbCustomers).append(")<=").append(nbCustomers - 1);
+ System.out.println(constraintBuilder);
+
+ RealConstraint rc = new RealConstraint("noSubTours", constraintBuilder.toString(), Ibex.HC4, dummyU);
+ solver.post(rc);
+ Chatterbox.showSolutions(solver);
+
+
+ /**
+ {0}-{1}+({2}*nbCustomers)<=nodesClients
+
+
+ StringBuilder constraintBuilder = new StringBuilder("");
+ constraintBuilder.append()
+
+ constraintBuilder.append(dummyU[i])
+
+ .append("-")
+ .append(dummyU[j])
+ .append("+")
+ .append(VF.scale(edges[0][i][j], nbCustomers))
+ .append("<=")
+ .append(nbCustomers - 1);
+ System.out.println(constraintBuilder + "");
+
+ //solver.post(new RealConstraint("RealConstraint", constraintBuilder.toString(), dummyU));
+
+ }
+ }
+ }
+
+ //  solver.post(new RealConstraint("RealConstraint",
+ //u_i - u_j + nX_ij <= n-1
+ //   dummyU[i] - dummyU[j] + nbCustomers * edges[i][j] <= nbCustomers-1
+ //      .append(dummyU[i]).append("-").append(dummyU[j]).append("+").append(nbCustomers).append("*").append(edges[i][j]).append("<=").append((nbCustomers-1);
+
+
+
+ /** Constraint (3): the total demand of each customer will be fulfilled */
             /* true if client 'i' is served by vehicle vclK, false otherwise */
         serve = VF.enumeratedMatrix("serve", nbCustomers, nbVehicles, 0, 1, solver);
         solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(nbVehicles, solver))); // node 0 is not served by any vehicle
@@ -277,11 +379,11 @@ public class vrp_main {
         //which guarantees that each vertex will be visited at least once by at least one vehicle)
         for (int i = 0; i < nbCustomers; i++) {
             for (int k = 0; k < nbVehicles; k++){
-                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, i, 1, edges[k]), ">=", serve[i][k]));
+                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, i, 1, edges[k]), "=", serve[i][k]));
             }
         }
 
-        /** Equation (6):minimum time for beginning the service of customer j in a determined route
+     /**   Equation (6):minimum time for beginning the service of customer j in a determined route
          // also guarantees that there will be no sub tours. The constant M_ij  is a large enough number
 
          M_ij = new int[nbCustomers][nbCustomers];
@@ -330,6 +432,9 @@ public class vrp_main {
 
         // 3. Print Input
         vrp.printInput(solver);
+
+        /* Heuristic choices */
+        vrp.configureSearch(solver);
 
         // 4. Find Solution
         vrp.findSol(solver);
