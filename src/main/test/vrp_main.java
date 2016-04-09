@@ -216,6 +216,15 @@ public class vrp_main {
                 System.out.print("\n");
             }System.out.print("\n");
         }
+
+        String mij = "====== Constant M[i][j] ======\n__|__0______1______2______3______4______5__\n";
+        for (int i = 0; i < nbCustomers; i++) {
+            mij += i+" | ";
+                for (int j = 0; j < nbCustomers; j++) {
+                    mij +=M_ij[i][j] + "    ";}
+                    mij +="\n";
+        } System.out.println(mij);
+
 /**    System.out.print("\n====== Edges test ======\n");
  System.out.print("|0　1　2 3 4　5 \n");
  for (int i = 0; i < nbCustomers; i++) {
@@ -383,13 +392,13 @@ public class vrp_main {
             }
         }
 
-     /**   Equation (6):minimum time for beginning the service of customer j in a determined route
+        /** Equation (6):minimum time for beginning the service of customer j in a determined route
          // also guarantees that there will be no sub tours. The constant M_ij  is a large enough number
 
          M_ij = new int[nbCustomers][nbCustomers];
          for (int i = 0; i < nbCustomers; i++)
-         for (int j = 0; j < nbCustomers; j++)
-         M_ij[i][j] = tWin[i][1] + travTime[i][j] - tWin[j][0];
+      for (int j = 0; j < nbCustomers; j++)
+      M_ij[i][j] = tWin[i][1] + travTime[i][j] - tWin[j][0];
 
          servStart = VF.enumeratedMatrix("servStart", nbCustomers, nbVehicles, 0, 1000, solver);
          edgesM_ij = new IntVar[nbVehicles][nbCustomers][nbCustomers];

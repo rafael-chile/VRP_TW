@@ -5,38 +5,48 @@ import org.chocosolver.solver.Solver;
 public class RouteSolverTest {
 
     /************* C O N S T A N T S **************/
+    /************* 3 vehicles 5 Clients **************/
 
     private static int[] qty = new int[]       /* q[i] is the demand at point 'i'. Depot is denoted by 0. */
-            {0, 5, 20, 50, 10, 40, 30, 100, 50, 10, 40, 30, 20, 50, 10};
+            {0, 5, 20, 5, 10, 40};
 
     private static int nbVehicles = 3;         /* total vehicle fleet
                                         Fleet of vehicles: V = {1,...,m} with identical capacities.  */
     private static int[] vCap = new int[]          /*a[k] capacity of each vehicle.  */
-            {60, 100, 1100};
+            {60, 100, 100};
 
 
-    private static int nbCustomers = 14;  /* NOT including depot client 0
-                                          /* Customers: N = {1, 2,.., n}, 'n' different locations
+    private static int nbCustomers = //14;  /* NOT including depot client 0
+            5;      /* Customers: N = {1, 2,.., n}, 'n' different locations
                                             Every pair of locations (i, j) , where i, j ∈ N and i ≠ j,
                                             is associated with a travel time t[i][j] and a distance traveled d[i][j]  */
 
     private static int[][] costs = new int[][]     /* costs in distance ALL to ALL customers */        //consumptions
+                 /*0    1    2    3    4    5*/
+            {   {0, 2223, 1272, 1931, 2047, 1597},
+                    {2211, 0, 3226, 1202, 1138, 1755},
+                    {1291, 3243, 0, 3077, 3190, 2740},
+                    {1921, 1207, 3053, 0, 737, 1075},
+                    {1981, 1083, 3117, 674, 0, 1132},
+                    {1580, 1741, 2716, 1052, 1167, 0}};
 
-            {{0,462,282,635,227,180,468,331,713,277,653,31,812,870,214},
-                    {0,0,988,378,195,305,693,374,415,228,499,835,853,771,446},
-                    {282,988,0,612,172,774,705,791,959,187,742,721,543,395,613},
-                    {635,378,612,0,973,604,520,339,118,556,335,479,967,599,67},
-                    {227,195,172,973,0,130,525,348,726,572,235,272,218,145,525},
-                    {180,305,774,604,130,0,432,787,259,423,865,134,561,297,526},
-                    {468,693,705,520,525,432,0,515,581,425,234,483,846,364,455},
-                    {331,374,791,339,348,787,515,0,186,46,613,886,549,411,159},
-                    {713,415,959,118,726,259,581,186,0,300,783,322,548,39,282},
-                    {277,228,187,556,572,423,425,46,300,0,403,784,40,161,398},
-                    {653,499,742,335,235,865,234,613,783,403,0,107,22,766,3},
-                    {31,835,721,479,272,134,483,886,322,784,107,0,679,209,416},
-                    {812,853,543,967,218,561,846,549,548,40,22,679,0,824,985},
-                    {870,771,395,599,145,297,364,411,39,161,766,209,824,0,255},
-                    {214,446,613,67,525,526,455,159,282,398,3,416,985,255,0}};
+    /* With respect to Time Window  */
+
+    private static int servTime = 5;                  /* time needed at the customer  */
+
+    private static int[][] travTime = new int[][]      /* costs in time ALL to ALL customers */
+                         /*0  1  2  3  4  5*/
+            {       /*0*/ {0, 2, 8, 8, 9, 5},
+                    /*1*/ {4, 0, 5, 6, 2, 6},
+                    /*2*/ {8, 2, 0, 2, 5, 2},
+                    /*3*/ {8, 2, 8, 0, 5, 9},
+                    /*4*/ {2, 2, 2, 5, 0, 10},
+                    /*5*/ {7, 9, 2, 6, 2, 0}};
+
+    private static int[][] tWin = new int[][]          /* time windows for each client [earliest_i, latest_j]
+    /*0*/ {{0, 500}, /*1*/  {1, 15}, /*2*/  {2, 20}, /*3*/  {3, 50}, /*4*/  {4, 50}, /*5*/  {10, 50}};
+
+    private static int[][] M_ij;                       /* Constant for equation 6: M_ij = l_i + t_ij - e_j    */
 
 
 
@@ -52,22 +62,6 @@ public class RouteSolverTest {
 
                                     /* Split deliveries: the demand of a customer may be fulfilled by more than one vehicle.
                                         This occurs in all cases where some demand exceeds the vehicle capacity */
-
-private static int servTime = 10;                  /* time needed at the customer  */
-    private static int[][] travTime = new int[][]      /* costs in time ALL to ALL customers */
-                         /*0  1  2  3  4  5*/
-            {       /*0*/ {0, 2, 3, 4, 5, 6},
-                    /*1*/ {2, 0, 2, 3, 4, 5},
-                    /*2*/ {3, 2, 0, 2, 3, 4},
-                    /*3*/ {4, 3, 2, 0, 2, 3},
-                    /*4*/ {5, 4, 3, 2, 0, 2},
-                    /*5*/ {6, 5, 4, 3, 2, 0}};
-
-    private static int[][] tWin = new int[][]          /* time windows for each client [earliest_i, latest_j]
-    /*0*/{{0, 500}, /*1*/  {10, 500}, /*2*/  {11, 500}, /*3*/  {12, 500}, /*4*/  {13, 500}, /*5*/  {14, 500}};
-
-    private static int[][] M_ij;                       /* Constant for equation 6: M_ij = l_i + t_i - e_j    */
-
 
     private static RouteSolver testWithLocalTestData(){
         return new RouteSolver(nbCustomers, qty, nbVehicles, vCap, max_cap_big,  max_cap, vclCapacity,

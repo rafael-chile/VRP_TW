@@ -32,6 +32,11 @@ public class tsp {
                                     {3, 1, 0, 1},
                                     {7, 3, 1, 0}};
         solver.post(ICF.tsp(VS, CO, costs));
+
+        IntVar x1 = VF.enumerated("x1", 0, 1000, solver);
+        IntVar y1 = VF.enumerated("y1", 0, 1000, solver);
+        solver.post(ICF.sum(new IntVar[]{x1, VF.fixed(20,solver)}, y1));
+
         System.out.println(solver);
 
         Chatterbox.printStatistics(solver);

@@ -46,6 +46,9 @@ public class RouteSolver {
     private IntVar[] size;
     private IntVar[][] servStart;           /* when service begins for each customer [i][k]*/
     private IntVar[][][] edgesM_ij;         /* auxiliary variable with the product edge * M_ij  */
+    private IntVar x1;
+    private IntVar y1;
+
 
     /** C O N S T R U C T O R */
     public RouteSolver(int nbCustomers, int[] qty, int nbVehicles, int[] vCap, int max_cap_big, int max_cap, int vclCapacity,
@@ -80,6 +83,7 @@ public class RouteSolver {
         this.tWin = tWin;                       // time windows for each client [earliest_i, latest_j]
 
         this.M_ij = M_ij;
+
     }
 
     /************* P R I N T   T H E   I N P U T   D A T A  **************/
@@ -90,7 +94,7 @@ public class RouteSolver {
         System.out.println("serviceTime = " + servTime + ";");
         System.out.print("vCapacity => ");
         for (int i = 0; i < nbVehicles; i++)
-            System.out.print(" c" + i + " : " + vCap[i] + "; ");
+            System.out.print(" Vcap" + i + " : " + vCap[i] + "; ");
         System.out.print("\nQtyRequired => ");
         for (int i = 0; i < nbCustomers-1; i++)
             System.out.print(" c" + (i+1) + " : " + qty[i] + "; ");
@@ -105,6 +109,14 @@ public class RouteSolver {
             }
             costD +=i+"| "+ s + costs[i][nbCustomers - 1]+"\n";
         } System.out.println(costD);
+
+        String mij = "====== Constant M[i][j] ======\n__|__0______1______2______3______4______5__\n";
+        for (int i = 0; i < nbCustomers; i++) {
+            mij += i+" | ";
+            for (int j = 0; j < nbCustomers; j++) {
+                mij +=M_ij[i][j] + "    ";}
+            mij +="\n";
+        } System.out.println(mij);
 
    /**     String costT = "====== Cost Time ======\n_|_0____1____2____3____4____5__\n";
         for (int i = 0; i < nbCustomers; i++) {
@@ -152,15 +164,11 @@ public class RouteSolver {
         solver.set(IntStrategyFactory.lastConflict(solver,strat));
          //		solver.set(strat);    */
 
-
-
-        //int numFailures = 2000000;
-       // SearchMonitorFactory.limitFail(solver, numFailures);
-        solver.findSolution();
-        //   LNSFactory.rlns(solver, aux3, 30, 20140909L, new FailCounter(solver, 100));
-        //solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
-
-
+       /* int numFailures = 200000;
+        SearchMonitorFactory.limitFail(solver, numFailures);*/
+        //solver.findSolution();
+        //LNSFactory.rlns(solver, aux3, 30, 20140909L, new FailCounter(solver, 100));
+        solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
 
         Chatterbox.printStatistics(solver);
         Chatterbox.showSolutions(solver);
@@ -196,7 +204,8 @@ public class RouteSolver {
         System.out.print("====== Serve ======\n");
         System.out.print("_|0__1\n");
         for (int i = 0; i < nbCustomers; i++) {
-            System.out.print(i+"|");
+            if(i<10) System.out.print(" ");
+                System.out.print(i+"|");
             for (int k = 0; k < nbVehicles; k++) {
                 if(serve[i][k].getValue()==0){
                     System.out.print("□ ");
@@ -205,7 +214,7 @@ public class RouteSolver {
                 }
             }System.out.print("\n");
         }
-
+/**
         System.out.print("\n====== Edges ======\n");
         for (int k = 0; k < nbVehicles; k++) {
             System.out.print(k+"|0　1　2 3 4　5 \n");
@@ -220,11 +229,12 @@ public class RouteSolver {
                 System.out.print("\n");
             }System.out.print("\n");
         }
-
+*/
         System.out.print("\n====== Aux Edges ======\n");
         for (int k = 0; k < nbVehicles; k++) {
-            System.out.print(k+"|0　1　2 3 4　5 6 7 8 9 10 11 12 13 14 15 \n");
+            System.out.print(k+" |0　1　2 3 4 5 6 7 8 9 10 11 12 13 14 15 \n");
             for (int i = 0; i < nbCustomers; i++) {
+                if(i<10) System.out.print(" ");
                 System.out.print(i+"|");
                 for (int j = 0; j < nbCustomers; j++)
                     if(aux_edge[k][i][j].getValue()==0){
@@ -239,6 +249,18 @@ public class RouteSolver {
 
     /************** C O N S T R A I N T S  **************/
     public void addRouteSolvingConstraints(Solver solver) {
+
+
+
+        IntVar x1 = VF.enumerated("x1", 38, 40, solver);
+        IntVar x2 = VF.enumerated("x2",19, 20, solver);
+        IntVar y1 = VF.enumerated("y1", 59, 60, solver);
+      //  solver.post(ICF.arithm(x1,"+", VF.fixed(20,solver),"=",8));
+
+        solver.post(ICF.sum(new IntVar[]{x1, x2}, y1));
+
+
+
 
         /** CREATION OF CP VARIABLES */
         /* Initialisation of the boolean matrix - represents all paths all vehicles
@@ -265,7 +287,7 @@ public class RouteSolver {
         /** OBJECTIVE FUNCTION */
         /* Calculate total costs for each vehicle: The scalar constraint to compute global cost performed in all paths */
         for (int k = 0; k < nbVehicles; k++)
-            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]),ArrayUtils.flatten(costs),totalVehicleDistance[k]));  //consumptions, fuelConsumed
+            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]), ArrayUtils.flatten(costs), totalVehicleDistance[k]));  //consumptions, fuelConsumed
         solver.post(ICF.sum(totalVehicleDistance, globalCost)); // compute global cost
 
         /** CONSTRAINT (1): each vehicle will leave the depot and arrive at a determined customer */
@@ -324,6 +346,37 @@ public class RouteSolver {
             for (int i = 0; i < nbCustomers; i++)
                 solver.post(ICF.boolean_channeling(edges[k][i], next[k][i], 0));
         }
+
+         /** Equation (6):minimum time for beginning the service of customer j in a determined route */
+         /* also guarantees that there will be no sub tours. The constant M_ij  is a large enough number */
+         M_ij = new int[nbCustomers][nbCustomers];
+         for (int i = 0; i < nbCustomers; i++)
+            for (int j = 0; j < nbCustomers; j++)
+                M_ij[i][j] = tWin[i][1] + travTime[i][j] - tWin[j][0];
+
+
+
+         servStart = VF.enumeratedMatrix("servStart", nbVehicles, nbVehicles, 0, 1000, solver);
+         edgesM_ij = new IntVar[nbVehicles][nbCustomers][nbCustomers];
+         for (int k = 0; k < nbVehicles; k++)
+            edgesM_ij[k] = VF.boundedMatrix("edgeM_ij" + k, nbCustomers, nbCustomers, 0, 1000, solver);
+
+         for (int k = 0; k < nbVehicles; k++) {
+            System.out.println("\n");
+            for (int i = 0; i < nbCustomers; i++) {
+                for (int j = 0; j < nbCustomers; j++) {
+                    int stM_ij = servTime + travTime[i][j] - M_ij[i][j];                   // s_i + t_ij - M_ij (servTime[i] when you have different values per client)
+                    System.out.print("stM_" + k + "/"+ i + "/" + j + "=" + stM_ij+" ");
+                    solver.post(ICF.times(aux_edge[k][i][j], M_ij[i][j], edgesM_ij[k][i][j]));  //  edges*Mij
+                    //solver.post(ICF.sum(new IntVar[]{servStart[i][k],VF.fixed(stM_ij,solver),edgesM_ij[k][i][j]}, servStart[j][k]));
+                }
+            }
+         }
+
+
+
+        //solver.post(ICF.sum(new IntVar[]{a,z,t},cst));
+        //System.out.print("servStart[4][0]"+servStart[4][0]+" VF.fixed(-43,solver)"+ VF.fixed(-43,solver)+ " edgesM_ij[0][4][3]"+edgesM_ij[0][4][3]+"<="+servStart[3][0]);
 
         /** STRONGER FILTERING */
 		/* DISTANCE RELATED FILTERING * identifies the min/max distance involved by visiting each node  */
