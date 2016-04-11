@@ -44,9 +44,10 @@ public class RouteSolverTest {
                     /*5*/ {7, 9, 2, 6, 2, 0}};
 
     private static int[][] tWin = new int[][]          /* time windows for each client [earliest_i, latest_j]
-    /*0*/ {{0, 500}, /*1*/  {1, 15}, /*2*/  {2, 20}, /*3*/  {3, 50}, /*4*/  {4, 50}, /*5*/  {10, 50}};
+    /*0*/ {{0, 500}, /*1*/  {10, 400}, /*2*/  {10, 500}, /*3*/  {40, 500}, /*4*/  {25, 400}, /*5*/  {150, 300}};
 
     private static int[][] M_ij;                       /* Constant for equation 6: M_ij = l_i + t_ij - e_j    */
+    private static int[][] stM_ij;                       /* Constant for equation 6: M_ij = l_i + t_ij - e_j    */
 
 
 
@@ -65,7 +66,7 @@ public class RouteSolverTest {
 
     private static RouteSolver testWithLocalTestData(){
         return new RouteSolver(nbCustomers, qty, nbVehicles, vCap, max_cap_big,  max_cap, vclCapacity,
-                costs, servTime, travTime, tWin, M_ij);
+                costs, servTime, travTime, tWin, M_ij, stM_ij);
     }
 
     private static RouteSolver testWithDBTestData(){
@@ -85,9 +86,10 @@ public class RouteSolverTest {
         travTime = ;
         tWin = ;
         M_ij = ;
+        stM_ij = ;
         */
         return new RouteSolver(nbCustomers, qty, nbVehicles, vCap, max_cap_big,  max_cap, vclCapacity,
-                costs, servTime, travTime, tWin, M_ij);
+                costs, servTime, travTime, tWin, M_ij, stM_ij);
     }
 
     /** Run  M A I N  A P P  F O R T E S T */

@@ -32,6 +32,7 @@ public class RouteSolver {
     private int[][] travTime;
     private int[][] tWin;
     private int[][] M_ij;
+    private int[][] stM_ij;
 
     /************* D E C I S I O N   V A R I A B L E S **************/
 
@@ -52,7 +53,7 @@ public class RouteSolver {
 
     /** C O N S T R U C T O R */
     public RouteSolver(int nbCustomers, int[] qty, int nbVehicles, int[] vCap, int max_cap_big, int max_cap, int vclCapacity,
-                int[][] costs, int servTime, int[][] travTime, int[][] tWin, int[][] M_ij){
+                int[][] costs, int servTime, int[][] travTime, int[][] tWin, int[][] M_ij, int[][] stM_ij){
 
         this.nbCustomers = nbCustomers+1;       // number of customers/vertices   + depot client 0
 
@@ -82,14 +83,15 @@ public class RouteSolver {
 
         this.tWin = tWin;                       // time windows for each client [earliest_i, latest_j]
 
-        this.M_ij = M_ij;
+        this.M_ij = M_ij;     //Constant Equation 6
+        this.stM_ij = stM_ij;
 
     }
 
     /************* P R I N T   T H E   I N P U T   D A T A  **************/
     public void printInput(Solver solver) {
 
-        System.out.println("nbCustomers = " + (nbCustomers - 1) + ";");
+        System.out.println("\nnbCustomers = " + (nbCustomers - 1) + ";");
         System.out.println("nbVehicles = " + nbVehicles + ";");
         System.out.println("serviceTime = " + servTime + ";");
         System.out.print("vCapacity => ");
@@ -110,15 +112,15 @@ public class RouteSolver {
             costD +=i+"| "+ s + costs[i][nbCustomers - 1]+"\n";
         } System.out.println(costD);
 
-        String mij = "====== Constant M[i][j] ======\n__|__0______1______2______3______4______5__\n";
+        System.out.print("====== Time Windows ======\n________|_e__l_\n");
         for (int i = 0; i < nbCustomers; i++) {
-            mij += i+" | ";
-            for (int j = 0; j < nbCustomers; j++) {
-                mij +=M_ij[i][j] + "    ";}
-            mij +="\n";
-        } System.out.println(mij);
+            System.out.print("client"+i+" | ");
+            for (int tw = 0; tw < 2; tw++) {
+                System.out.print(tWin[i][tw] + " ");
+            }System.out.print("\n");
+        }System.out.print("\n");
 
-   /**     String costT = "====== Cost Time ======\n_|_0____1____2____3____4____5__\n";
+        String costT = "====== Cost Time ======\n_|_0____1____2____3____4____5__\n";
         for (int i = 0; i < nbCustomers; i++) {
             String s = "";
             for (int j = 0; j < nbCustomers - 1; j++) {
@@ -127,21 +129,23 @@ public class RouteSolver {
             costT +=i+"| "+ s + travTime[i][nbCustomers - 1]+"\n";
         } System.out.println(costT);
 
-        System.out.print("====== Time Windows ======\n________|_e__l_\n");
-        for (int i = 0; i < nbCustomers; i++) {
-            System.out.print("client"+i+" | ");
-            for (int tw = 0; tw < 2; tw++) {
-                System.out.print(tWin[i][tw] + " ");
-            }System.out.print("\n");
-        }System.out.print("\n");      */
 
-        /** String mij = "====== Constant M[i][j] ======\n__|__0______1______2______3______4______5__\n";
-         for (int i = 0; i < nbCustomers; i++) {
-         mij += i+" | ";
-         for (int j = 0; j < nbCustomers; j++) {
-         mij +=M_ij[i][j] + "    ";}
-         mij +="\n";
-         } System.out.println(mij);*/
+        String mij = "====== Constant M[i][j] (latest_i + Costij - earliest_j) ======\n__|__0______1______2______3______4______5__\n";
+        for (int i = 0; i < nbCustomers; i++) {
+            mij += i+" | ";
+            for (int j = 0; j < nbCustomers; j++) {
+                mij +=M_ij[i][j] + "    ";}
+            mij +="\n";
+        } System.out.println(mij);
+
+        String stmij = "====== stM[i][j] (Servtime + Costij - Mij) ======\n__|__0______1______2______3______4______5__\n";
+        for (int i = 0; i < nbCustomers; i++) {
+            stmij += i+" | ";
+            for (int j = 0; j < nbCustomers; j++) {
+                stmij +=stM_ij[i][j] + "    ";}
+            stmij +="\n";
+        } System.out.println(stmij);
+
     }
 
 
@@ -158,21 +162,22 @@ public class RouteSolver {
 
         //solver.findAllSolutions();
 
-
 		/* Heuristic choices */
-        AbstractStrategy strat = IntStrategyFactory.minDom_LB((ArrayUtils.flatten(next)));
+        IntVar[] vars = ArrayUtils.append(ArrayUtils.flatten(next), ArrayUtils.flatten(servStart), new IntVar[]{x1, y1});
+        AbstractStrategy strat = IntStrategyFactory.minDom_LB(vars);
         solver.set(IntStrategyFactory.lastConflict(solver,strat));
-         //		solver.set(strat);    */
 
-       /* int numFailures = 200000;
-        SearchMonitorFactory.limitFail(solver, numFailures);*/
+        //solver.set(IntStrategyFactory.minDom_LB((ArrayUtils.flatten(next))));
+        //solver.set(IntStrategyFactory.minDom_LB(new IntVar[]{x1, y1}));
+
+       //int numFailures = 200000;
+       //SearchMonitorFactory.limitFail(solver, numFailures);
         //solver.findSolution();
-        //LNSFactory.rlns(solver, aux3, 30, 20140909L, new FailCounter(solver, 100));
         solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
 
         Chatterbox.printStatistics(solver);
         Chatterbox.showSolutions(solver);
-        System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
+//        System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
     }
 
     /************** P R I N T   T H E   O U T P U T   D A T A  **************/
@@ -214,6 +219,30 @@ public class RouteSolver {
                 }
             }System.out.print("\n");
         }
+
+        System.out.print("\n====== edgesM_ij ======\n");
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.print(k+" |0______1______2______3______4______5______6    7    8 9 10 11 12 13 14 15 \n");
+            for (int i = 0; i < nbCustomers; i++) {
+                if(i<10) System.out.print(" ");
+                System.out.print(i+"|");
+                for (int j = 0; j < nbCustomers; j++){
+                    if(edgesM_ij[k][i][j].getValue()==0) {System.out.print("0  ");}
+                    else {System.out.print(edgesM_ij[k][i][j].getValue()+ ""); }
+                    System.out.print("    ");
+                }System.out.print("\n");
+            }System.out.print("\n");
+        }
+
+        System.out.print("====== servStart [k][i] ======\n");
+        System.out.print("_|______0______1______2_______3________4_______5\n");
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.print(k + " | ");
+            for (int i = 0; i < nbCustomers; i++) {
+                System.out.print(servStart[k][i] + "  ");
+            }System.out.print("\n");
+        }
+
 /**
         System.out.print("\n====== Edges ======\n");
         for (int k = 0; k < nbVehicles; k++) {
@@ -245,22 +274,27 @@ public class RouteSolver {
                 System.out.print("\n");
             }System.out.print("\n");
         }
+        System.out.println(servStart[0][0] +" "+ VF.fixed(stM_ij[0][1],solver) +" "+ edgesM_ij[0][0][1] +" "+ servStart[0][1]);
     }
 
     /************** C O N S T R A I N T S  **************/
     public void addRouteSolvingConstraints(Solver solver) {
 
-
-
-        IntVar x1 = VF.enumerated("x1", 38, 40, solver);
-        IntVar x2 = VF.enumerated("x2",19, 20, solver);
-        IntVar y1 = VF.enumerated("y1", 59, 60, solver);
-      //  solver.post(ICF.arithm(x1,"+", VF.fixed(20,solver),"=",8));
-
-        solver.post(ICF.sum(new IntVar[]{x1, x2}, y1));
-
-
-
+        x1 = VF.bounded("x1", 39, 40, solver);
+        y1 = VF.bounded("y1", 59, 60, solver);
+        // solver.post(ICF.arithm(x1,"+", VF.fixed(20,solver),"=",8));
+        IntVar[] vars1 = new IntVar[]{x1, VF.fixed(20,solver)};
+        Constraint test1 = ICF.sum(vars1, "<=", y1);
+        solver.post(test1);
+        //solver.set(IntStrategyFactory.minDom_LB(new IntVar[]{x1, y1}));
+        try {
+            solver.propagate();
+        } catch (ContradictionException e) {
+//						e.printStackTrace();
+            solver.getEngine().flush();
+            solver.unpost(test1);
+           // busChoosen = null;
+        }
 
         /** CREATION OF CP VARIABLES */
         /* Initialisation of the boolean matrix - represents all paths all vehicles
@@ -347,36 +381,47 @@ public class RouteSolver {
                 solver.post(ICF.boolean_channeling(edges[k][i], next[k][i], 0));
         }
 
-         /** Equation (6):minimum time for beginning the service of customer j in a determined route */
-         /* also guarantees that there will be no sub tours. The constant M_ij  is a large enough number */
-         M_ij = new int[nbCustomers][nbCustomers];
-         for (int i = 0; i < nbCustomers; i++)
+        /** Equation (6):minimum time for beginning the service of customer j in a determined route */
+        /* also guarantees that there will be no sub tours. The constant M_ij  is a large enough number */
+        M_ij = new int[nbCustomers][nbCustomers];
+        stM_ij = new int[nbCustomers][nbCustomers];  // stM_ij (servTime + cost_ij - Mij)
+        for (int i = 0; i < nbCustomers; i++)
             for (int j = 0; j < nbCustomers; j++)
-                M_ij[i][j] = tWin[i][1] + travTime[i][j] - tWin[j][0];
+                if(i!=j){
+                    M_ij[i][j] = tWin[i][1] + travTime[i][j] - tWin[j][0];
+                    stM_ij[i][j] = servTime + travTime[i][j] - M_ij[i][j];   //s_i + t_ij - M_ij (servTime[i] when you have different values per client)
+                }
 
-
-
-         servStart = VF.enumeratedMatrix("servStart", nbVehicles, nbVehicles, 0, 1000, solver);
-         edgesM_ij = new IntVar[nbVehicles][nbCustomers][nbCustomers];
-         for (int k = 0; k < nbVehicles; k++)
-            edgesM_ij[k] = VF.boundedMatrix("edgeM_ij" + k, nbCustomers, nbCustomers, 0, 1000, solver);
-
-         for (int k = 0; k < nbVehicles; k++) {
-            System.out.println("\n");
+        edgesM_ij = new IntVar[nbVehicles][nbCustomers][nbCustomers];
+        for (int k = 0; k < nbVehicles; k++) {
+            edgesM_ij[k] = VF.boundedMatrix("edgeM_ij" + k, nbCustomers, nbCustomers, 0, VariableFactory.MAX_INT_BOUND, solver);
             for (int i = 0; i < nbCustomers; i++) {
                 for (int j = 0; j < nbCustomers; j++) {
-                    int stM_ij = servTime + travTime[i][j] - M_ij[i][j];                   // s_i + t_ij - M_ij (servTime[i] when you have different values per client)
-                    System.out.print("stM_" + k + "/"+ i + "/" + j + "=" + stM_ij+" ");
-                    solver.post(ICF.times(aux_edge[k][i][j], M_ij[i][j], edgesM_ij[k][i][j]));  //  edges*Mij
-                    //solver.post(ICF.sum(new IntVar[]{servStart[i][k],VF.fixed(stM_ij,solver),edgesM_ij[k][i][j]}, servStart[j][k]));
+                    if(i!=j){ solver.post(ICF.times(edges[k][i][j], M_ij[i][j], edgesM_ij[k][i][j])); }
+                    else { solver.post(ICF.times(edges[k][i][j], 0, edgesM_ij[k][i][j])); }
                 }
             }
-         }
+        }
 
+        servStart = VF.boundedMatrix("servStart", nbVehicles, nbCustomers, 0, VariableFactory.MAX_INT_BOUND, solver);
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.println("\n");
+            for (int i = 1; i < nbCustomers; i++) {
+                for (int j = 1; j < nbCustomers; j++) {
+                        solver.post(ICF.sum(new IntVar[]{servStart[k][i], VF.fixed(stM_ij[i][j], solver), edgesM_ij[k][i][j]}, "<=", servStart[k][j])); //k
+                }
+            }
+        }
 
+        /** CONSTRAINT (7): guarantees that all the customers will be served within their Time Windows*/
+        /* earilest_i <= b_ki <= latest_i */
+        for (int k = 0; k < nbVehicles; k++) {
+            for (int i = 1; i < nbCustomers; i++) {
+                solver.post(ICF.arithm(servStart[k][i], ">=", tWin[i][0]));
+                solver.post(ICF.arithm(servStart[k][i], "<=", tWin[i][1]));
+            }
+        }
 
-        //solver.post(ICF.sum(new IntVar[]{a,z,t},cst));
-        //System.out.print("servStart[4][0]"+servStart[4][0]+" VF.fixed(-43,solver)"+ VF.fixed(-43,solver)+ " edgesM_ij[0][4][3]"+edgesM_ij[0][4][3]+"<="+servStart[3][0]);
 
         /** STRONGER FILTERING */
 		/* DISTANCE RELATED FILTERING * identifies the min/max distance involved by visiting each node  */
