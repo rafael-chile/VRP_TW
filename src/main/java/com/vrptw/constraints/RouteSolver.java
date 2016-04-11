@@ -422,16 +422,15 @@ public class RouteSolver {
             }
         }
 
-
         /** STRONGER FILTERING */
 		/* DISTANCE RELATED FILTERING * identifies the min/max distance involved by visiting each node  */
-            IntVar[][] distanceAt = new IntVar[nbVehicles][nbCustomers-1];
-            for(int k=0;k<nbVehicles;k++) {
-                for (int i = 0; i < nbCustomers - 1; i++) {
-                    distanceAt[k][i] = VariableFactory.bounded("distanceAt" +k +"_"+ i, 0, 99999, solver);
-                    solver.post(ICF.element(distanceAt[k][i], costs[i], next[k][i], 0, "none"));
-                }
+        IntVar[][] distanceAt = new IntVar[nbVehicles][nbCustomers-1];
+        for(int k=0;k<nbVehicles;k++) {
+            for (int i = 0; i < nbCustomers - 1; i++) {
+                distanceAt[k][i] = VariableFactory.bounded("distanceAt" +k +"_"+ i, 0, 99999, solver);
+                solver.post(ICF.element(distanceAt[k][i], costs[i], next[k][i], 0, "none"));
             }
+        }
 
 		/* CAPACITY RELATED FILTERING
 		* We are trying to find the set of edges that serve the more goods and respects the fuel limit constraint.

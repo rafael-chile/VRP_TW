@@ -12,7 +12,9 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Form_Actions {
 
@@ -22,14 +24,16 @@ public class Form_Actions {
     private static final String clientsTable_Header[] = new String[] { "id Client", "Localidade Postal",
             "TW From", "TW To", "Loc Lat","Loc Lon"};
 
-    public static void LoadOrderdsIntoTable(Date dateFrom, Date dateTo, JTable table1){
-        if (dateFrom == null || dateTo == null){ return; }
+    public static int LoadOrderdsIntoTable(Date dateFrom, Date dateTo, JTable table1){
+        if (dateFrom == null || dateTo == null){ return 0; }
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String fromDate = formatter.format(dateFrom);
             String toDate = formatter.format(dateTo);
 
             List<Orders> ordersList = (new OrderdsDao()).getList(fromDate, toDate);
+            Set<String> clientIdList = new HashSet<>();
+            ordersList.stream().forEach(val->clientIdList.add(val.getClient()));
 
             // ADD DATA INTO TABLE
             DefaultTableModel dtm = new DefaultTableModel(0, 0);
@@ -44,10 +48,11 @@ public class Form_Actions {
                     val.getEncomenda(), val.getDate_emissao(), val.getClient()
             }));
 
-
+            return clientIdList.size();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 
     public static void LoadArticlesIntoTable(String idEncomenda, JTable table){

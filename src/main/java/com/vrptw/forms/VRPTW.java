@@ -68,7 +68,11 @@ public class VRPTW extends JFrame {
         Date fromDate = (Date) dateFrom.getModel().getValue();
         Date toDate = (Date) dateTo.getModel().getValue();
 
-        Form_Actions.LoadOrderdsIntoTable(fromDate, toDate, table1);
+        int clientListSize = Form_Actions.LoadOrderdsIntoTable(fromDate, toDate, table1);
+        numOrdersValue.setText(""+table1.getRowCount());
+        numClientsValue.setText(""+ clientListSize);
+
+
     }
 
     /** Action Event when clicked on Orders' table row */
@@ -319,7 +323,8 @@ public class VRPTW extends JFrame {
             numClients.setText("Num.Clients:");
 
             //---- totalLocations ----
-            totalLocations.setText("Total Locations:");
+            totalLocations.setText("                          ");
+            //totalLocations.setText("Total Locations:");
 
             //---- numOrdersValue ----
             numOrdersValue.setBackground(Color.lightGray);
@@ -338,7 +343,7 @@ public class VRPTW extends JFrame {
             //---- totalLocationsValue ----
             totalLocationsValue.setBackground(Color.lightGray);
             totalLocationsValue.setBorder(null);
-            totalLocationsValue.setText("0");
+            totalLocationsValue.setText("");
             totalLocationsValue.setHorizontalAlignment(SwingConstants.LEFT);
             totalLocationsValue.setForeground(Color.gray);
 
@@ -346,12 +351,13 @@ public class VRPTW extends JFrame {
             searchSummary.setText("Search Summary:");
 
             //---- totalArticles ----
-            totalArticles.setText("Total Articles:");
+            totalArticles.setText("");
+            //totalArticles.setText("Total Articles:");
 
             //---- totalArticlesValue ----
             totalArticlesValue.setBackground(Color.lightGray);
             totalArticlesValue.setBorder(null);
-            totalArticlesValue.setText("0");
+            totalArticlesValue.setText("");
             totalArticlesValue.setHorizontalAlignment(SwingConstants.LEFT);
             totalArticlesValue.setForeground(Color.gray);
 
