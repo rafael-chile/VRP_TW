@@ -5,7 +5,9 @@ import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.constraints.LogicalConstraintFactory;
 import org.chocosolver.solver.exception.ContradictionException;
+import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.loop.monitors.SearchMonitorFactory;
 import org.chocosolver.solver.search.strategy.IntStrategyFactory;
 import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
@@ -15,6 +17,7 @@ import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
 import org.chocosolver.solver.variables.VariableFactory;
 import org.chocosolver.util.tools.ArrayUtils;
+
 
 public class RouteSolver {
 
@@ -38,9 +41,12 @@ public class RouteSolver {
 
     private IntVar globalCost;
     private IntVar[] totalVehicleDistance;
+    private IntVar[] totalVehiclesRequired;
     private IntVar[][] flowsEdges;
     private IntVar[] capacityUsed;
+    private IntVar[] capacityUsed_100;
     private IntVar[][] serve;
+    private IntVar[][] serve_qty;
     private BoolVar[][][] edges;
     private BoolVar[][][] aux_edge;
     private IntVar[][] next;
@@ -91,15 +97,15 @@ public class RouteSolver {
     /************* P R I N T   T H E   I N P U T   D A T A  **************/
     public void printInput(Solver solver) {
 
-        System.out.println("\nnbCustomers = " + (nbCustomers - 1) + ";");
+        System.out.print("nbCustomers = " + (nbCustomers - 1) + ";");
         System.out.println("nbVehicles = " + nbVehicles + ";");
         System.out.println("serviceTime = " + servTime + ";");
         System.out.print("vCapacity => ");
         for (int i = 0; i < nbVehicles; i++)
             System.out.print(" Vcap" + i + " : " + vCap[i] + "; ");
         System.out.print("\nQtyRequired => ");
-        for (int i = 0; i < nbCustomers-1; i++)
-            System.out.print(" c" + (i+1) + " : " + qty[i] + "; ");
+        for (int i = 0; i < nbCustomers; i++)
+            System.out.print(" c" + (i) + " : " + qty[i] + "; ");
         String costD = "\n\n====== Cost Distance ======\n_|_0______1______2______3______4______5__\n";
         for (int i = 0; i < nbCustomers; i++) {
             String s = "";
@@ -148,7 +154,6 @@ public class RouteSolver {
 
     }
 
-
     /************** F I N D   S O L U T I O N **************/
     public void findSol(Solver solver) {
         /*if(solver.findSolution()){     //print all solutions
@@ -163,21 +168,37 @@ public class RouteSolver {
         //solver.findAllSolutions();
 
 		/* Heuristic choices */
-        IntVar[] vars = ArrayUtils.append(ArrayUtils.flatten(next), ArrayUtils.flatten(servStart), new IntVar[]{x1, y1});
+        IntVar[] vars = ArrayUtils.append(  ArrayUtils.flatten(next),
+                                            ArrayUtils.flatten(servStart),
+                                            //ArrayUtils.flatten(serve_qty),
+                                            //ArrayUtils.flatten(serve),
+                                            ArrayUtils.flatten(edgesM_ij),
+                                            capacityUsed, capacityUsed_100, totalVehicleDistance
+                                            /*, new IntVar[]{x1, y1}*/);
         AbstractStrategy strat = IntStrategyFactory.minDom_LB(vars);
         solver.set(IntStrategyFactory.lastConflict(solver,strat));
 
         //solver.set(IntStrategyFactory.minDom_LB((ArrayUtils.flatten(next))));
         //solver.set(IntStrategyFactory.minDom_LB(new IntVar[]{x1, y1}));
 
-       //int numFailures = 200000;
-       //SearchMonitorFactory.limitFail(solver, numFailures);
+
+       /* solver.plugMonitor((IMonitorSolution) () -> {
+            System.out.println("////////////////");
+            System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
+            System.out.println(next);
+            System.out.println(capacityUsed);
+            System.out.println();
+        });
+        solver.findAllSolutions();*/
+
+        //int numFailures = 2000000;
+        //SearchMonitorFactory.limitFail(solver, numFailures);
         //solver.findSolution();
         solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
 
         Chatterbox.printStatistics(solver);
         Chatterbox.showSolutions(solver);
-//        System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
+        //System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
     }
 
     /************** P R I N T   T H E   O U T P U T   D A T A  **************/
@@ -191,7 +212,8 @@ public class RouteSolver {
         }System.out.print(" ===> "+sum2+"\n");
 
         for (int k = 0; k < nbVehicles; k++) {
-            System.out.print("\n=== "+ capacityUsed[k]+ " from "+ vCap[k]+"\n" );
+            System.out.println("=== " + capacityUsed[k] + " from " + vCap[k]);
+            System.out.println("=== " + capacityUsed_100[k]);
             int sum = 0;
             for (int i = 0; i < nbCustomers; i++) {     //2
                 for (int j = 0; j < nbCustomers; j++)
@@ -199,24 +221,35 @@ public class RouteSolver {
                         System.out.print(edges[k][i][j] + " cost(distance) = " + costs[i][j]);
                         sum = sum + costs[i][j];
                         System.out.print("\n"); }
-            }System.out.print("manual sum = "+sum+"\n");
+            }System.out.print("manual sum = "+sum+"\n\n");
         }
+        System.out.print("\n====== Global Cost ======\n");
+        System.out.print("totalVehicleDistance => ");
         for (int k = 0; k < nbVehicles; k++){
             System.out.print(totalVehicleDistance[k]+"  ");
-        }
-        System.out.print(" "+globalCost+"\n");
+        }System.out.print("\ntotalVehiclesRequired => ");
+        for (int k = 0; k < nbVehicles; k++){
+            System.out.print(totalVehiclesRequired[k]+"   ");
+        }System.out.print("\n" + globalCost + "\n");
 
-        System.out.print("====== Serve ======\n");
+        System.out.print("\n====== Serve ======\n");
         System.out.print("_|0__1\n");
         for (int i = 0; i < nbCustomers; i++) {
             if(i<10) System.out.print(" ");
                 System.out.print(i+"|");
             for (int k = 0; k < nbVehicles; k++) {
-                if(serve[i][k].getValue()==0){
-                    System.out.print("□ ");
-                }else {
-                    System.out.print("■ ");
-                }
+                System.out.print(serve[i][k] + "  ");
+            }System.out.print("\n");
+        }
+
+        System.out.print("\n====== Serve_Qty ======\n");
+        System.out.print("_|0____1____2\n");
+        for (int i = 0; i < nbCustomers; i++) {
+            if(i<10) System.out.print(" ");
+            System.out.print(i+"|");
+            for (int k = 0; k < nbVehicles; k++) {
+                if(serve_qty[i][k].getValue()==0) {System.out.print("0     ");}
+                else {System.out.print(serve_qty[i][k].getValue()+ "  "); }
             }System.out.print("\n");
         }
 
@@ -239,6 +272,7 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++) {
             System.out.print(k + " | ");
             for (int i = 0; i < nbCustomers; i++) {
+                if(serve[i][k].getValue()>0)
                 System.out.print(servStart[k][i] + "  ");
             }System.out.print("\n");
         }
@@ -277,9 +311,29 @@ public class RouteSolver {
         System.out.println(servStart[0][0] +" "+ VF.fixed(stM_ij[0][1],solver) +" "+ edgesM_ij[0][0][1] +" "+ servStart[0][1]);
     }
 
+
     /************** C O N S T R A I N T S  **************/
     public void addRouteSolvingConstraints(Solver solver) {
 
+
+        /* Total Demand vs. Total Vehicle Capacity */
+        System.out.print("\n====== Total Demand vs. Total Vehicle Capacity ======\n");
+        int totalDemand = 0, totalVcap = 0;
+        for (int i = 0; i < nbCustomers; i++) totalDemand = totalDemand + qty[i];
+        for (int k = 0; k < nbVehicles; k++) totalVcap = totalVcap + vCap[k];
+        System.out.println("totalDemand = " + totalDemand +" | totalVcap ="+totalVcap);
+
+        int diffTotals = totalVcap - totalDemand;
+        System.out.println("difference Totals = " + diffTotals);
+
+        if(diffTotals < 0) {
+            System.out.println("original nbVehicles = " + nbVehicles +" (+ 1 new vehicle)");
+            nbVehicles = nbVehicles + 1;
+            int[] vCap_new = {Math.abs(diffTotals)};      // absolute value of the excess
+            vCap = ArrayUtils.append(vCap, vCap_new);
+        }
+
+        /* Try catch constraints*/
         x1 = VF.bounded("x1", 39, 40, solver);
         y1 = VF.bounded("y1", 59, 60, solver);
         // solver.post(ICF.arithm(x1,"+", VF.fixed(20,solver),"=",8));
@@ -303,8 +357,9 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++)
             edges[k] = VariableFactory.boolMatrix("truck_" + k, nbCustomers, nbCustomers, solver);
 
-        /* represents the cost per vehicle and the total cost for the objective function */
+        /* represents the distance cost per vehicle and total number of vehicles. The total cost for the objective function */
         totalVehicleDistance = VF.boundedArray("distance", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //fuelConsumed
+        totalVehiclesRequired = VF.boundedArray("cost_num_vehicles", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //to minimize num Vehicles Costs
         globalCost = VF.bounded("global_cost", 0, VF.MAX_INT_BOUND, solver);
 
         /* represents the capacity used per vehicle in the path */
@@ -318,28 +373,48 @@ public class RouteSolver {
 		/* Integer Variable which represents the overall size of the path founded */
         size = VariableFactory.boundedArray("size", nbVehicles, 2, nbCustomers, solver);
 
-        /** OBJECTIVE FUNCTION */
-        /* Calculate total costs for each vehicle: The scalar constraint to compute global cost performed in all paths */
-        for (int k = 0; k < nbVehicles; k++)
-            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]), ArrayUtils.flatten(costs), totalVehicleDistance[k]));  //consumptions, fuelConsumed
-        solver.post(ICF.sum(totalVehicleDistance, globalCost)); // compute global cost
-
         /** CONSTRAINT (1): each vehicle will leave the depot and arrive at a determined customer */
-        for (int k = 0; k < nbVehicles; k++)
-            solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers - 1, edges[k]), "=", VariableFactory.fixed(1, solver)));
+        /**for (int k = 0; k < nbVehicles; k++){
+
+            Constraint const1 = ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers - 1, edges[k]), "=", VariableFactory.fixed(1, solver));
+            solver.post(const1);
+            try {
+                solver.propagate();
+            } catch (ContradictionException e) {
+                System.out.println("Constraint (1) = ContradictionException " + e);
+                solver.getEngine().flush();
+                solver.unpost(const1);
+            }
+        }*/
 
         /** CONSTRAINT (3): the total demand of each customer will be fulfilled */
         /* true if client 'i' is served by vehicle vclK, false otherwise */
-        serve = VF.enumeratedMatrix("serve", nbCustomers, nbVehicles, 0, 1, solver);
-        solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(nbVehicles, solver))); // node 0 is not served by any vehicle
-        for (int i = 1; i < nbCustomers; i++)
-            solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(i, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(1, solver)));
+        serve = VF.boundedMatrix("serve", nbCustomers, nbVehicles, 0, 100, solver);
+        //solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(nbVehicles*100, solver))); // node 0 is not served by any vehicle
+        for (int i = 1; i < nbCustomers; i++) {
+            Constraint const3 = ICF.sum(ArrayUtils.flattenSubMatrix(i, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(100, solver));  // VariableFactory.fixed(1, solver));
+            solver.post(const3);
+            try {
+                solver.propagate();
+            } catch (ContradictionException e) {
+                System.out.println("Constraint (3) = ContradictionException " + e);
+                solver.getEngine().flush();
+                solver.unpost(const3);
+            }
+        }
 
         /** CONSTRAINT (4): the vehicle capacity will not be exceed */
         /* The scalar constraint to compute global consumption of the kart to perform the path */
         // qty = {5, 2, 5, 10, 8};   // vCap = {50, 100};
+        capacityUsed_100 = new IntVar[nbVehicles];
         for (int k = 0; k < nbVehicles; k++) {
-            solver.post(ICF.scalar(ArrayUtils.flattenSubMatrix(0, nbCustomers, k, 1, serve), qty, "<=", capacityUsed[k]));
+            Constraint const4 = ICF.scalar(ArrayUtils.flattenSubMatrix(0, nbCustomers, k, 1, serve), qty, "<=", VF.fixed((vCap[k] * 100), solver));  //capacityUsed_100[k]));
+            solver.post(const4);
+            try { solver.propagate();}
+            catch (ContradictionException e) {
+                solver.getEngine().flush();
+                solver.unpost(const4);
+            }
         }
 
         /** CONSTRAINT (5): the demand of each customer will only be fulfilled if a determined vehicle goes by that place*/
@@ -356,23 +431,32 @@ public class RouteSolver {
                     if(i==j){ solver.post(ICF.times(edges[k][i][j], 0, aux_edge[k][i][j])); }
                     else { solver.post(ICF.times(edges[k][i][j], 1, aux_edge[k][i][j])); }
 
-        for (int k = 0; k < nbVehicles; k++){                   //  we apply the 5th constraint with the new copy (aux_edges)
-            for (int i = 1; i < nbCustomers; i++)
-                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, i, 1, aux_edge[k]), ">=", serve[i][k])); }
+        for (int k = 0; k < nbVehicles; k++)                  //  we apply the 5th constraint with the new copy (aux_edges)
+            for (int i = 1; i < nbCustomers; i++) {
+                Constraint c = IntConstraintFactory.arithm(serve[i][k], ">", 0);
+                Constraint d = ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, i, 1, aux_edge[k]), VF.fixed(1, solver));  //serve[i][k]));
+                LogicalConstraintFactory.ifThen(c, d);
+            }
 
         /** POST CIRCUIT CONSTRAINT */
         /* The scalar constraint to compute the amount of capacity that each vehicle perform in the path. With our model if a
 		 * node isn't used then his next value is equals to his id. Then the boolean edges[k][i][i] is equals to true */
-        BoolVar[][] used = new BoolVar[nbVehicles][nbCustomers];
-        for (int k = 0; k < nbVehicles; k++){
+
+        /*A new table is created to have store the product of (Serve and Qty * 100)  */
+        serve_qty = VF.boundedMatrix("serve_qty", nbCustomers, nbVehicles, 0, VariableFactory.MAX_INT_BOUND, solver);
+        for (int k = 0; k < nbVehicles; k++)
             for (int i = 0; i < nbCustomers; i++)
-                used[k][i] = edges[k][i][i].not();  //k
-            solver.post(ICF.scalar(used[k], qty, capacityUsed[k]));   }    //gold, goldFound));
+                solver.post(ICF.times(serve[i][k], qty[i], serve_qty[i][k]));
+
+        for (int k = 0; k < nbVehicles; k++){   //Capacity_used = Capacity_used100 / 100
+            capacityUsed_100[k] = VariableFactory.bounded("vehicle " + k + " capacityUsed_100", 0, (vCap[k]*100), solver);
+            solver.post(ICF.times(capacityUsed[k], 100, capacityUsed_100[k]));
+            solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, k, 1, serve_qty), capacityUsed_100[k]));}
 
         /* The sub-circuit constraint. This forces all the next value to form a circuit which the overall size is equals
 		 * to the size variable. This constraint check if the path contains any sub circles. */
         for (int k = 0; k < nbVehicles; k++)
-          solver.post(ICF.subcircuit(next[k], 0, size[k]));
+           solver.post(ICF.subcircuit(next[k], 0, size[k]));
 
 		/* The boolean channeling constraint. Enforce the relation between the next values and the edges values in the
 		 * graph boolean variable matrix */
@@ -422,6 +506,20 @@ public class RouteSolver {
             }
         }
 
+        /** OBJECTIVE FUNCTION */
+        /* Calculate total costs for each vehicle: The scalar constraint to compute global cost performed in all paths */
+        for (int k = 0; k < nbVehicles; k++) {
+            //consumptions, fuelConsumed
+            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]), ArrayUtils.flatten(costs), totalVehicleDistance[k]));
+            // penalize the introduction of new vehicles
+                Constraint a = ICF.sum(ArrayUtils.flattenSubMatrix(1, nbCustomers-1, k, 1, serve), ">", VF.fixed(0, solver));
+                Constraint b = ICF.times(VF.fixed(vCap[k], solver), 5, totalVehiclesRequired[k]);
+            LogicalConstraintFactory.ifThen(a, b);
+        }
+
+        // compute global cost
+        solver.post(ICF.sum(ArrayUtils.append(totalVehiclesRequired, totalVehicleDistance), globalCost));
+
         /** STRONGER FILTERING */
 		/* DISTANCE RELATED FILTERING * identifies the min/max distance involved by visiting each node  */
         IntVar[][] distanceAt = new IntVar[nbVehicles][nbCustomers-1];
@@ -446,24 +544,47 @@ public class RouteSolver {
             //                       IntVar TOTAL_ENERGY,   int[] WEIGHT,     int[] ENERGY)
 
         */
+    }
 
+
+    /************** C O N S T R A I N T S  **************/
+    public void backUpConstraints(Solver solver) {
 
         /** CONSTRAINT (2): entrance and exit flows, guarantees that each vehicle will leave a customer and arrive to the depot
-        flowsEdges = new IntVar[nbVehicles][nbCustomers];
-        //     for (int k = 0; k < nbVehicles; k++)
-        //     flowsEdges[k] = VariableFactory.enumeratedArray("flowsEdges" + k, nbCustomers, 0, nbCustomers, solver);
+         flowsEdges = new IntVar[nbVehicles][nbCustomers];
+         //     for (int k = 0; k < nbVehicles; k++)
+         //     flowsEdges[k] = VariableFactory.enumeratedArray("flowsEdges" + k, nbCustomers, 0, nbCustomers, solver);
 
-        //IntVar[] aux1 = VariableFactory.enumeratedArray("aux", nbCustomers, 0, nbCustomers, solver);
+         //IntVar[] aux1 = VariableFactory.enumeratedArray("aux", nbCustomers, 0, nbCustomers, solver);
 
+         for (int k = 0; k < nbVehicles; k++) {
+         flowsEdges[k] = VariableFactory.enumeratedArray("flowsEdges" + k, nbCustomers, 0, nbCustomers, solver);
+         for (int p = 0; p < nbCustomers; p++) {
+         solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, p, 1, edges[k]), "=",  flowsEdges[k][p]));
+         solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(p, 1, 0, nbCustomers, edges[k]), "=",  flowsEdges[k][p]));
+         solver.post(ICF.arithm(edges[k][p][p],"=", VariableFactory.fixed(false, solver)));   // Edge from 'i' to 'j' when 'i'='j' is equal to 0
+         }
+         }*/
+
+        /** POST CIRCUIT CONSTRAINT */
+        /* The scalar constraint to compute the amount of capacity that each vehicle perform in the path. With our model if a
+		 * node isn't used then his next value is equals to his id. Then the boolean edges[k][i][i] is equals to true */
+        BoolVar[][] used = new BoolVar[nbVehicles][nbCustomers];
+        for (int k = 0; k < nbVehicles; k++){
+            for (int i = 0; i < nbCustomers; i++)
+                used[k][i] = edges[k][i][i].not();  //k
+            solver.post(ICF.scalar(used[k], qty, capacityUsed[k]));   }    //gold, goldFound));
+
+        /* The sub-circuit constraint. This forces all the next value to form a circuit which the overall size is equals
+		 * to the size variable. This constraint check if the path contains any sub circles. */
         for (int k = 0; k < nbVehicles; k++)
-            flowsEdges[k] = VariableFactory.enumeratedArray("flowsEdges" + k, nbCustomers, 0, nbCustomers, solver);
+            solver.post(ICF.subcircuit(next[k], 0, size[k]));
 
-        for (int p = 0; p < nbCustomers; p++) {
-            for (int k = 0; k < nbVehicles; k++) {
-                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, nbCustomers, p, 1, edges[0]), "=",  flowsEdges[k][p]));
-                solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(p, 1, 0, nbCustomers, edges[0]), "=",  flowsEdges[k][p]));
-                solver.post(ICF.arithm(edges[k][p][p],"=", VariableFactory.fixed(false, solver)));   // Edge from 'i' to 'j' when 'i'='j' is equal to 0
-            }
-        }*/
+		/* The boolean channeling constraint. Enforce the relation between the next values and the edges values in the
+		 * graph boolean variable matrix */
+        for (int k = 0; k < nbVehicles; k++){
+            for (int i = 0; i < nbCustomers; i++)
+                solver.post(ICF.boolean_channeling(edges[k][i], next[k][i], 0));
+        }
     }
 }

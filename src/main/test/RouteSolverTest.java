@@ -5,50 +5,57 @@ import org.chocosolver.solver.Solver;
 public class RouteSolverTest {
 
     /************* C O N S T A N T S **************/
-    /************* 3 vehicles 5 Clients **************/
+
+    /************* 16 vehicles 10 Clients **************/
 
     private static int[] qty = new int[]       /* q[i] is the demand at point 'i'. Depot is denoted by 0. */
-            {0, 5, 20, 5, 10, 40};
+            {0, 5, 20, 50, 10, 40, 30, 100, 50, 10, 40};
 
     private static int nbVehicles = 3;         /* total vehicle fleet
                                         Fleet of vehicles: V = {1,...,m} with identical capacities.  */
     private static int[] vCap = new int[]          /*a[k] capacity of each vehicle.  */
-            {60, 100, 100};
+            {27000, 7500, 15000};
+
+    //{27000, 7500, 15000, 15000, 1150, 400, 600, 600, 600, 600, 400, 1000, 600, 400, 400, 10000};
 
 
-    private static int nbCustomers = //14;  /* NOT including depot client 0
-            5;      /* Customers: N = {1, 2,.., n}, 'n' different locations
+    private static int nbCustomers = 6;  /* NOT including depot client 0
+                                          /* Customers: N = {1, 2,.., n}, 'n' different locations
                                             Every pair of locations (i, j) , where i, j ∈ N and i ≠ j,
                                             is associated with a travel time t[i][j] and a distance traveled d[i][j]  */
 
     private static int[][] costs = new int[][]     /* costs in distance ALL to ALL customers */        //consumptions
-                 /*0    1    2    3    4    5*/
-            {   {0, 2223, 1272, 1931, 2047, 1597},
-                    {2211, 0, 3226, 1202, 1138, 1755},
-                    {1291, 3243, 0, 3077, 3190, 2740},
-                    {1921, 1207, 3053, 0, 737, 1075},
-                    {1981, 1083, 3117, 674, 0, 1132},
-                    {1580, 1741, 2716, 1052, 1167, 0}};
 
-    /* With respect to Time Window  */
+            {{0,462,282,635,227,180,468},
+                    {4,0,988,378,195,305,693},
+                    {282,988,0,612,172,774,705},
+                    {635,378,612,0,973,604,520},
+                    {227,195,172,973,0,130,525},
+                    {180,305,774,604,130,0,432},
+                    {468,693,705,520,525,432,0}};
 
-    private static int servTime = 5;                  /* time needed at the customer  */
+                   /* With respect to Time Window  */
+
+    private static int servTime = 15;                  /* time needed at the customer  */
 
     private static int[][] travTime = new int[][]      /* costs in time ALL to ALL customers */
-                         /*0  1  2  3  4  5*/
-            {       /*0*/ {0, 2, 8, 8, 9, 5},
-                    /*1*/ {4, 0, 5, 6, 2, 6},
-                    /*2*/ {8, 2, 0, 2, 5, 2},
-                    /*3*/ {8, 2, 8, 0, 5, 9},
-                    /*4*/ {2, 2, 2, 5, 0, 10},
-                    /*5*/ {7, 9, 2, 6, 2, 0}};
+                  /*0 1  2  3  4  5  6  7   8 9  10 11 12 13 14*/
+            { /*0*/ {0,46,22,65,27,10,48},
+                    {10,0,98,38,95,25,63},
+                    {22,98,0,12,72,77,70},
+                    {65,38,62,0,93,64,50},
+                    {27,95,72,73,0,10,25},
+                    {10,35,74,04,10,0,42},
+                    {46,93,75,20,25,42,0}};
 
-    private static int[][] tWin = new int[][]          /* time windows for each client [earliest_i, latest_j]
-    /*0*/ {{0, 500}, /*1*/  {10, 400}, /*2*/  {10, 500}, /*3*/  {40, 500}, /*4*/  {25, 400}, /*5*/  {150, 300}};
+    private static int[][] tWin = new int[][]          /* time windows for each client [earliest_i, latest_j]  */
+
+            { /*0*/  {0, 500}, /*1*/  {10, 400}, /*2*/  {10, 500}, /*3*/  {40, 500}, /*4*/  {25, 400}, /*5*/  {150, 300},
+    /*6*/  {0, 500}
+            };
 
     private static int[][] M_ij;                       /* Constant for equation 6: M_ij = l_i + t_ij - e_j    */
     private static int[][] stM_ij;                       /* Constant for equation 6: M_ij = l_i + t_ij - e_j    */
-
 
 
     /**-------------INSTANCE END--------------*/
