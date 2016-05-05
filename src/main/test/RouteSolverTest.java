@@ -1,3 +1,4 @@
+//github pass123
 import com.vrptw.constraints.RouteSolver;
 import org.chocosolver.solver.Solver;
 
@@ -14,7 +15,7 @@ public class RouteSolverTest {
     private static int nbVehicles = 3;         /* total vehicle fleet
                                         Fleet of vehicles: V = {1,...,m} with identical capacities.  */
     private static int[] vCap = new int[]          /*a[k] capacity of each vehicle.  */
-            {27000, 7500, 15000};
+            {27, 65, 10};
 
     //{27000, 7500, 15000, 15000, 1150, 400, 600, 600, 600, 600, 400, 1000, 600, 400, 400, 10000};
 
