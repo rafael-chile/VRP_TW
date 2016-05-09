@@ -36,12 +36,14 @@ public class RouteSolver {
     private int[][] tWin;
     private int[][] M_ij;
     private int[][] stM_ij;
+    private int[][] qtyMatrix;
 
     /************* D E C I S I O N   V A R I A B L E S **************/
 
     private IntVar globalCost;
     private IntVar[] totalVehicleDistance;
     private IntVar[] totalVehiclesRequired;
+    private IntVar[] maxDistance;
     private IntVar[][] flowsEdges;
     private IntVar[] capacityUsed;
     private IntVar[] capacityUsed_100;
@@ -178,14 +180,12 @@ public class RouteSolver {
         AbstractStrategy strat = IntStrategyFactory.minDom_LB(vars);
         solver.set(IntStrategyFactory.lastConflict(solver,strat));
 
-        //solver.set(IntStrategyFactory.minDom_LB((ArrayUtils.flatten(next))));
-        //solver.set(IntStrategyFactory.minDom_LB(new IntVar[]{x1, y1}));
-
-
         solver.plugMonitor((IMonitorSolution) () -> {
-            System.out.print("\n\n///////////////////////////////////////////////////////////////");
+            System.out.println("\n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
+            Chatterbox.showStatistics(solver);
+            System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
             //System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver).);
-            System.out.print("\n====== Demand per customer ======\n");
+            System.out.print("====== Demand per customer ====>");
             int sum2 = 0;
             for (int i = 0; i < nbCustomers; i++) {
                 System.out.print(" | client "+i+"="+qty[i]);
@@ -201,13 +201,8 @@ public class RouteSolver {
             for (int k = 0; k < nbVehicles; k++){
                 System.out.print(totalVehiclesRequired[k]+"   ");
             }System.out.print("\n" + globalCost + "\n");
-
-
-            //System.out.println((int) ((size.getValue() + 0d) / (HOUSE_NUMBER + 0d) * 100) + " % of houses visited");
-            //System.out.println((int) ((fuelConsumed.getValue() + 0d) / (FUEL + 0d) * 100) + " % of fuel burned");
-            //System.out.println("! " + goldFound.getValue() + " gold coins earned !");
-
         });
+
         //solver.findAllSolutions();
         //int numFailures = 2000000;
         //SearchMonitorFactory.limitFail(solver, numFailures);
@@ -282,6 +277,15 @@ public class RouteSolver {
                     else {System.out.print(edgesM_ij[k][i][j].getValue()+ ""); }
                     System.out.print("    ");
                 }System.out.print("\n");
+            }System.out.print("\n");
+        }
+
+        System.out.print("\n====== qtyMatrix ======\n");
+        System.out.print("_|0__1\n");
+        for (int i = 0; i < nbCustomers; i++) {
+            System.out.print(" " + i+"|");
+            for (int j = 0; j < nbCustomers; j++) {
+                System.out.print(qtyMatrix[i][j] + "  ");
             }System.out.print("\n");
         }
 
@@ -379,6 +383,9 @@ public class RouteSolver {
         totalVehiclesRequired = VF.boundedArray("cost_num_vehicles", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //to minimize num Vehicles Costs
         globalCost = VF.bounded("global_cost", 0, VF.MAX_INT_BOUND, solver);
 
+        /* represents the Total_Weight in the knapsack constraint. We dont have any restriction according to the distance  */
+        maxDistance = VF.boundedArray("maxDistance", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //fuelConsumed
+
         /* represents the capacity used per vehicle in the path */
         capacityUsed = new IntVar[nbVehicles];                          // goldFound
         for (int k = 0; k < nbVehicles; k++)
@@ -407,7 +414,7 @@ public class RouteSolver {
         /** CONSTRAINT (3): the total demand of each customer will be fulfilled */
         /* true if client 'i' is served by vehicle vclK, false otherwise */
         serve = VF.boundedMatrix("serve", nbCustomers, nbVehicles, 0, 100, solver);
-        //solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(nbVehicles*100, solver))); // node 0 is not served by any vehicle
+        solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 0, nbVehicles, serve), "=", VF.fixed(0, solver))); // node 0 is not served by any vehicle
         for (int i = 1; i < nbCustomers; i++) {
             Constraint const3 = ICF.sum(ArrayUtils.flattenSubMatrix(i, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(100, solver));  // VariableFactory.fixed(1, solver));
             solver.post(const3);
@@ -425,7 +432,11 @@ public class RouteSolver {
         // qty = {5, 2, 5, 10, 8};   // vCap = {50, 100};
         capacityUsed_100 = new IntVar[nbVehicles];
         for (int k = 0; k < nbVehicles; k++) {
-            Constraint const4 = ICF.scalar(ArrayUtils.flattenSubMatrix(0, nbCustomers, k, 1, serve), qty, "<=", VF.fixed((vCap[k] * 100), solver));  //capacityUsed_100[k]));
+            Constraint const4;
+            if(diffTotals < 0)  /* When we add a new vehicle to fulfill the demands, all vehicles have to be completely full (=100%)*/
+                 { const4 = ICF.arithm(capacityUsed[k],"=", vCap[k]); } //
+            else { const4 = ICF.scalar(ArrayUtils.flattenSubMatrix(0, nbCustomers, k, 1, serve), qty, "<=", VF.fixed((vCap[k] * 100), solver)); }  //capacityUsed_100[k]));
+
             solver.post(const4);
             try { solver.propagate();}
             catch (ContradictionException e) {
@@ -563,20 +574,36 @@ public class RouteSolver {
             }
         }
 
-		/* CAPACITY RELATED FILTERING
-		* We are trying to find the set of edges that serve the more goods and respects the fuel limit constraint.
-		* The analogy: the weight is the costs to go through the edge and the energy is the goods that we can serve
-            int[][] goldMatrix = new int[n][n];
-            for (int i = 0; i < goldMatrix.length; i++)
-                for (int j = 0; j < goldMatrix.length; j++)
-                    goldMatrix[i][j] = (i == j) ? 0 : gold[i];
-            solver.post(ICF.knapsack(ArrayUtils.flatten(edges), VariableFactory.fixed(FUEL, solver),
-                    goldFound, ArrayUtils.flatten(consumptions), ArrayUtils.flatten(goldMatrix)));
+        /* Knapsack FILTERING
+		* This problem can be seen has a knapsack problem where are trying to found the set of edges that contains the
+		* more golds and respects the fuel limit constraint. The analogy is the following : the weight is the
+		* consumption to go through the edge and the energy is the gold that we can earn */
+        qtyMatrix = new int[nbCustomers][nbCustomers];
+        for (int i = 0; i < qtyMatrix.length; i++)
+            for (int j = 0; j < qtyMatrix.length; j++) {
+                qtyMatrix[i][j] = (i == j) ? 0 : qty[i];
+                System.out.println(qtyMatrix[i][j]);
+            }
+        for (int k = 0; k < nbVehicles; k++)
+            solver.post(ICF.knapsack(ArrayUtils.flatten(edges[k]), maxDistance[k], capacityUsed[k],
+                    ArrayUtils.flatten(costs), ArrayUtils.flatten(qtyMatrix)));
 
-            //Constraint knapsack(IntVar[] OCCURRENCES, IntVar TOTAL_WEIGHT,
-            //                       IntVar TOTAL_ENERGY,   int[] WEIGHT,     int[] ENERGY)
 
-        */
+        /**
+
+
+
+         int[][] goldMatrix = new int[n][n];
+        for (int i = 0; i < goldMatrix.length; i++)
+            for (int j = 0; j < goldMatrix.length; j++)
+                goldMatrix[i][j] = (i == j) ? 0 : gold[i];
+        solver.post(ICF.knapsack(ArrayUtils.flatten(edges), VariableFactory.fixed(FUEL, solver), goldFound,
+                                                        ArrayUtils.flatten(consumptions), ArrayUtils.flatten(goldMatrix)));
+
+        //Constraint knapsack(IntVar[] OCCURRENCES, IntVar TOTAL_WEIGHT,
+        //                       IntVar TOTAL_ENERGY,   int[] WEIGHT,     int[] ENERGY)
+
+*/
     }
 
 
