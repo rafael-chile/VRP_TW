@@ -60,6 +60,9 @@ public class JSONProcessing {
         // Add options
         JSONObject option = new JSONObject();
         option.put("allToAll", true);
+        option.put("avoids", new Object[]{"Toll road"});
+        option.put("disallows", new Object[]{"Toll road"});
+        option.put("unit", "k");
         json.put("options", option);
 
         message = json.toString();
@@ -70,7 +73,6 @@ public class JSONProcessing {
                 "],   options: { allToAll: true}}".replace("\\","");
         */
     }
-
 
     public static double[][] loadJSONResponse_Stub() throws IOException {
         String filePath = directory + "/src/main/dbResources/json_mapquest/jsonSampleResp.json";

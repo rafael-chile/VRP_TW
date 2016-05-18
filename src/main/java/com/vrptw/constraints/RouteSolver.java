@@ -587,23 +587,6 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++)
             solver.post(ICF.knapsack(ArrayUtils.flatten(edges[k]), maxDistance[k], capacityUsed[k],
                     ArrayUtils.flatten(costs), ArrayUtils.flatten(qtyMatrix)));
-
-
-        /**
-
-
-
-         int[][] goldMatrix = new int[n][n];
-        for (int i = 0; i < goldMatrix.length; i++)
-            for (int j = 0; j < goldMatrix.length; j++)
-                goldMatrix[i][j] = (i == j) ? 0 : gold[i];
-        solver.post(ICF.knapsack(ArrayUtils.flatten(edges), VariableFactory.fixed(FUEL, solver), goldFound,
-                                                        ArrayUtils.flatten(consumptions), ArrayUtils.flatten(goldMatrix)));
-
-        //Constraint knapsack(IntVar[] OCCURRENCES, IntVar TOTAL_WEIGHT,
-        //                       IntVar TOTAL_ENERGY,   int[] WEIGHT,     int[] ENERGY)
-
-*/
     }
 
 

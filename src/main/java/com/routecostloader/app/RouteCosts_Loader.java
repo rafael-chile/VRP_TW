@@ -22,7 +22,7 @@ public class RouteCosts_Loader {
 
     static String MAPQUEST_KEY = "jf5LPPtU2cMyidCPhPv9wVOMpjuKbPIX";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
-    static boolean PRINT_IN_TERMINAL = false;
+    static boolean PRINT_IN_TERMINAL = true;
     static boolean IS_TEST = false;
     static String FETCH_FROM_DATE = "2015-06-22";
     static String FETCH_UNTIL_DATE = "2015-06-27";
