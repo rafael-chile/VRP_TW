@@ -32,6 +32,7 @@ public class RouteSolver {
     private int vclCapacity;
     private int[][] costs;
     private int servTime;
+    private int[][] breakTime;
     private int[][] travTime;
     private int[][] tWin;
     private int[][] M_ij;
@@ -44,6 +45,7 @@ public class RouteSolver {
     private IntVar[] totalVehicleDistance;
     private IntVar[] totalVehiclesRequired;
     private IntVar[] maxDistance;
+    private IntVar[] totalTravTime;
     private IntVar[][] flowsEdges;
     private IntVar[] capacityUsed;
     private IntVar[] capacityUsed_100;
@@ -61,7 +63,7 @@ public class RouteSolver {
 
     /** C O N S T R U C T O R */
     public RouteSolver(int nbCustomers, int[] qty, int nbVehicles, int[] vCap, int max_cap_big, int max_cap, int vclCapacity,
-                int[][] costs, int servTime, int[][] travTime, int[][] tWin, int[][] M_ij, int[][] stM_ij){
+                int[][] costs, int servTime, int[][] travTime, int[][] breakTime, int[][] tWin, int[][] M_ij, int[][] stM_ij){
 
         this.nbCustomers = nbCustomers+1;       // number of customers/vertices   + depot client 0
 
@@ -88,6 +90,7 @@ public class RouteSolver {
 
         this.servTime = servTime;               // time needed at the customer  */
         this.travTime = travTime;               // costs in time ALL to ALL customers */
+        this.breakTime = breakTime;               // costs in time ALL to ALL customers */
 
         this.tWin = tWin;                       // time windows for each client [earliest_i, latest_j]
 
@@ -137,6 +140,19 @@ public class RouteSolver {
             costT +=i+"| "+ s + travTime[i][nbCustomers - 1]+"\n";
         } System.out.println(costT);
 
+        System.out.print("\n====== Break Time (required) ======\n");
+        System.out.print("  |0　1　2 3 4 5 6 7 8 9 10 11 12 13 14 15 \n");
+        for (int i = 0; i < nbCustomers; i++) {
+            if(i<10) System.out.print(" ");
+            System.out.print(i+"|");
+            for (int j = 0; j < nbCustomers; j++)
+                if(breakTime[i][j]==0){
+                    System.out.print("□ ");
+                }else {
+                    System.out.print("■ ");
+                }
+            System.out.print("\n");
+        }System.out.print("\n");
 
         String mij = "====== Constant M[i][j] (latest_i + Costij - earliest_j) ======\n__|__0______1______2______3______4______5__\n";
         for (int i = 0; i < nbCustomers; i++) {
@@ -299,6 +315,11 @@ public class RouteSolver {
             }System.out.print("\n");
         }
 
+        System.out.print("====== totalTravTime [k] ======\n");
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.println(totalTravTime[k] + "   ");
+        }
+
 /**
         System.out.print("\n====== Edges ======\n");
         for (int k = 0; k < nbVehicles; k++) {
@@ -328,9 +349,20 @@ public class RouteSolver {
                         System.out.print("■ ");
                     }
                 System.out.print("\n");
-            }System.out.print("\n");
+            }System.out.print("Break times 45 min:");
+
+            String stg_bk = "";
+            for (int i = 0; i < nbCustomers; i++) {
+                for (int j = 0; j < nbCustomers; j++) {
+                    if(breakTime[i][j]==1 && aux_edge[k][i][j].getValue()==1 ){
+                        stg_bk += "\nVehicle " + k + ": from [ " + i + " ] to [ " + j + " ]";
+                    }
+                }
+            } if (stg_bk.length()>1) {
+                System.out.print(stg_bk);
+                }else {System.out.println(" -- None -- \n");}
+
         }
-        System.out.println(servStart[0][0] +" "+ VF.fixed(stM_ij[0][1],solver) +" "+ edgesM_ij[0][0][1] +" "+ servStart[0][1]);
     }
 
 
@@ -397,19 +429,6 @@ public class RouteSolver {
 		/* Integer Variable which represents the overall size of the path founded */
         size = VariableFactory.boundedArray("size", nbVehicles, 0, nbCustomers, solver);
 
-        /** CONSTRAINT (1): each vehicle will leave the depot and arrive at a determined customer */
-        /**for (int k = 0; k < nbVehicles; k++){
-
-            Constraint const1 = ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers - 1, edges[k]), "=", VariableFactory.fixed(1, solver));
-            solver.post(const1);
-            try {
-                solver.propagate();
-            } catch (ContradictionException e) {
-                System.out.println("Constraint (1) = ContradictionException " + e);
-                solver.getEngine().flush();
-                solver.unpost(const1);
-            }
-        }*/
 
         /** CONSTRAINT (3): the total demand of each customer will be fulfilled */
         /* true if client 'i' is served by vehicle vclK, false otherwise */
@@ -481,6 +500,22 @@ public class RouteSolver {
                 }
             }
 
+        /**The European Community (EC) social legislation */
+        /** CONSTRAINT (9): A 45 minutes break after 4.5 hours of driving */
+        /* We make a copy of the travTime table and we add manually the resting time
+        *  in distances with more than 16200 seconds driving*/
+        breakTime = new int[nbCustomers][nbCustomers];
+        for (int i = 0; i < nbCustomers; i++) {
+            for (int j = 0; j < nbCustomers; j++) {
+                if (travTime[i][j] >= 16200) {    // 4.5 hours driving (16200)
+                    breakTime[i][j] = 1;
+                    travTime[i][j] += 2700;       // 45 min rest
+                } else {
+                    breakTime[i][j] = 0;
+                }
+            }
+        }
+
         /** Equation (6):minimum time for beginning the service of customer j in a determined route */
         /* also guarantees that there will be no sub tours. The constant M_ij  is a large enough number */
         M_ij = new int[nbCustomers][nbCustomers];
@@ -519,6 +554,22 @@ public class RouteSolver {
             for (int i = 1; i < nbCustomers; i++) {
                 solver.post(ICF.arithm(servStart[k][i], ">=", tWin[i][0]));
                 solver.post(ICF.arithm(servStart[k][i], "<=", tWin[i][1]));
+            }
+        }
+
+        /**The European Community (EC) social legislation */
+        /** CONSTRAINT (8): A daily driving period of no more than 9 hours */
+        totalTravTime = VF.boundedArray("totalTravTime", nbVehicles, 0, 86400, solver);  //  24 hours * 3600 seconds = 86400
+        for (int k = 0; k < nbVehicles; k++) {
+            solver.post(ICF.scalar(ArrayUtils.flatten(edges[k]),ArrayUtils.flatten(travTime),"=",totalTravTime[k]));
+            Constraint const8 = ICF.arithm(totalTravTime[k], "<=", 32400);                 //   9 hours * 3600 seconds = 32400
+            solver.post(const8);
+            try {
+                solver.propagate();
+            } catch (ContradictionException e) {
+                System.out.println("Constraint (8) = ContradictionException " + e);
+                solver.getEngine().flush();
+                solver.unpost(const8);
             }
         }
 
@@ -574,8 +625,8 @@ public class RouteSolver {
             }
         }
 
-        /* Knapsack FILTERING
-		* This problem can be seen has a knapsack problem where are trying to found the set of edges that contains the
+        /** Knapsack FILTERING */
+		/* This problem can be seen has a knapsack problem where are trying to found the set of edges that contains the
 		* more golds and respects the fuel limit constraint. The analogy is the following : the weight is the
 		* consumption to go through the edge and the energy is the gold that we can earn */
         qtyMatrix = new int[nbCustomers][nbCustomers];
@@ -593,6 +644,21 @@ public class RouteSolver {
     /************** C O N S T R A I N T S  **************/
     public void backUpConstraints(Solver solver) {
 
+
+        /** CONSTRAINT (1): each vehicle will leave the depot and arrive at a determined customer */
+        /**for (int k = 0; k < nbVehicles; k++){
+
+         Constraint const1 = ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 1, nbCustomers - 1, edges[k]), "=", VariableFactory.fixed(1, solver));
+         solver.post(const1);
+         try {
+         solver.propagate();
+         } catch (ContradictionException e) {
+         System.out.println("Constraint (1) = ContradictionException " + e);
+         solver.getEngine().flush();
+         solver.unpost(const1);
+         }
+         }*/
+
         /** CONSTRAINT (2): entrance and exit flows, guarantees that each vehicle will leave a customer and arrive to the depot
          flowsEdges = new IntVar[nbVehicles][nbCustomers];
          //     for (int k = 0; k < nbVehicles; k++)
@@ -608,26 +674,5 @@ public class RouteSolver {
          solver.post(ICF.arithm(edges[k][p][p],"=", VariableFactory.fixed(false, solver)));   // Edge from 'i' to 'j' when 'i'='j' is equal to 0
          }
          }*/
-
-        /** POST CIRCUIT CONSTRAINT */
-        /* The scalar constraint to compute the amount of capacity that each vehicle perform in the path. With our model if a
-		 * node isn't used then his next value is equals to his id. Then the boolean edges[k][i][i] is equals to true */
-        BoolVar[][] used = new BoolVar[nbVehicles][nbCustomers];
-        for (int k = 0; k < nbVehicles; k++){
-            for (int i = 0; i < nbCustomers; i++)
-                used[k][i] = edges[k][i][i].not();  //k
-            solver.post(ICF.scalar(used[k], qty, capacityUsed[k]));   }    //gold, goldFound));
-
-        /* The sub-circuit constraint. This forces all the next value to form a circuit which the overall size is equals
-		 * to the size variable. This constraint check if the path contains any sub circles. */
-        for (int k = 0; k < nbVehicles; k++)
-            solver.post(ICF.subcircuit(next[k], 0, size[k]));
-
-		/* The boolean channeling constraint. Enforce the relation between the next values and the edges values in the
-		 * graph boolean variable matrix */
-        for (int k = 0; k < nbVehicles; k++){
-            for (int i = 0; i < nbCustomers; i++)
-                solver.post(ICF.boolean_channeling(edges[k][i], next[k][i], 0));
-        }
     }
 }

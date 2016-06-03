@@ -60,8 +60,8 @@ public class JSONProcessing {
         // Add options
         JSONObject option = new JSONObject();
         option.put("allToAll", true);
-        option.put("avoids", new Object[]{"Toll road"});
-        option.put("disallows", new Object[]{"Toll road"});
+        option.put("avoids", new String[]{"Toll road"});
+        option.put("disallows", new String[]{"Toll road"});
         option.put("unit", "k");
         json.put("options", option);
 
