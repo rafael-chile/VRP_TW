@@ -1,9 +1,8 @@
 package com.routecostloader.app;
-
 import com.vrptw.dao.ClientDao;
+import com.vrptw.dao.OrdersDao;
 import com.vrptw.entities.Client;
 import com.vrptw.entities.RouteCost;
-
 import java.io.*;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -19,11 +18,10 @@ public class RouteCosts_Loader {
 
     private static Logger logger = Logger.getLogger( RouteCosts_Loader.class.getName() );
 
-
-    static String MAPQUEST_KEY = "jf5LPPtU2cMyidCPhPv9wVOMpjuKbPIX";
+    static String MAPQUEST_KEY = "pWVuV1gQyrHTRys07TGATGD9vJO7udqM";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
     static boolean PRINT_IN_TERMINAL = true;
-    static boolean IS_TEST = false;
+    static boolean IS_TEST = true;
     static String FETCH_FROM_DATE = "2015-06-22";
     static String FETCH_UNTIL_DATE = "2015-06-27";
 
@@ -42,18 +40,34 @@ public class RouteCosts_Loader {
         if( !file.exists() ) {
             /* Generate a list of json request to send to mapquest
                 (from all to all: base-depot/loc-pnt1, base-depot/loc-pnt2,...,base-pntN-1/loc-pntN) */
-            List<Client> clientIdLst = RouteCosts_Loader.loadClientIdToProcess();
-            System.out.println("Total Clients to process (including depot): " + clientIdLst.size());
+            //List<Client> clientIdLst = RouteCosts_Loader.loadClientIdToProcess();
+            //System.out.println("Total Clients to process (including depot): " + clientIdLst.size());
+            try {
+                // load location from date to date
+                List<com.vrptw.entities.Location> locationList = (new OrdersDao()).getLocationList(FETCH_FROM_DATE, FETCH_UNTIL_DATE);
+                // load DEPOT location
+                locationList.add((new OrdersDao()).getDepotLocation());
 
-            locJsonLst = RouteCosts_Loader.generateJsonToPost(clientIdLst);
-            locJsonLst.stream().forEach(msg -> logger.info(msg.toString()));
-            saveList(locJsonLst, fileName);
-            System.out.println("Total Clients saved infile: " + locJsonLst.size());
+                locJsonLst = RouteCosts_Loader.generateJsonToPost(locationList);
+                locJsonLst.stream().forEach(msg -> logger.info(msg.toString()));
+                saveList(locJsonLst, fileName);
+                System.out.println("Total Clients saved infile: " + locJsonLst.size());
+
+            } catch (Exception ex){}
+
 
         }else{
             try {
                 locJsonLst = RouteCosts_Loader.readList(fileName);
+                /*if(PRINT_IN_TERMINAL) {
+                    for (JsonToPost jsonReq : locJsonLst) {
+                        if (jsonReq.getJsonRequest() == null || !jsonReq.getJsonRequest().isEmpty()) { // if response has never being fetch
+                            System.out.println("SAVED JSON REQUEST:" + jsonReq.toString());
+                        }
+                    }
+                }*/
                 System.out.println("Total Clients found in filed list: " + locJsonLst.size());
+
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -62,24 +76,38 @@ public class RouteCosts_Loader {
         // FILTER THE LIST
         /*List<JsonToPost> locJsonLst_2 = new ArrayList<>();
         locJsonLst.stream().forEach(jlp ->{
-            if( (jlp.getToClient().contentEquals("1879") && jlp.getFromClient().contentEquals("6264"))
-                    || (jlp.getToClient().contentEquals("2848") && jlp.getFromClient().contentEquals("6264"))
+            if( jlp.getFromClient().contentEquals("100197") && (jlp.getToClient().contentEquals("100197")  )
+                    || (jlp.getFromClient().contentEquals("100197") && jlp.getToClient().contentEquals("100426") )
             ){
                 System.out.println("FOUND FromClient: " + jlp.getFromClient() + ", ToClient:" + jlp.getToClient());
                 locJsonLst_2.add(jlp);
             }
         });
         locJsonLst = locJsonLst_2;
-        */
+*/
         // END FILTERING
 
         /* Process calls to mapquest for each element in the list (json), TODO2: save json responses into files */
         String jsonRespFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocRespList";
         if( !IS_TEST ){
             String errorOn = "";
+            File fileResp = new File(jsonRespFileName);
+
+            //reload existing response file
+            if( fileResp.exists() ) {
+                logger.info("Processing from existing file ");
+                try {
+                    locJsonLst  = RouteCosts_Loader.readList(jsonRespFileName);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    logger.info("ERROR: Cannot load the existing file!!!");
+                    return ;
+                }
+            }
+
             try {
                 for(JsonToPost jsonReq : locJsonLst) {
-                    errorOn = jsonReq.toString();
+                    errorOn = jsonReq.toString ();
                     if(jsonReq.getJsonResponse() == null || jsonReq.getJsonResponse().isEmpty()) { // if response has never being fetch
                         String resp = restServicesConsumer.POST(HTTP_REST_POST_URL, jsonReq.getJsonRequest());
                         jsonReq.setJsonResponse(resp);
@@ -93,10 +121,23 @@ public class RouteCosts_Loader {
                 saveList(locJsonLst, jsonRespFileName); // the post returned an error, so it saves the responses list
             }
         }
+        if( IS_TEST ){
+            try {
+                locJsonLst  = RouteCosts_Loader.readList(jsonRespFileName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                logger.info("ERROR: Cannot load the existing file!!!");
+                return ;
+            }
+        }
         if(PRINT_IN_TERMINAL) {
             for (JsonToPost jsonReq : locJsonLst) {
-                if (jsonReq.getJsonResponse() == null || !jsonReq.getJsonResponse().isEmpty()) { // if response has never being fetch
-                    System.out.println("SAVED JSON RESP:" + jsonReq.getJsonResponse());
+                if (jsonReq.getJsonResponse() != null && !jsonReq.getJsonResponse().isEmpty()) { // if response has never being fetch
+                    System.out.println("SAVED JSON RESP:" + jsonReq.toString());
+                    logger.info("SAVED JSON RESP:" + jsonReq.toString());
+                }else{
+                    System.out.println("Null:" + jsonReq.toString());
+                    logger.info("Null:" + jsonReq.toString());
                 }
             }
         }
@@ -111,11 +152,11 @@ public class RouteCosts_Loader {
                     String comments = "Processed at (" + new Date() + ") with: " + jsonToPost.getFromClient() + " & " + jsonToPost.getToClient();
 
                     RouteCost rc_base_to_loc = new RouteCost(jsonToPost.getFromClient(), jsonToPost.getToClient(),
-                            distanceEtTime[1][0], distanceEtTime[0][0], comments);
+                            distanceEtTime[1][0], distanceEtTime[0][0], jsonToPost.getFromLocation(), jsonToPost.getToLocation(), comments);
                     routeCostsList.add(rc_base_to_loc);
 
                     RouteCost rc_loc_to_base = new RouteCost(jsonToPost.getToClient(), jsonToPost.getFromClient(),
-                            distanceEtTime[1][1], distanceEtTime[0][1], comments);
+                            distanceEtTime[1][1], distanceEtTime[0][1], jsonToPost.getToLocation(), jsonToPost.getFromLocation(), comments);
                     routeCostsList.add(rc_loc_to_base);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -147,7 +188,7 @@ public class RouteCosts_Loader {
         return clientIdLst;
     }
 
-    static List<JsonToPost> generateJsonToPost(List<Client> clientIdList){
+    static List<JsonToPost> generateJsonToPostFromClients(List<Client> clientIdList){
         List<JsonToPost> locJsonLst = new ArrayList<>();
 
         for(int i = 0; i < clientIdList.size(); i++){ // i==0 is depot, so it match depot to all locations
@@ -158,10 +199,29 @@ public class RouteCosts_Loader {
                 Location to_location = new Location(to_client.getLocation_lat(), to_client.getLocation_lng());
                 String strJsonToPost = JSONProcessing.toJSON(from_location, to_location);
 
-                JsonToPost jsonToPost = new JsonToPost(from_client.getIdClient(), to_client.getIdClient(), strJsonToPost);
+                JsonToPost jsonToPost = new JsonToPost(from_client.getIdClient(), to_client.getIdClient(),"","", strJsonToPost);
                 locJsonLst.add(jsonToPost);
 
                 //System.out.println("From client: " + from_client.getIdClient() + ", to client: " + to_client.getIdClient());
+            }
+        }
+
+        return locJsonLst;
+    }
+
+    static List<JsonToPost> generateJsonToPost(List<com.vrptw.entities.Location> locationList){
+        List<JsonToPost> locJsonLst = new ArrayList<>();
+
+        for(int i = 0; i < locationList.size(); i++){ // i==0 is depot, so it match depot to all locations
+            com.vrptw.entities.Location from_location = locationList.get(i);
+            for(int j = i; j < locationList.size(); j++){
+                com.vrptw.entities.Location to_location = locationList.get(j);
+
+                String strJsonToPost = JSONProcessing.toJSON(from_location, to_location);
+                JsonToPost jsonToPost = new JsonToPost(from_location.getClient(), to_location.getClient(), from_location.getIdLocation(), to_location.getIdLocation(), strJsonToPost);
+                locJsonLst.add(jsonToPost);
+
+                System.out.println("From client: " + from_location.getClient() + ", to client: " + to_location.getClient());
             }
         }
 

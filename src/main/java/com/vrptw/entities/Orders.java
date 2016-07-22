@@ -9,16 +9,20 @@ public class Orders {
     private String qtd_pedida;
     private String unit_measure;
     Date date_emissao;
+    private String location_descarga;
+    private String weight_kg;
     private String client;
 
     public Orders(){}
 
-    public Orders(String idDocumento_final, String encomenda, String qtd_pedida, String unit_measure, Date date_emissao, String client){
+    public Orders(String idDocumento_final, String encomenda, String qtd_pedida, String unit_measure, Date date_emissao, String location_descarga, String weight_kg, String client){
         this.idDocumento_final = idDocumento_final;
         this.encomenda = encomenda;
         this.qtd_pedida = qtd_pedida;
         this.unit_measure = unit_measure;
         this.date_emissao = date_emissao;
+        this.location_descarga = location_descarga;
+        this.weight_kg = weight_kg;
         this.client = client;
     }
 
@@ -71,6 +75,14 @@ public class Orders {
         this.client = client;
     }
 
+    public String getLocation_descarga() { return location_descarga; }
+
+    public void setLocation_descarga(String location_descarga) { this.location_descarga = location_descarga; }
+
+    public String getWeight_kg() { return weight_kg; }
+
+    public void setWeight_kg(String weight_kg) { this.weight_kg = weight_kg;  }
+
 
     @Override
     public String toString() {
@@ -80,6 +92,8 @@ public class Orders {
                 + ", qtd_pedida: " + qtd_pedida
                 + ", unit_measure: " + unit_measure
                 + ", date_emissao: " + date_emissao
+                + ", location_descarga: " + location_descarga
+                + ", weight_kg: " + weight_kg
                 + ", client: " + client
                 + "}";
     }

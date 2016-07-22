@@ -1,11 +1,11 @@
 package com.vrptw;
 
-import com.vrptw.dao.ClientDao;
-import com.vrptw.dao.LocationDao;
-import com.vrptw.dao.RouteCostDao;
-import com.vrptw.dao.VehicleDao;
+import com.vrptw.dao.*;
+import com.vrptw.entities.Location;
+import com.vrptw.entities.Orders;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,17 +108,31 @@ public class FirstExample {
                 System.out.print( "\n" );
             }
 /**/
-            /*List<Client> clientIdLst = new ArrayList<>();
+         /*   List<Client> clientIdLst = new ArrayList<>();
             clientIdLst.add( (new ClientDao()).getList("0").get(0) ); // get the depot
             // get clients with orders from date A to date B
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
             clientIdLst.addAll( (new ClientDao()).getListIDsBetweenDates(sdf.parse("2015-06-22"),sdf.parse("2015-06-27")));
-
+            } catch(Exception e){}
             List<String> clientsIds = new ArrayList<>();
             clientIdLst.stream().forEach(client->clientsIds.add(client.getIdClient()));
-            //distnaces = routeCostDao.getDistanceCostMatrix(clientsIds);
+            //distnaces = routeCostDao.getDistanceCostMatrix(clientsIds);  */
             //TODO: times  = routeCostDao.getTimeCostMatrix(clientsIds);
-*/
+
+
+
+            List<Orders> orderIdLst = new ArrayList<>();
+            List<Location> locationList = new ArrayList<>();
+            // get clients with orders from date A to date B
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                locationList.addAll((new OrdersDao()).getLocationList("2015-06-22", "2015-06-27"));
+                orderIdLst.addAll((new OrdersDao()).getList("2015-06-22", "2015-06-27"));
+            } catch(Exception e){}
+            orderIdLst.stream().forEach(System.out::println);
+            locationList.stream().forEach(System.out::println);
+
 
         } catch (SQLException /*| ParseException*/ e) {
             e.printStackTrace();
@@ -128,3 +142,5 @@ public class FirstExample {
     }
 
 }
+
+

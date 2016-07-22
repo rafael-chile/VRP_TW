@@ -4,6 +4,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +16,7 @@ import java.io.InputStreamReader;
  * This class can implement a GoF like proxy to redirect to the real method that will process the diff info (not only suggested positions)
  */
 public class RESTServicesConsumer {
+    private int HTTP_TIME_OUT = 30000;
 
     public RESTServicesConsumer(){}
 
@@ -20,7 +24,11 @@ public class RESTServicesConsumer {
     // NB. CAn be improved as the GoF to divide the diff kind of data published by the API
     public String POST(String url, String json) throws IOException {
         StringBuilder resp = new StringBuilder();
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        HttpParams my_httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(my_httpParams, HTTP_TIME_OUT);
+        HttpConnectionParams.setSoTimeout(my_httpParams, 1);
+        DefaultHttpClient httpClient = new DefaultHttpClient(my_httpParams);
 
         HttpPost postRequest = new HttpPost(url);
         //postRequest.addHeader("content-type", "application/x-www-form-urlencoded"); // MUST NOT BE INCLUDED

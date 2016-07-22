@@ -7,14 +7,19 @@ public class JsonToPost implements Serializable{
 
     private String fromClient;
     private String toClient;
+    private String fromLocation;
+    private String toLocation;
     private String jsonRequest;
     private String jsonResponse;
 
+
     private JsonToPost(){}
 
-    public JsonToPost(String fromClient, String toClient, String json){
+    public JsonToPost(String fromClient, String toClient, String fromLocation, String toLocation, String json){
         this.fromClient = fromClient;
         this.toClient = toClient;
+        this.fromLocation = fromLocation;
+        this.toLocation = toLocation;
         this.jsonRequest = json;
     }
 
@@ -24,6 +29,22 @@ public class JsonToPost implements Serializable{
 
     public String getToClient() {
         return toClient;
+    }
+
+    public String getFromLocation() {
+        return fromLocation;
+    }
+
+    public void setFromLocation(String fromLocation) {
+        this.fromLocation = fromLocation;
+    }
+
+    public String getToLocation() {
+        return toLocation;
+    }
+
+    public void setToLocation(String toLocation) {
+        this.toLocation = toLocation;
     }
 
     public String getJsonRequest() {
@@ -40,6 +61,6 @@ public class JsonToPost implements Serializable{
 
     @Override
     public String toString() {
-        return ("JsonToPost=> From_Client:" + fromClient + ", To_Client:" + toClient + ", JSONRequest: " + jsonRequest);
+        return ("JsonToPost=> From_Client:" + fromClient + ", To_Client:" + toClient + ", From_Location: " + fromLocation + ", To_Location: " + toLocation + " JSONRequest: " + jsonRequest);
     }
 }

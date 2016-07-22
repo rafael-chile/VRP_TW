@@ -9,6 +9,7 @@ import org.chocosolver.solver.constraints.LogicalConstraintFactory;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.loop.monitors.SearchMonitorFactory;
+import org.chocosolver.solver.search.solution.Solution;
 import org.chocosolver.solver.search.strategy.IntStrategyFactory;
 import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
 import org.chocosolver.solver.trace.Chatterbox;
@@ -17,6 +18,8 @@ import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
 import org.chocosolver.solver.variables.VariableFactory;
 import org.chocosolver.util.tools.ArrayUtils;
+
+import java.util.List;
 
 
 public class RouteSolver {
@@ -220,10 +223,21 @@ public class RouteSolver {
         });
 
         //solver.findAllSolutions();
-        //int numFailures = 2000000;
-        //SearchMonitorFactory.limitFail(solver, numFailures);
-        //solver.findSolution();
-        solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
+
+        int numFailures = 200000;
+        SearchMonitorFactory.limitFail(solver, numFailures);
+        solver.findSolution();
+
+        //solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
+
+
+        List<Solution> monday = solver.getSolutionRecorder().getSolutions();
+        System.out.println("Monday Solution "+monday.size()+" solutions : ");
+        for(Solution s:monday){
+            System.out.println("totalTravTime = "+s.getIntVal(totalTravTime[1])+" and globalCost = "+s.getIntVal(globalCost));
+        }
+
+
 
         Chatterbox.printStatistics(solver);
         Chatterbox.showSolutions(solver);

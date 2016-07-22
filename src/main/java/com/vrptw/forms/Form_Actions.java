@@ -2,7 +2,7 @@ package com.vrptw.forms;
 
 import com.vrptw.dao.ArticleDao;
 import com.vrptw.dao.ClientDao;
-import com.vrptw.dao.OrderdsDao;
+import com.vrptw.dao.OrdersDao;
 import com.vrptw.entities.Article;
 import com.vrptw.entities.Client;
 import com.vrptw.entities.Orders;
@@ -31,7 +31,7 @@ public class Form_Actions {
             String fromDate = formatter.format(dateFrom);
             String toDate = formatter.format(dateTo);
 
-            List<Orders> ordersList = (new OrderdsDao()).getList(fromDate, toDate);
+            List<Orders> ordersList = (new OrdersDao()).getList(fromDate, toDate);
             Set<String> clientIdList = new HashSet<>();
             ordersList.stream().forEach(val->clientIdList.add(val.getClient()));
 

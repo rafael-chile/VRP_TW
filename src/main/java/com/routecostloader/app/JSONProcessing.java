@@ -29,7 +29,13 @@ public class JSONProcessing {
         return false;
     }
 
-    public static String toJSON(Location baseLoc, Location loc){
+    public static String toJSON(com.vrptw.entities.Location baseLoc, com.vrptw.entities.Location loc) {
+        return toJSON(new Location(baseLoc.getLocation_lat(), baseLoc.getLocation_lng()),
+                new Location(loc.getLocation_lat(), loc.getLocation_lng()));
+    }
+
+
+        public static String toJSON(Location baseLoc, Location loc){
         String message;
         JSONObject json = new JSONObject();
 
