@@ -2,12 +2,22 @@
 import com.vrptw.constraints.RouteSolver;
 import org.chocosolver.solver.Solver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class RouteSolverTest {
 
     /************* C O N S T A N T S **************/
 
     /************* 16 vehicles 10 Clients **************/
+
+    private static List<String> idStrLst = new ArrayList<String>(){{
+        add("100019");
+        add("100093");
+    }};
+
+
 
     private static int[] qty = new int[]       /* q[i] is the demand at point 'i'. Depot is denoted by 0. */
             {0, 5, 20, 50, 10, 40, 30, 100, 50, 10};

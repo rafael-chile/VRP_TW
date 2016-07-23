@@ -120,7 +120,7 @@ public class RouteCostDao extends GenericDao {
                 boolean found = false;
                 for(RouteCost rc : rcList) {
                     if( rc.getIdlocation_to().equals(idLocationLst.get(j)) ){ //search for the id
-                        costMatrix[i][j] = (costType==COST_TYPE.DISTANCE) ? rc.getDistance_cost() : rc.getDistance_cost();
+                        costMatrix[i][j] = (costType==COST_TYPE.DISTANCE) ? rc.getDistance_cost() : rc.getTime_cost();
                         found = true;
                         break;
                     }

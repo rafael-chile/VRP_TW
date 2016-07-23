@@ -30,7 +30,7 @@ public class OrdersDao extends GenericDao {
         String sqlQuery =
                 "SELECT * FROM locations WHERE idlocation IN (\n" +
                         "SELECT DISTINCT location_descarga FROM encomendas \n" +
-                        "WHERE date_emissao >= \"2015-06-22\" AND date_emissao <= \"2015-06-27\" AND location_descarga IS NOT NULL)\n" +
+                        "WHERE date_emissao >= \" " +from+ "\" AND date_emissao <=\" " +to+ "\" AND location_descarga IS NOT NULL)\n" +
                         "UNION SELECT * FROM borrego.locations where idLocation='depot'";
 
           /*    "SELECT * FROM locations WHERE idlocation IN (" +

@@ -74,7 +74,7 @@ public class FirstExample {
         }*/
 
         try {
-            /* */
+            /*
             List<String> s = new ArrayList<>();
             s.add("2901");
             s.add("??29??");
@@ -106,7 +106,7 @@ public class FirstExample {
                     System.out.print( (cost[i][j]+"                              ").substring(0,5) +"  " );
                 }
                 System.out.print( "\n" );
-            }
+            }*/
 /**/
          /*   List<Client> clientIdLst = new ArrayList<>();
             clientIdLst.add( (new ClientDao()).getList("0").get(0) ); // get the depot
@@ -121,7 +121,7 @@ public class FirstExample {
             //TODO: times  = routeCostDao.getTimeCostMatrix(clientsIds);
 
 
-
+            /*
             List<Orders> orderIdLst = new ArrayList<>();
             List<Location> locationList = new ArrayList<>();
             // get clients with orders from date A to date B
@@ -131,7 +131,36 @@ public class FirstExample {
                 orderIdLst.addAll((new OrdersDao()).getList("2015-06-22", "2015-06-27"));
             } catch(Exception e){}
             orderIdLst.stream().forEach(System.out::println);
-            locationList.stream().forEach(System.out::println);
+            locationList.stream().forEach(System.out::println);*/
+            List<String> idStrLst = new ArrayList<>();
+            idStrLst.add("100019");
+            idStrLst.add("100093");
+
+
+            /*
+            List<Location> locationList = new ArrayList<>();
+            // get clients with orders from date A to date B
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                locationList.addAll((new OrdersDao()).getLocationList("2015-06-22", "2015-06-22"));
+            } catch(Exception e){}
+            locationList.stream().forEach(lc->idStrLst.add(lc.getIdLocation())); */
+            double[][] mat_Dist = (new RouteCostDao()).getDistanceCostMatrixByLocation(idStrLst);
+            for (int i = 0; i < mat_Dist.length; i++) {
+                for (int j = 0; j < mat_Dist[i].length; j++) {
+                    System.out.printf("%3.4f  ", mat_Dist[i][j]);
+                }
+                System.out.println();
+            } System.out.println();
+
+            double[][] mat_Time = (new RouteCostDao()).getTimeCostMatrixByLocation(idStrLst);
+            for (int i = 0; i < mat_Time.length; i++) {
+                for (int j = 0; j < mat_Time[i].length; j++) {
+                    System.out.printf("%3.4f  ", mat_Time[i][j]);
+                }
+                System.out.println();
+            }
+
 
 
         } catch (SQLException /*| ParseException*/ e) {
