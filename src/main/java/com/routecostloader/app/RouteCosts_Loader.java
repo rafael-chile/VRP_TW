@@ -18,7 +18,7 @@ public class RouteCosts_Loader {
 
     private static Logger logger = Logger.getLogger( RouteCosts_Loader.class.getName() );
 
-    static String MAPQUEST_KEY = "pWVuV1gQyrHTRys07TGATGD9vJO7udqM";
+    static String MAPQUEST_KEY = "4xaNeW4stE4Hk6Taj7GqdLjAtoYKfll2";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
     static boolean PRINT_IN_TERMINAL = true;
     static boolean IS_TEST = true;
@@ -46,7 +46,7 @@ public class RouteCosts_Loader {
                 // load location from date to date
                 List<com.vrptw.entities.Location> locationList = (new OrdersDao()).getLocationList(FETCH_FROM_DATE, FETCH_UNTIL_DATE);
                 // load DEPOT location
-                locationList.add((new OrdersDao()).getDepotLocation());
+                //locationList.add((new OrdersDao()).getDepotLocation());
 
                 locJsonLst = RouteCosts_Loader.generateJsonToPost(locationList);
                 locJsonLst.stream().forEach(msg -> logger.info(msg.toString()));
@@ -133,10 +133,11 @@ public class RouteCosts_Loader {
         if(PRINT_IN_TERMINAL) {
             for (JsonToPost jsonReq : locJsonLst) {
                 if (jsonReq.getJsonResponse() != null && !jsonReq.getJsonResponse().isEmpty()) { // if response has never being fetch
-                    System.out.println("SAVED JSON RESP:" + jsonReq.toString());
-                    logger.info("SAVED JSON RESP:" + jsonReq.toString());
+//                    System.out.println("SAVED JSON RESP:" + jsonReq.toString());
+                    logger.info("SAVED JSON REQuest:" + jsonReq.toString());
+                    logger.info("Loaded JSON RESP:" + jsonReq.getJsonResponse());
                 }else{
-                    System.out.println("Null:" + jsonReq.toString());
+//                    System.out.println("Null:" + jsonReq.toString());
                     logger.info("Null:" + jsonReq.toString());
                 }
             }
@@ -146,8 +147,8 @@ public class RouteCosts_Loader {
         locJsonLst.stream().forEach(jsonToPost->{
             if(jsonToPost.getJsonResponse() != null) { // in case any response got errors
                 try {
-                    double[][] distanceEtTime = IS_TEST ? JSONProcessing.loadJSONResponse_Stub()
-                            : JSONProcessing.loadDistanceEtTimeFromJSON(jsonToPost.getJsonResponse());
+                    double[][] distanceEtTime = // IS_TEST ? JSONProcessing.loadJSONResponse_Stub() :
+                            JSONProcessing.loadDistanceEtTimeFromJSON(jsonToPost.getJsonResponse());
 
                     String comments = "Processed at (" + new Date() + ") with: " + jsonToPost.getFromClient() + " & " + jsonToPost.getToClient();
 
@@ -166,7 +167,7 @@ public class RouteCosts_Loader {
 
         // run insert queries
         System.out.println("Creating insert. Total lines to create:" + routeCostsList.size());
-        String sqlInsertsFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/insertIntoRouteCosts.sql";
+        String sqlInsertsFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/insertIntoRouteCosts"+(new Date()).getTime() + ".sql";
         PrintWriter insertIntoDB = new PrintWriter(sqlInsertsFileName);
         routeCostsList.stream().forEach(rc-> insertIntoDB.println( rc.getInsertQery() ));
         insertIntoDB.flush();
