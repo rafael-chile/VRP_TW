@@ -41,6 +41,8 @@ public class RouteSolver {
     private int[][] M_ij;
     private int[][] stM_ij;
     private int[][] qtyMatrix;
+    private double cost_km = 0.0;
+    private String stg_bk = "";
 
     /************* D E C I S I O N   V A R I A B L E S **************/
 
@@ -228,16 +230,13 @@ public class RouteSolver {
         SearchMonitorFactory.limitFail(solver, numFailures);
         solver.findSolution();
 
-        //solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
+        solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, globalCost);
 
-
-        List<Solution> monday = solver.getSolutionRecorder().getSolutions();
+       /* List<Solution> monday = solver.getSolutionRecorder().getSolutions();
         System.out.println("Monday Solution "+monday.size()+" solutions : ");
         for(Solution s:monday){
             System.out.println("totalTravTime = "+s.getIntVal(totalTravTime[1])+" and globalCost = "+s.getIntVal(globalCost));
-        }
-
-
+        }*/
 
         Chatterbox.printStatistics(solver);
         Chatterbox.showSolutions(solver);
@@ -261,10 +260,13 @@ public class RouteSolver {
             for (int i = 0; i < nbCustomers; i++) {     //2
                 for (int j = 0; j < nbCustomers; j++)
                     if (edges[k][i][j].contains(1)&&(i!=j)){
-                        System.out.print(edges[k][i][j] + " cost(distance) = " + costs[i][j]);
+                        System.out.print(edges[k][i][j] + "cost(distance) = " + costs[i][j]);
                         sum = sum + costs[i][j];
                         System.out.print("\n"); }
-            }System.out.print("manual sum = "+sum+"\n\n");
+            }
+            if(vCap[0]>7500){ cost_km = sum * 1.5; }
+            else {cost_km = sum * 0.6; }
+            System.out.print("manual sum = "+sum+"\ncost km = "+cost_km+"\n\n");
         }
         System.out.print("\n====== Global Cost ======\n");
         System.out.print("totalVehicleDistance => ");
@@ -333,7 +335,6 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++) {
             System.out.println(totalTravTime[k] + "   ");
         }
-
 /**
         System.out.print("\n====== Edges ======\n");
         for (int k = 0; k < nbVehicles; k++) {
@@ -365,7 +366,6 @@ public class RouteSolver {
                 System.out.print("\n");
             }System.out.print("Break times 45 min:");
 
-            String stg_bk = "";
             for (int i = 0; i < nbCustomers; i++) {
                 for (int j = 0; j < nbCustomers; j++) {
                     if(breakTime[i][j]==1 && aux_edge[k][i][j].getValue()==1 ){
@@ -377,6 +377,17 @@ public class RouteSolver {
                 }else {System.out.println(" -- None -- \n");}
 
         }
+
+        System.out.print("\n====== summary TSP ======\n");
+
+        System.out.println("1-vehicleCap	2-capacityUsed	3-distance_KM	4-travelTime	5-break times	6-global Cost 7-cost/km");
+        System.out.println(vCap[0]);
+        System.out.println(capacityUsed[0].getValue());
+        System.out.println(totalVehicleDistance[0].getValue());
+        System.out.println(totalTravTime[0].getValue());
+        if (stg_bk.length()>1) {System.out.print(stg_bk);}else {System.out.println("0");}
+        System.out.println(globalCost.getValue());
+        System.out.println(cost_km);
     }
 
 
