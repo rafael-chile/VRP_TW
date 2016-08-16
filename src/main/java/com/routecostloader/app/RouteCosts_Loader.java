@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -18,10 +19,10 @@ public class RouteCosts_Loader {
 
     private static Logger logger = Logger.getLogger( RouteCosts_Loader.class.getName() );
 
-    static String MAPQUEST_KEY = "4xaNeW4stE4Hk6Taj7GqdLjAtoYKfll2";
+    static String MAPQUEST_KEY = "fAsWYz3pAhpCu2mg5ZaoKqSlXpWjDoLl";
     static String HTTP_REST_POST_URL =  "http://www.mapquestapi.com/directions/v2/routematrix?key=" + MAPQUEST_KEY;
     static boolean PRINT_IN_TERMINAL = true;
-    static boolean IS_TEST = true;
+    static boolean IS_TEST = false;
     static String FETCH_FROM_DATE = "2015-06-22";
     static String FETCH_UNTIL_DATE = "2015-06-27";
 
@@ -37,6 +38,10 @@ public class RouteCosts_Loader {
         String fileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocReqList";
         File file = new File(fileName);
 
+        String listIdLocations = ("100017,100086,100102,100103,100166,100198,100273,100296,100374,100409,100413,100422,100499,100537,100562,100588,100604," +
+                "100615,100619,100625,100630,100632,100633,100634,100635,100636,100656,100676,100677,100679,100694,100732,100733,100739,100756");
+
+
         if( !file.exists() ) {
             /* Generate a list of json request to send to mapquest
                 (from all to all: base-depot/loc-pnt1, base-depot/loc-pnt2,...,base-pntN-1/loc-pntN) */
@@ -45,15 +50,15 @@ public class RouteCosts_Loader {
             try {
                 // load location from date to date
                 List<com.vrptw.entities.Location> locationList = (new OrdersDao()).getLocationList(FETCH_FROM_DATE, FETCH_UNTIL_DATE);
-                // load DEPOT location
-                //locationList.add((new OrdersDao()).getDepotLocation());
+
+                locationList.addAll((new OrdersDao()).getLocationListFromCSV(listIdLocations));
 
                 locJsonLst = RouteCosts_Loader.generateJsonToPost(locationList);
                 locJsonLst.stream().forEach(msg -> logger.info(msg.toString()));
                 saveList(locJsonLst, fileName);
                 System.out.println("Total Clients saved infile: " + locJsonLst.size());
 
-            } catch (Exception ex){}
+            } catch (Exception ex){ System.out.println("Exception: " + ex);}
 
 
         }else{
@@ -73,19 +78,9 @@ public class RouteCosts_Loader {
             }
         }
 
-        // FILTER THE LIST
-        /*List<JsonToPost> locJsonLst_2 = new ArrayList<>();
-        locJsonLst.stream().forEach(jlp ->{
-            if( jlp.getFromClient().contentEquals("100197") && (jlp.getToClient().contentEquals("100197")  )
-                    || (jlp.getFromClient().contentEquals("100197") && jlp.getToClient().contentEquals("100426") )
-            ){
-                System.out.println("FOUND FromClient: " + jlp.getFromClient() + ", ToClient:" + jlp.getToClient());
-                locJsonLst_2.add(jlp);
-            }
-        });
-        locJsonLst = locJsonLst_2;
-*/
-        // END FILTERING
+        String[] idLocationArray = listIdLocations.split(",");
+
+
 
         /* Process calls to mapquest for each element in the list (json), TODO2: save json responses into files */
         String jsonRespFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/jsonLocRespList";
@@ -103,6 +98,21 @@ public class RouteCosts_Loader {
                     logger.info("ERROR: Cannot load the existing file!!!");
                     return ;
                 }
+            }else{
+                // FILTER THE LIST
+                List<JsonToPost> locJsonLst_2 = new ArrayList<>();
+                locJsonLst.stream().forEach(jlp ->{
+                    for(String id : idLocationArray) {
+                        if (jlp.getFromLocation().contentEquals(id) || (jlp.getToLocation().contentEquals(id))) {
+                            System.out.println("FOUND FromClient: " + jlp.getFromClient() + ", ToClient:" + jlp.getToClient());
+                            locJsonLst_2.add(jlp);
+                            break;
+                        }
+                    }
+                });
+                locJsonLst = locJsonLst_2;
+
+                // END FILTERING
             }
 
             try {
@@ -145,7 +155,7 @@ public class RouteCosts_Loader {
         // get distance and time to insert into db
         List<RouteCost> routeCostsList = new ArrayList<>();
         locJsonLst.stream().forEach(jsonToPost->{
-            if(jsonToPost.getJsonResponse() != null) { // in case any response got errors
+            if(jsonToPost.getJsonResponse() != null) { // in any response got errors
                 try {
                     double[][] distanceEtTime = // IS_TEST ? JSONProcessing.loadJSONResponse_Stub() :
                             JSONProcessing.loadDistanceEtTimeFromJSON(jsonToPost.getJsonResponse());
@@ -168,6 +178,7 @@ public class RouteCosts_Loader {
         // run insert queries
         System.out.println("Creating insert. Total lines to create:" + routeCostsList.size());
         String sqlInsertsFileName = System.getProperty("user.dir") + "/src/main/dbResources/json_mapquest/insertIntoRouteCosts"+(new Date()).getTime() + ".sql";
+
         PrintWriter insertIntoDB = new PrintWriter(sqlInsertsFileName);
         routeCostsList.stream().forEach(rc-> insertIntoDB.println( rc.getInsertQery() ));
         insertIntoDB.flush();

@@ -9,11 +9,16 @@ public class Location {
     private String main_location;
     private String is_real;
     private String client;
+    private String radius_km;
+    private String angleInDegrees;
+    private String compass;
+    private String rio_Tejo;
+
 
     public Location(){}
 
     public Location(String idLocation, String latitude, String longitude, String googleMapLoc,
-                    String isMainLocation,String isReal, String client){
+                    String isMainLocation,String isReal, String client, String radius_km, String angleInDegrees, String compass, String rio_Tejo){
 
         this.idLocation = idLocation;
         this.location_lat = latitude;
@@ -22,6 +27,10 @@ public class Location {
         this.main_location = isMainLocation;
         this.is_real = isReal;
         this.client = client;
+        this.radius_km = radius_km;
+        this.angleInDegrees = angleInDegrees;
+        this.compass = compass;
+        this.rio_Tejo = rio_Tejo;
     }
 
     public String getIdLocation() {
@@ -64,13 +73,9 @@ public class Location {
         this.main_location = main_location;
     }
 
-    public String getIs_real() {
-        return is_real;
-    }
+    public String getIs_real() {  return is_real; }
 
-    public void setIs_real(String is_real) {
-        this.is_real = is_real;
-    }
+    public void setIs_real(String is_real) { this.is_real = is_real;  }
 
     public String getClient() {
         return client;
@@ -80,6 +85,21 @@ public class Location {
         this.client = client;
     }
 
+    public String getRadius_km() {  return radius_km;  }
+
+    public void setRadius_km(String radius_km) {  this.radius_km = radius_km;  }
+
+    public String getAngleInDegrees() {    return angleInDegrees;  }
+
+    public void setAngleInDegrees(String angleInDegrees) {  this.angleInDegrees = angleInDegrees;    }
+
+    public String getCompass() {  return compass;  }
+
+    public void setCompass(String compass) {  this.compass = compass;    }
+
+    public String getRio_Tejo() {  return rio_Tejo;   }
+
+    public void setRio_Tejo(String rio_Tejo) { this.rio_Tejo = rio_Tejo;  }
 
 
     @Override
@@ -92,6 +112,10 @@ public class Location {
                 + ", main_location: " + main_location
                 + ", is_real: " + is_real
                 + ", client: " + client
+                + ", radius_km: " + radius_km
+                + ", angleInDegrees: " + angleInDegrees
+                + ", compass: " + compass
+                + ", rio_Tejo: " + rio_Tejo
                 + "}";
     }
 }

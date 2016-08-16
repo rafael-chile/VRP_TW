@@ -31,11 +31,11 @@ public class OrdersDao extends GenericDao {
                 "SELECT * FROM locations WHERE idlocation IN (\n" +
                         "SELECT DISTINCT location_descarga FROM encomendas \n" +
                         "WHERE date_emissao >= \" " +from+ "\" AND date_emissao <=\" " +to+ "\" AND location_descarga IS NOT NULL)\n" +
-                        "UNION SELECT * FROM borrego.locations where idLocation='depot'";
+                       // "UNION SELECT * FROM borrego.locations where angleInDegrees !=''";
 
-          /*    "SELECT * FROM locations WHERE idlocation IN (" +
-                "SELECT DISTINCT location_descarga FROM encomendas " +
-                "WHERE date_emissao >= '" + from + "' AND date_emissao <= '" + to + "')";*/
+        "UNION SELECT * FROM borrego.locations where idLocation='depot'";
+
+
         List<Location> locationList = null;
         try {
             locationList = this.read(Location.class, sqlQuery );
@@ -57,6 +57,19 @@ public class OrdersDao extends GenericDao {
             e.printStackTrace();
         }
         return locationList.get(0);
+    }
+
+    public List<Location> getLocationListFromCSV(String locationLstCSV) throws SQLException {
+        String sqlQuery = "SELECT * FROM locations WHERE idlocation IN (" + locationLstCSV + ")";
+
+        List<Location> locationList = null;
+        try {
+            locationList = this.read(Location.class, sqlQuery );
+
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return locationList;
     }
 
 }

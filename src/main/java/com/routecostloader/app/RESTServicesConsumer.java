@@ -27,8 +27,9 @@ public class RESTServicesConsumer {
 
         HttpParams my_httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(my_httpParams, HTTP_TIME_OUT);
-        HttpConnectionParams.setSoTimeout(my_httpParams, 1);
+        HttpConnectionParams.setSoTimeout(my_httpParams, 0);
         DefaultHttpClient httpClient = new DefaultHttpClient(my_httpParams);
+
 
         HttpPost postRequest = new HttpPost(url);
         //postRequest.addHeader("content-type", "application/x-www-form-urlencoded"); // MUST NOT BE INCLUDED
@@ -38,24 +39,33 @@ public class RESTServicesConsumer {
         input.setContentType("application/json");
         postRequest.setEntity(input);
 
-        HttpResponse response = httpClient.execute(postRequest);
+        try {
+            HttpResponse response = httpClient.execute(postRequest);
+            if (response.getStatusLine().getStatusCode() > 201) {
+                throw new IOException("Failed : HTTP error code : "
+                        + response.getStatusLine().getStatusCode());
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
-        if (response.getStatusLine().getStatusCode() > 201) {
-            throw new IOException("Failed : HTTP error code : "
-                    + response.getStatusLine().getStatusCode());
+            String output;
+            System.out.println("Output from Server:");
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+                resp.append(output);
+            }
+            System.out.print("\n");
+            httpClient.getConnectionManager().shutdown();
+            return resp.toString();
+
+        } catch (IOException e) {
+            httpClient.getConnectionManager().shutdown();
+            throw e;
         }
 
-        BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
-        String output;
-        System.out.println("Output from Server:");
-        while ((output = br.readLine()) != null) {
-            System.out.println(output);
-            resp.append(output);
-        }
-        System.out.print("\n");
 
-        return resp.toString();
+
+
     }
 
 
