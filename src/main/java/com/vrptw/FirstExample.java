@@ -138,17 +138,18 @@ public class FirstExample {
 
             /** Modify instance:    */
             String fileName = "ThirdSol_1.txt";
-            int[] vehicleID = new int[] {14,15,7,12,2,16,3,4};   //if vehicleID = 0  means the all fleet
-            String demands = "1210,4700,42,1243,3208,450,3150,4599,100";
+            int[] vehicleID = new int[] {2,2,15,14,7,12,16,3,4};   //if vehicleID = 0  means the all fleet
+            String demands = "1210,4700,4599,42,100,1243,3208,450,3150";
             idStrLst.add("100044");
             idStrLst.add("100362");
+            idStrLst.add("207744");
             idStrLst.add("100091");
+            idStrLst.add("100510");
             idStrLst.add("100019");
             idStrLst.add("100099");
             idStrLst.add("100113");
             idStrLst.add("100121");
-            idStrLst.add("207744");
-            idStrLst.add("100510");
+
 
 
             /** For Constraint 3.1: Pairs vehicle-client    */

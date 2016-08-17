@@ -23,9 +23,6 @@ import org.chocosolver.util.tools.ArrayUtils;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedReader.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RouteSolver {
 
@@ -281,8 +278,8 @@ public class RouteSolver {
         //SMF.limitSolution(solver, 1);
 
         //IntVar[] ivars = solver.retrieveIntVars();
-        SMF.limitTime(solver, "15m");
-        //SMF.limitSolution(solver, 1);
+        //SMF.limitTime(solver, "15m");
+        SMF.limitSolution(solver, 5);
         //LNSFactory.pglns(solver, ivars, 30, 10, 200, 0, new FailCounter(solver, 100));
         //LNSFactory.rlns(solver, vars, 30, 20140909L, new FailCounter(solver, 1000));
         //pglns(Solver solver, IntVar[] vars, int fgmtSize, int listSize, int level, long seed, ACounter frcounter)
@@ -531,16 +528,6 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++) {
             outputVRP += "\n" + vehicleID[k] + " \t= " + capacityUsed[k].getValue() + " from " + vCap[k];  }
 
-        /**
-        System.out.print("\n" + nbVehicles + "\t" + (nbCustomers - 1) + "\t" +  totalDemand + "\t" +  totalVcap + "\t" + totalCapacityUsed.getValue() + "\t" +  totalDistance.getValue() + "\t" +  totalTTime.getValue());
-        if (stg_bk.length()>1) {System.out.print("\t" + stg_bk);}else {System.out.print("\t" + "0");}
-        System.out.print("\t" + KE_cost + "\t" + basic_cost + "\t" + PS_cost + "\t" + PF_cost + "\t" + EH_cost + "\t" + global_cost);
-        System.out.print("\t\t\t" + solver.getMeasures().isObjectiveOptimal() + "\t" + solver.getMeasures().getTimeCount()+ "\t" +  solver.getMeasures().getNodeCount()+ "\t" +  solver.getMeasures().getBackTrackCount() + "\t" +  solver.getMeasures().getFailCount() + "\t" +  solver.getMeasures().getSolutionCount()+"\n\n");
-        Solver output
-        Chatterbox.printStatistics(solver);
-        for (int k = 0; k < nbVehicles; k++) {
-        System.out.print("\n" + vehicleID[k] + " \t= " + capacityUsed[k].getValue() + " from " + vCap[k]);  }   */
-
         try {
             lines = solver.getSolutionRecorder().getLastSolution().toString(solver);
             lines += "\n\n\n";
@@ -551,6 +538,8 @@ public class RouteSolver {
         catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println(lines);
     }
 
 
@@ -596,6 +585,7 @@ public class RouteSolver {
         penaltyFinish = VF.boundedArray("penaltyFinish", nbVehicles, 0, 400, solver);
         penaltyExtraHours = VF.boundedArray("penaltyExtraHours", nbVehicles, 0, 900, solver);
         basicFleetcost = VF.bounded("basicFleetcost", 0, VF.MAX_INT_BOUND, solver);
+        startDepotTime = VF.boundedArray("startDepotTime", nbVehicles, 0, tWin[0][1], solver);  //  Vehicles starting time
 
 
         /* represents the Total_Weight in the knapsack constraint. We dont have any restriction according to the distance  */
@@ -619,20 +609,6 @@ public class RouteSolver {
         serve = VF.boundedMatrix("serve", nbCustomers, nbVehicles, 0, 100, solver);
         solver.post(ICF.sum(ArrayUtils.flattenSubMatrix(0, 1, 0, nbVehicles, serve), "=", VF.fixed(0, solver))); // node 0 is not served by any vehicle
 
-
-        /** CONSTRAINT 3.1 to force Vehicle-Client pairs  */
-        //solver.post(ICF.arithm(serve[1][5],"=",100));
-
-       // solver.post(ICF.arithm(serve[1][4], "=", 100));
-        //solver.post(ICF.arithm(serve[2][4], "=", 100));
-       // solver.post(ICF.arithm(serve[3][1], "=", 100));
-       // solver.post(ICF.arithm(serve[8][4], "=", 100));
-        //solver.post(ICF.arithm(serve[9][1], "=", 100));
-
-
-        /** Fin Constraint 3.1   */
-
-
         for (int i = 1; i < nbCustomers; i++) {
             Constraint const3 = ICF.sum(ArrayUtils.flattenSubMatrix(i, 1, 0, nbVehicles, serve), "=", VariableFactory.fixed(100, solver));  // VariableFactory.fixed(1, solver));
             solver.post(const3);
@@ -644,6 +620,17 @@ public class RouteSolver {
                 solver.unpost(const3);
             }
         }
+
+        /** CONSTRAINT 3.1 to force Vehicle-Client pairs
+         //solver.post(ICF.arithm(serve[1][5],"=",100));
+         solver.post(ICF.arithm(serve[1][0], "=", 100));
+         solver.post(ICF.arithm(serve[2][0], "=", 100));
+         solver.post(ICF.arithm(serve[3][1], "=", 100));
+         solver.post(ICF.arithm(serve[4][2], "=", 100));
+         solver.post(ICF.arithm(serve[5][2], "=", 100));
+         for (int k = 0; k < nbVehicles; k++) {
+         solver.post(ICF.arithm(startDepotTime[1], ">", servStart[k][0]));
+         }     Fin Constraint 3.1   */
 
         /** CONSTRAINT (4): the vehicle capacity will not be exceed */
         /* The scalar constraint to compute global consumption of the kart to perform the path */
@@ -741,7 +728,6 @@ public class RouteSolver {
             }
         }
 
-        startDepotTime = VF.boundedArray("startDepotTime", nbVehicles, 0, tWin[0][1], solver);  //  Vehicles starting time
 
         /** CONSTRAINT (7.1): guarantees that all the vehicles start the service during the Company working hours*/
         for (int k = 0; k < nbVehicles; k++) {
@@ -762,6 +748,7 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++) {
             solver.post(ICF.arithm(servStart[k][0], "<=", tWin[0][1]));
         }
+
 
         /**The European Community (EC) social legislation */
         /** CONSTRAINT (8): A daily driving period of no more than 9 hours */

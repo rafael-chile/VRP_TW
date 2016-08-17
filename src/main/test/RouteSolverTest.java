@@ -13,11 +13,11 @@ public class RouteSolverTest {
 
     private static String testID = "ThirdSol_1.txt";
     private static int nbCustomers = 9;
-    private static int nbVehicles = 8;
-    private static int[] vCap = new int[] {400, 400, 600, 1000, 7500, 10000, 15000, 15000};
-    private static int[] vehicleID = new int[] {14, 15, 7, 12, 2, 16, 3, 4};
-    private static int[] servTime =  new int[] {1800, 1800, 1800, 1800, 1800, 2700, 2700, 2700};
-    private static int[] qty = new int[] {0,1210,4700,42,1243,3208,450,3150,4599,100};
+    private static int nbVehicles = 9;
+    private static int[] vCap = new int[] {7500, 7500, 400, 400, 600, 1000, 10000, 15000, 15000};
+    private static int[] vehicleID = new int[] {2, 2, 15, 14, 7, 12, 16, 3, 4};
+    private static int[] servTime =  new int[] {1800, 1800, 1800, 1800, 1800, 1800, 2700, 2700, 2700};
+    private static int[] qty = new int[] {0,1210,4700,4599,42,100,1243,3208,450,3150};
     private static int[][] costs = new int[][]
             {{    0,   18,   11,   32,   84,   85,   14,   13,   82,   26},
                     {   19,    0,   30,   50,   66,   66,    5,   33,   64,   12},
@@ -41,8 +41,7 @@ public class RouteSolverTest {
                     { 4619, 3404, 4635, 6691,  354,  372, 3604, 4897,    0, 3635},
                     { 1515,  875, 1132, 3192, 3433, 3450,  547, 1398, 3320,    0}};
     private static int[][] tWin = new int[][]
-            {{28800, 72000},{28800, 86400},{50400, 72000},{28800, 57600},{28800, 86400},{28800, 86400},{28800, 86400},{28800, 86400},{21600, 46800},{25200, 46800}};
-
+            {{28800, 86400},{28800, 86400},{50400, 72000},{21600, 46800},{28800, 57600},{25200, 46800},{28800, 86400},{28800, 86400},{28800, 86400},{28800, 86400}};
 
     /**********************************************/
 
