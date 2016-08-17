@@ -23,6 +23,7 @@ import org.chocosolver.util.tools.ArrayUtils;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class RouteSolver {
     private int[][] qtyMatrix;
     private double cost_km = 0.0;
     private String stg_bk = "";
+    private String outputVRP = "";
+    private String lines = "";
     public BestSolutionsRecorder objSolRecord;
 
     /************* D E C I S I O N   V A R I A B L E S **************/
@@ -279,7 +282,7 @@ public class RouteSolver {
 
         //IntVar[] ivars = solver.retrieveIntVars();
         SMF.limitTime(solver, "15m");
-        //SMF.limitSolution(solver, 3);
+        //SMF.limitSolution(solver, 1);
         //LNSFactory.pglns(solver, ivars, 30, 10, 200, 0, new FailCounter(solver, 100));
         //LNSFactory.rlns(solver, vars, 30, 20140909L, new FailCounter(solver, 1000));
         //pglns(Solver solver, IntVar[] vars, int fgmtSize, int listSize, int level, long seed, ACounter frcounter)
@@ -295,15 +298,6 @@ public class RouteSolver {
 
         //String loggerFile = System.getProperty("user.dir")+"/src/main/java/com/routecostloader/app/logs/rc-log.%u.%g.log";
 
-        String lines;
-        try {
-        lines = solver.getSolutionRecorder().getLastSolution().toString(solver);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(testID));
-        writer.write(lines);
-            writer.close();}
-        catch (IOException e) {
-            e.printStackTrace();
-        }
       //System.out.println(solver.getSolutionRecorder().getLastSolution().toString(solver));
       //System.out.println("objSolRecord" + objSolRecord.toString());
 
@@ -529,15 +523,34 @@ public class RouteSolver {
         System.out.println(solver.getMeasures().getSolutionCount()+"\n\n\n\n");
 
 
+        outputVRP = "\n" + nbVehicles + "\t" + (nbCustomers - 1) + "\t" +  totalDemand + "\t" +  totalVcap + "\t" + totalCapacityUsed.getValue() + "\t" +  totalDistance.getValue() + "\t" +  totalTTime.getValue();
+        if (stg_bk.length()>1) {outputVRP += "\t" + stg_bk;} else {outputVRP += "\t" + "0";}
+        outputVRP += "\t" + KE_cost + "\t" + basic_cost + "\t" + PS_cost + "\t" + PF_cost + "\t" + EH_cost + "\t" + global_cost;
+        outputVRP += "\t\t\t" + solver.getMeasures().isObjectiveOptimal() + "\t" + solver.getMeasures().getTimeCount()+ "\t" +  solver.getMeasures().getNodeCount()+ "\t" +  solver.getMeasures().getBackTrackCount() + "\t" +  solver.getMeasures().getFailCount() + "\t" +  solver.getMeasures().getSolutionCount()+"\n\n";
+        outputVRP += solver.getMeasures().toString()+"\n\n";
+        for (int k = 0; k < nbVehicles; k++) {
+            outputVRP += "\n" + vehicleID[k] + " \t= " + capacityUsed[k].getValue() + " from " + vCap[k];  }
+
+        /**
         System.out.print("\n" + nbVehicles + "\t" + (nbCustomers - 1) + "\t" +  totalDemand + "\t" +  totalVcap + "\t" + totalCapacityUsed.getValue() + "\t" +  totalDistance.getValue() + "\t" +  totalTTime.getValue());
         if (stg_bk.length()>1) {System.out.print("\t" + stg_bk);}else {System.out.print("\t" + "0");}
         System.out.print("\t" + KE_cost + "\t" + basic_cost + "\t" + PS_cost + "\t" + PF_cost + "\t" + EH_cost + "\t" + global_cost);
         System.out.print("\t\t\t" + solver.getMeasures().isObjectiveOptimal() + "\t" + solver.getMeasures().getTimeCount()+ "\t" +  solver.getMeasures().getNodeCount()+ "\t" +  solver.getMeasures().getBackTrackCount() + "\t" +  solver.getMeasures().getFailCount() + "\t" +  solver.getMeasures().getSolutionCount()+"\n\n");
-
-        // Solver output
+        Solver output
         Chatterbox.printStatistics(solver);
         for (int k = 0; k < nbVehicles; k++) {
-            System.out.print("\n" + vehicleID[k] + " \t= " + capacityUsed[k].getValue() + " from " + vCap[k]);  }
+        System.out.print("\n" + vehicleID[k] + " \t= " + capacityUsed[k].getValue() + " from " + vCap[k]);  }   */
+
+        try {
+            lines = solver.getSolutionRecorder().getLastSolution().toString(solver);
+            lines += "\n\n\n";
+            lines += outputVRP;
+            BufferedWriter writer = new BufferedWriter(new FileWriter(testID));
+            writer.write(lines);
+            writer.close();}
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -610,9 +623,9 @@ public class RouteSolver {
         /** CONSTRAINT 3.1 to force Vehicle-Client pairs  */
         //solver.post(ICF.arithm(serve[1][5],"=",100));
 
-        solver.post(ICF.arithm(serve[1][4], "=", 100));
+       // solver.post(ICF.arithm(serve[1][4], "=", 100));
         //solver.post(ICF.arithm(serve[2][4], "=", 100));
-        solver.post(ICF.arithm(serve[3][1], "=", 100));
+       // solver.post(ICF.arithm(serve[3][1], "=", 100));
        // solver.post(ICF.arithm(serve[8][4], "=", 100));
         //solver.post(ICF.arithm(serve[9][1], "=", 100));
 
