@@ -3,10 +3,12 @@ package com.vrptw;
 import com.vrptw.dao.*;
 import com.vrptw.entities.Location;
 import com.vrptw.entities.Orders;
+import org.chocosolver.util.tools.ArrayUtils;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FirstExample {
@@ -136,69 +138,88 @@ public class FirstExample {
             int[] vCapacity = new int[] {27000, 7500, 15000, 15000, 1150, 400, 600, 600, 600, 600, 400, 1000, 600, 400, 400, 10000};
 
 
-            /** Modify instance:    */
-            String fileName = "ThirdSol_1.txt";
-            int[] vehicleID = new int[] {2,2,15,14,7,12,16,3,4};   //if vehicleID = 0  means the all fleet
-            String demands = "1210,4700,4599,42,100,1243,3208,450,3150";
-            idStrLst.add("100044");
-            idStrLst.add("100362");
-            idStrLst.add("207744");
-            idStrLst.add("100091");
-            idStrLst.add("100510");
-            idStrLst.add("100019");
-            idStrLst.add("100099");
-            idStrLst.add("100113");
-            idStrLst.add("100121");
+            /********* Modify instance:    *********/
+
+            String fileName = "vrp3_ LS1_4-2.txt";
+            int[] vehicleID = new int[] {3, 4, 15,1,7};
+            int[] demands = new int[] {
+                    890,
+                    40,
+                    40,
+                    7080,
+                    4690,
+                    4450,
+            };
+
+            String timeWin ="{28800, 86400},\n" +
+                    "{28800, 86400},\n" +
+                    "{28800, 86400},\n" +
+                    "{28800, 86400},\n" +
+                    "{50400, 75600},\n" +
+                    "{28800, 86400},\n";
+            idStrLst.add("100156");
+            idStrLst.add("100165");
+            idStrLst.add("100166");
+            idStrLst.add("100168");
+            idStrLst.add("100170");
+            idStrLst.add("100175");
+
+
+
+
+
+            /********* END : Modify instance:    *********/
 
 
 
             /** For Constraint 3.1: Pairs vehicle-client    */
+
+            Arrays.sort(vehicleID);
             for(int i=1; i<idStrLst.size(); i++){
                // System.out.println("i = "+ i+ " idStrLst.size() = "+idStrLst.size());
                 switch (idStrLst.get(i)) {
                     case "depot": System.out.println("depot");break;
-                    case "100154": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "207810": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100714": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100261": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100098": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100313": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100406": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100163": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100625": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100245": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100351": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "207744": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100303": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100362": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100044": System.out.println("solver.post(ICF.arithm(serve["+ i +"][2], \"=\", 100));\t2");break;
-                    case "100006": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "200017": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "207797": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100096": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "200032": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100101": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100102": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100103": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100563": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100085": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100086": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100499": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100588": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100149": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "207786": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100299": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100371": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100512": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100314": System.out.println("solver.post(ICF.arithm(serve["+ i +"][5], \"=\", 100));\t5");break;
-                    case "100737": System.out.println("solver.post(ICF.arithm(serve["+ i +"][7], \"=\", 100));\t7");break;
-                    case "207771": System.out.println("solver.post(ICF.arithm(serve["+ i +"][7], \"=\", 100));\t7");break;
-                    case "200033": System.out.println("solver.post(ICF.arithm(serve["+ i +"][8], \"=\", 100));\t8");break;
-                    case "100237": System.out.println("solver.post(ICF.arithm(serve["+ i +"][8], \"=\", 100));\t8");break;
-                    case "100290": System.out.println("solver.post(ICF.arithm(serve["+ i +"][8], \"=\", 100));\t8");break;
-                    case "207775": System.out.println("solver.post(ICF.arithm(serve["+ i +"][11], \"=\", 100));\t11");break;
-                    case "100510": System.out.println("solver.post(ICF.arithm(serve["+ i +"][15], \"=\", 100));\t15");break;
-                    case "100091": System.out.println("solver.post(ICF.arithm(serve["+ i +"][15], \"=\", 100));\t15");break;
+                 /**case "207810": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V\\2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100714": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100261": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100098": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100313": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100406": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100163": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100625": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100245": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100351": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "207744": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100303": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100362": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;
+                    case "100044": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 2)+"], \"=\", 100));\t//V2 - "+ demands[i] + "/"+ vCapacity[vehicleID[i] - 1]);break;*/
+                    case "100006": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "200017": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "207797": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100096": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "200032": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100101": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100102": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100103": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100563": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100085": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100086": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100499": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100588": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100149": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "207786": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100299": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100371": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100512": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100314": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 5)+"], \"=\", 100));\t//V5 - "+ demands[i-1]+ "/"+ vCapacity[4]);break;
+                    case "100737": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 7)+"], \"=\", 100));\t//V7 - "+ demands[i-1]+ "/"+ vCapacity[6]);break;
+                    case "207771": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 7)+"], \"=\", 100));\t//V7 - "+ demands[i-1]+ "/"+ vCapacity[6]);break;
+                    case "200033": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 8)+"], \"=\", 100));\t//V8 - "+ demands[i-1]+ "/"+ vCapacity[7]);break;
+                    case "100237": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 8)+"], \"=\", 100));\t//V8 - "+ demands[i-1]+ "/"+ vCapacity[7]);break;
+                    case "100290": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 8)+"], \"=\", 100));\t//V8 - "+ demands[i-1]+ "/"+ vCapacity[7]);break;
+                    case "207775": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 11)+"], \"=\", 100));\t//V11 - "+ demands[i-1]+ "/"+ vCapacity[10]);break;
+                    case "100510": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 15)+"], \"=\", 100));\t//15 - "+ demands[i-1]+ "/"+ vCapacity[14]);break;
+                    case "100091": System.out.println("solver.post(ICF.arithm(serve["+ i +"]["+ Arrays.binarySearch(vehicleID, 15)+"], \"=\", 100));\t//V15 - "+ demands[i-1]+ "/"+ vCapacity[14]);break;
                     default: System.out.println("-");break;
                 }
             }
@@ -226,6 +247,8 @@ public class FirstExample {
             String serv_vector = "private static int[] servTime =  new int[] {";
             String vCap_vector = "private static int[] vCap = new int[] {";
             String vehicleID_vector = "private static int[] vehicleID = new int[] {";
+            int sumV_Kg = 0;
+
             for (int i = 0; i < vehicleID.length; i++) {
                 if (vCapacity[vehicleID[i] - 1] > 7500) {
                     serv_vector += "2700";  // 45min = 2700secs
@@ -233,6 +256,7 @@ public class FirstExample {
                     serv_vector += "1800";  // 30min = 1800secs
                 }
                 vCap_vector += vCapacity[vehicleID[i] - 1];
+                sumV_Kg += vCapacity[vehicleID[i] - 1];
                 vehicleID_vector += vehicleID[i];
                 if (i == vehicleID.length -1) {
                     serv_vector += "};\n";  vCap_vector += "};\n"; vehicleID_vector += "};\n";
@@ -243,9 +267,21 @@ public class FirstExample {
             } System.out.printf(vCap_vector); System.out.printf(vehicleID_vector);
             System.out.print(serv_vector);
 
-            System.out.printf("private static int[] qty = new int[] {0,"+demands+"};\n");
 
-            System.out.printf("private static int[][] costs = new int[][]\n{");      //kilometers
+            int sumKg=0;
+            String demands1 = "";
+
+            for (int i = 0; i < demands.length; i++) {
+                demands1 += demands[i] + ",";
+                sumKg += demands[i];
+            }
+
+            demands1 = demands1.replace("\n", "");
+            demands1 = "private static int[] qty = new int[] {0,"+demands1+"};\n";
+            demands1 = demands1.replace(",};", "};");
+            System.out.print(demands1);
+
+            System.out.printf("private static int[][] costs = new int[][]\n{");
             for (int i = 0; i < mat_Dist.length; i++) {
                 System.out.printf("{");
                 for (int j = 0; j < mat_Dist[i].length; j++) {
@@ -276,12 +312,20 @@ public class FirstExample {
                     System.out.printf("},\n");}
             } System.out.printf("};\n");
 
+
+            timeWin = timeWin.replace("\n", "");
             System.out.printf("private static int[][] tWin = new int[][]\n",mat_Dist.length);
-            System.out.printf("{{21600, 86400},");      //depot is opened from 6am to 12pm
-            for (int k = 0; k < mat_Dist.length-1; k++) {
-                System.out.printf("{28800, 72000}");    //locations are aopened in a wide TW from 8am to 8pm
-                if (k < mat_Dist.length-2){System.out.printf(",");}
-            } System.out.printf("};\n");
+            timeWin = "{{21600, 86400}," + timeWin + "};\n";   //depot is opened from 6am to 12pm
+            timeWin = timeWin.replace("},}", "}}");
+            System.out.print( timeWin);
+
+            int sumDiff;
+            sumDiff = sumV_Kg - sumKg;
+            System.out.println("//sumV_Kg = " + sumV_Kg + "  sumKg  = " + sumKg);
+            if(sumDiff < 0) {
+                System.out.println("\n\nWARNING! Need another vehicle. Diff = " + Math.abs(sumDiff));
+            }
+
 
         } catch (SQLException /*| ParseException*/ e) {
             e.printStackTrace();
