@@ -65,7 +65,8 @@ public class RouteSolver {
     private IntVar[] penaltyStart;
     private IntVar[] penaltyFinish;
     private IntVar[] penaltyExtraHours;
-    private IntVar[] totalVehicleTTime;
+    private IntVar[] totalVehicleTourTime;
+    private IntVar[] multiTripGroup;
     private IntVar[] totalVehicleKmEuros;
     //private IntVar[] totalVehiclesRequired;
     //private IntVar[] totalVehiclesNotRequired;
@@ -226,7 +227,8 @@ public class RouteSolver {
                                             //ArrayUtils.flatten(serve_qty),
                                             ArrayUtils.flatten(serve),
                                             ArrayUtils.flatten(edgesM_ij),
-                                            capacityUsed, capacityUsed_100, totalVehicleDistance, startDepotTime, totalVehicleTTime, penaltyFinish, penaltyStart, penaltyExtraHours, totalVehicleKmEuros,
+                                            capacityUsed, capacityUsed_100, totalVehicleDistance, startDepotTime, penaltyFinish,
+                                            penaltyStart, penaltyExtraHours, totalVehicleKmEuros, multiTripGroup, totalVehicleTourTime,
                                             new IntVar[]{totalCapacityUsed, totalDistance, totalTTime, globalCost});
 
         IntVar[] ivars1 = solver.retrieveIntVars();
@@ -279,8 +281,8 @@ public class RouteSolver {
         //SMF.limitSolution(solver, 1);
 
         //IntVar[] ivars = solver.retrieveIntVars();
-        //SMF.limitTime(solver, "15m");
-        SMF.limitSolution(solver, 1);
+        SMF.limitTime(solver, "5m");
+        //SMF.limitSolution(solver, 2);
         //LNSFactory.pglns(solver, ivars, 30, 10, 200, 0, new FailCounter(solver, 100));
         //LNSFactory.rlns(solver, vars, 30, 20140909L, new FailCounter(solver, 1000));
         //pglns(Solver solver, IntVar[] vars, int fgmtSize, int listSize, int level, long seed, ACounter frcounter)
@@ -327,6 +329,9 @@ public class RouteSolver {
             System.out.print("manual sum = "+sum+"\ncost_km = "+cost_km+"\n\n");
         }
         System.out.print("\n====== Global Cost ======\n");
+
+        /**IntVar[] finalCosts =ArrayUtils.append(totalVehicleKmEuros, penaltyStart, penaltyFinish,  penaltyExtraHours, new IntVar[]{basicFleetcost}); */
+
         System.out.print("totalVehicleDistance (not taken) => ");
         for (int k = 0; k < nbVehicles; k++){
             System.out.print(totalVehicleDistance[k]+"  ");
@@ -335,9 +340,17 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++){
             System.out.print(totalVehicleKmEuros[k]+"  ");
         }
-        System.out.print("\ntotalVehicleTTime => ");
+        System.out.print("\npenaltyStart => ");
         for (int k = 0; k < nbVehicles; k++) {
-            System.out.print(totalVehicleTTime[k] + "  ");
+            System.out.print(penaltyStart[k] + "  ");
+        }
+        System.out.print("\npenaltyFinish => ");
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.print(penaltyFinish[k] + "  ");
+        }
+        System.out.print("\npenaltyExtraHours => ");
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.print(penaltyExtraHours[k] + "  ");
         }
 
         System.out.print("\n" + totalCapacityUsed + "\n");
@@ -421,6 +434,13 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++) {
             System.out.println(totalTravTime[k] + "   ");
         }
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.println(totalVehicleTourTime[k] + "     --- " + (totalVehicleTourTime[k].getValue()/3600.0) );
+        }
+        for (int k = 0; k < nbVehicles; k++) {
+            System.out.println(multiTripGroup[k] + "   ");
+        }
+
 /**
         System.out.print("\n====== Edges ======\n");
         for (int k = 0; k < nbVehicles; k++) {
@@ -573,7 +593,6 @@ public class RouteSolver {
 
         /* represents the distance cost per vehicle and total number of vehicles. The total cost for the objective function */
         totalVehicleDistance = VF.boundedArray("distance", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //  fuelConsumed
-        totalVehicleTTime = VF.boundedArray("travelTime", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //  totalVehicleTravelTime
         totalVehicleKmEuros = VF.boundedArray("km_euros", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //  distance/euros
         //totalVehiclesRequired = VF.boundedArray("cost_num_vehicles", nbVehicles, 0, VF.MAX_INT_BOUND, solver);  //to minimize num Vehicles Costs
         //totalVehiclesNotRequired = VF.boundedArray("cost_notUsed_vehicles", nbVehicles, 0, 250, solver);  //to minimize num Vehicles Costs
@@ -587,6 +606,8 @@ public class RouteSolver {
         basicFleetcost = VF.bounded("basicFleetcost", 0, VF.MAX_INT_BOUND, solver);
         startDepotTime = VF.boundedArray("startDepotTime", nbVehicles, 0, tWin[0][1], solver);  //  Vehicles starting time
         servStart = VF.boundedMatrix("servStart", nbVehicles, nbCustomers, 0, VariableFactory.MAX_INT_BOUND, solver);
+        totalVehicleTourTime = VF.boundedArray("totalVehicleTourTime", nbVehicles, 0, 43200, solver);   // Limit 12 hours
+        multiTripGroup = VF.boundedArray("multiTripGroup", nbVehicles, 0, 43200, solver);    // max 2 tours per vehicles, then 3 gorups
 
 
         /* represents the Total_Weight in the knapsack constraint. We dont have any restriction according to the distance  */
@@ -621,13 +642,6 @@ public class RouteSolver {
                 solver.unpost(const3);
             }
         }
-
-        /** CONSTRAINT 3.1 to force Vehicle-Client pairs */
-
-        //for (int k = 0; k < nbVehicles; k++) {
-        //    solver.post(ICF.arithm(startDepotTime[1], ">", servStart[k][0]));
-       // }
-
 
         /** CONSTRAINT (4): the vehicle capacity will not be exceed */
         /* The scalar constraint to compute global consumption of the kart to perform the path */
@@ -719,7 +733,11 @@ public class RouteSolver {
         /* earilest_i <= b_ki <= latest_i */
         for (int k = 0; k < nbVehicles; k++) {
             for (int i = 1; i < nbCustomers; i++) {
-                solver.post(ICF.arithm(servStart[k][i], ">=", tWin[i][0]));
+                Constraint if7 = ICF.arithm(capacityUsed[k], ">", 0);
+                Constraint then7 = ICF.arithm(servStart[k][i], ">=", tWin[i][0]);
+                Constraint else7 = ICF.arithm(servStart[k][i], "=", 0);
+                LCF.ifThenElse(if7, then7, else7);
+
                 solver.post(ICF.arithm(servStart[k][i], "<=", tWin[i][1]));
             }
         }
@@ -743,6 +761,37 @@ public class RouteSolver {
         for (int k = 0; k < nbVehicles; k++) {
             solver.post(ICF.arithm(servStart[k][0], "<=", tWin[0][1]));
         }
+
+        /** CONSTRAINT 3.1 to force Vehicle-Client pairs */
+
+        //solver.post(ICF.sum(new IntVar[]{serve[4][6],serve[4][7]}, "=", VF.fixed(100,solver)));	//V15 - 42/400
+        // solver.post(ICF.sum(new IntVar[]{serve[5][6],serve[5][7]}, "=", VF.fixed(100,solver)));	//15 - 100/400
+
+        /** CONSTRAINT 3.2 MultiTrips per vehicle */
+
+        /**  for (int k = 0; k < nbVehicles; k=k+2) {   // k=k+3   / 2 trips per vehicle
+         Constraint a7 = ICF.arithm(capacityUsed[k], ">", 0);
+         Constraint b7 = ICF.arithm(startDepotTime[k], ">=", tWin[0][0]);
+         LCF.ifThen(a7, b7);
+
+
+         solver.post(ICF.arithm(startDepotTime[k+1], ">=", servStart[k][0]));
+         // solver.post(ICF.arithm(startDepotTime[k+2], ">=", servStart[k+1][0]));
+         //System.out.println((k+1) + "  " + k + "  " + (k+2) + "  " + (k+1));
+         }
+
+         // to obtain the total time from the vehicles when they leave the depot until they arrive back / then penalize in the objective function
+         for (int k = 0; k < nbVehicles; k++) {
+         solver.post(ICF.sum(new IntVar[]{totalVehicleTourTime[k], startDepotTime[k]}, servStart[k][0]));
+         }
+         // 3 copies of the same vehicle, we sum the total tour time-
+         int multiG = 0;
+         for (int k = 0; k < nbVehicles; k=k+2) {   // k=k+3
+         solver.post(ICF.sum(new IntVar[]{totalVehicleTourTime[k], totalVehicleTourTime[k+1]}, multiTripGroup[multiG]));
+         // original: solver.post(ICF.sum(new IntVar[]{totalVehicleTourTime[k], totalVehicleTourTime[k+1], totalVehicleTourTime[k+2]}, multiTripGroup[multiG]));
+         multiG++;
+         }
+         */
 
 
         /**The European Community (EC) social legislation */
@@ -824,14 +873,14 @@ public class RouteSolver {
             LogicalConstraintFactory.ifThen(c3c4, then2);
 
             /**  Penalty for starting finishing 8pm    10€/hour  */
-            Constraint c5 = IntConstraintFactory.arithm(startDepotTime[k],">",61200 );  // original 8pm-72000  to test   5pm-61200
-            Constraint c6 = IntConstraintFactory.arithm(startDepotTime[k],"<=",75600);
-            Constraint c7 = IntConstraintFactory.arithm(startDepotTime[k],">",75600);
-            Constraint c8 = IntConstraintFactory.arithm(startDepotTime[k],"<=",79200 );
-            Constraint c9 = IntConstraintFactory.arithm(startDepotTime[k],">",79200 );
-            Constraint c10 = IntConstraintFactory.arithm(startDepotTime[k],"<=",82800);
-            Constraint c11 = IntConstraintFactory.arithm(startDepotTime[k],">",82800);
-            Constraint c12 = IntConstraintFactory.arithm(startDepotTime[k],"<=",86400 );
+            Constraint c5 = IntConstraintFactory.arithm(servStart[k][0],">",61200 );  // original 8pm-72000  to test   5pm-61200
+            Constraint c6 = IntConstraintFactory.arithm(servStart[k][0],"<=",75600);
+            Constraint c7 = IntConstraintFactory.arithm(servStart[k][0],">",75600);
+            Constraint c8 = IntConstraintFactory.arithm(servStart[k][0],"<=",79200 );
+            Constraint c9 = IntConstraintFactory.arithm(servStart[k][0],">",79200 );
+            Constraint c10 = IntConstraintFactory.arithm(servStart[k][0],"<=",82800);
+            Constraint c11 = IntConstraintFactory.arithm(servStart[k][0],">",82800);
+            Constraint c12 = IntConstraintFactory.arithm(servStart[k][0],"<=",86400 );
 
             Constraint c5c6 = LogicalConstraintFactory.and(c5,c6);
             Constraint c7c8 = LogicalConstraintFactory.and(c7,c8);
@@ -849,12 +898,12 @@ public class RouteSolver {
             LogicalConstraintFactory.ifThen(c11c12, then6);
 
             /** Penalty for driving more than 9 hours (max 12h)  30€/hour  */
-            Constraint c13 = IntConstraintFactory.arithm(totalTravTime[k],">",32400 );      // 9h
-            Constraint c14 = IntConstraintFactory.arithm(totalTravTime[k],"<=",36000);      // 10h
-            Constraint c15 = IntConstraintFactory.arithm(totalTravTime[k],">",36000);
-            Constraint c16 = IntConstraintFactory.arithm(totalTravTime[k],"<=",39600 );     // 11h
-            Constraint c17 = IntConstraintFactory.arithm(totalTravTime[k],">",39600 );
-            Constraint c18 = IntConstraintFactory.arithm(totalTravTime[k],"<=",43200);      // 12h
+            Constraint c13 = IntConstraintFactory.arithm(multiTripGroup[k],">",32400 );      // 9h  original:totalTravTime
+            Constraint c14 = IntConstraintFactory.arithm(multiTripGroup[k],"<=",36000);      // 10h
+            Constraint c15 = IntConstraintFactory.arithm(multiTripGroup[k],">",36000);
+            Constraint c16 = IntConstraintFactory.arithm(multiTripGroup[k],"<=",39600 );     // 11h
+            Constraint c17 = IntConstraintFactory.arithm(multiTripGroup[k],">",39600 );
+            Constraint c18 = IntConstraintFactory.arithm(multiTripGroup[k],"<=",43200);      // 12h
 
             Constraint c13c14 = LogicalConstraintFactory.and(c13,c14);
             Constraint c15c16 = LogicalConstraintFactory.and(c15,c16);
@@ -868,30 +917,6 @@ public class RouteSolver {
             LogicalConstraintFactory.ifThen(c15c16, then8);
             LogicalConstraintFactory.ifThen(c17c18, then9);
 
-
-            /**Constraint used_a = ICF.sum(ArrayUtils.flatten(aux_edge[k]), ">", VF.fixed(0, solver));
-            Constraint used_b = ICF.times(VF.fixed(10, solver), 0, totalVehiclesNotRequired[k]);
-            int notUsed;
-            if(vCap[k] > 7500)  {notUsed = 250;}   // (vCap * 5) big number to penalize
-            else                {notUsed = 100;}
-            Constraint used_c = ICF.times(VF.fixed(10, solver), notUsed, totalVehiclesNotRequired[k]);
-            LogicalConstraintFactory.ifThenElse(used_a, used_b, used_c);
-
-            // costs in travelTime~
-            Constraint const_travelTime;
-            const_travelTime = ICF.scalar(ArrayUtils.flatten(edges[k]), ArrayUtils.flatten(travTime), totalVehicleTTime[k]);
-                solver.post(const_travelTime);
-                try { solver.propagate(); }
-                catch (ContradictionException e) {
-                    System.out.println("Objective Function - const_travelTime = ContradictionException " + e);
-                    solver.getEngine().flush(); solver.unpost(const_travelTime); }
-
-            // penalize the introduction of new vehicles
-            Constraint a = ICF.sum(ArrayUtils.flatten(aux_edge[k]), ">", VF.fixed(0, solver));
-            Constraint b = ICF.times(VF.fixed(vCap[k], solver), 3, totalVehiclesRequired[k]);  // (vCap * 5) big number to penalize
-            Constraint c = ICF.times(VF.fixed(vCap[k], solver), 0, totalVehiclesRequired[k]);
-            LogicalConstraintFactory.ifThenElse(a, b, c);   */
-
         }
 
         // Compute global cost
@@ -899,18 +924,8 @@ public class RouteSolver {
         solver.post(ICF.sum(totalTravTime, "=", totalTTime));         //totalTTime
 
         solver.post(ICF.arithm(basicFleetcost,"=", 2350));
-        IntVar[] finalCosts =ArrayUtils.append(totalVehicleKmEuros, penaltyStart, penaltyFinish,  penaltyExtraHours, new IntVar[]{basicFleetcost});
+        IntVar[] finalCosts = ArrayUtils.append(totalVehicleKmEuros, penaltyStart, penaltyFinish,  penaltyExtraHours, new IntVar[]{basicFleetcost});
         solver.post(ICF.sum(finalCosts, "=", globalCost));
-
-        /**
-
-                solver.post(ICF.sum(ArrayUtils.append(totalVehicleKmEuros, new IntVar[]{basicFleetcost})));
-        solver.post(IntConstraintFactory.scalar(ArrayUtils.append(open, costPerStore), coeffs, totCost));
-
-        Constraint sum(IntVar[] VARS, IntVar SUM)
-
-        _args = ArrayUtils.append(_args, new String[]{"-l", "SILENT"});*/
-
 
 
         IntVar[] vars = ArrayUtils.append(  ArrayUtils.flatten(next),
@@ -918,7 +933,7 @@ public class RouteSolver {
                 //ArrayUtils.flatten(serve_qty),
                 ArrayUtils.flatten(serve),
                 ArrayUtils.flatten(edgesM_ij),
-                capacityUsed, capacityUsed_100, totalVehicleDistance, totalVehicleTTime, totalVehicleKmEuros,
+                capacityUsed, capacityUsed_100, totalVehicleDistance, totalVehicleKmEuros,
                 new IntVar[]{totalCapacityUsed, totalDistance, totalTTime, globalCost});
 
 
@@ -1111,6 +1126,31 @@ public class RouteSolver {
          default: System.out.printf(idStrLst.get(i)+"\n"); break;
          }
          } */
+
+
+        /**Constraint used_a = ICF.sum(ArrayUtils.flatten(aux_edge[k]), ">", VF.fixed(0, solver));
+         Constraint used_b = ICF.times(VF.fixed(10, solver), 0, totalVehiclesNotRequired[k]);
+         int notUsed;
+         if(vCap[k] > 7500)  {notUsed = 250;}   // (vCap * 5) big number to penalize
+         else                {notUsed = 100;}
+         Constraint used_c = ICF.times(VF.fixed(10, solver), notUsed, totalVehiclesNotRequired[k]);
+         LogicalConstraintFactory.ifThenElse(used_a, used_b, used_c);
+
+         // costs in travelTime~
+         Constraint const_travelTime;
+         const_travelTime = ICF.scalar(ArrayUtils.flatten(edges[k]), ArrayUtils.flatten(travTime), totalVehicleTTime[k]);
+         solver.post(const_travelTime);
+         try { solver.propagate(); }
+         catch (ContradictionException e) {
+         System.out.println("Objective Function - const_travelTime = ContradictionException " + e);
+         solver.getEngine().flush(); solver.unpost(const_travelTime); }
+
+         // penalize the introduction of new vehicles
+         Constraint a = ICF.sum(ArrayUtils.flatten(aux_edge[k]), ">", VF.fixed(0, solver));
+         Constraint b = ICF.times(VF.fixed(vCap[k], solver), 3, totalVehiclesRequired[k]);  // (vCap * 5) big number to penalize
+         Constraint c = ICF.times(VF.fixed(vCap[k], solver), 0, totalVehiclesRequired[k]);
+         LogicalConstraintFactory.ifThenElse(a, b, c);   */
+
 
     }
 }

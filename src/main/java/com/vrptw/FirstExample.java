@@ -140,29 +140,34 @@ public class FirstExample {
 
             /********* Modify instance:    *********/
 
-            String fileName = "vrp3_ LS1_4-2.txt";
-            int[] vehicleID = new int[] {3, 4, 15,1,7};
-            int[] demands = new int[] {
-                    890,
-                    40,
-                    40,
-                    7080,
-                    4690,
-                    4450,
-            };
+            String fileName = "vrp5_ mon_1.txt";
+            int[] vehicleID = new int[] {
+                    6,	6,
+                    11,	11,
+                    9,	9,
+                    16,	16,      };
 
+            int[] demands = new int[] {
+                    3150,
+                    4599,
+                    450,
+                    1210,
+                    4700,
+                    5000,
+            };
             String timeWin ="{28800, 86400},\n" +
+                    "{21600, 46800},\n" +
                     "{28800, 86400},\n" +
                     "{28800, 86400},\n" +
-                    "{28800, 86400},\n" +
-                    "{50400, 75600},\n" +
-                    "{28800, 86400},\n";
-            idStrLst.add("100156");
-            idStrLst.add("100165");
-            idStrLst.add("100166");
-            idStrLst.add("100168");
-            idStrLst.add("100170");
-            idStrLst.add("100175");
+                    "{50400, 72000},\n" +
+                    "{28800, 86400},";
+            idStrLst.add("100121");
+            idStrLst.add("207744");
+            idStrLst.add("100113");
+            idStrLst.add("100044");
+            idStrLst.add("100362");
+            idStrLst.add("100243");
+
 
 
 
