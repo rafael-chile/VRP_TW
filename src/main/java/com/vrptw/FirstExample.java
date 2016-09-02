@@ -140,33 +140,37 @@ public class FirstExample {
 
             /********* Modify instance:    *********/
 
-            String fileName = "vrp5_ mon_1.txt";
-            int[] vehicleID = new int[] {
-                    6,	6,
-                    11,	11,
-                    9,	9,
-                    16,	16,      };
+String fileName = "vrp5-2_wed3.txt";
+int[] vehicleID = new int[] {
+        6,10,13,6,10,13,12,12
+};
+int[] demands = new int[] {
+        125,
+        2100,
+        100,
+        890,
 
-            int[] demands = new int[] {
-                    3150,
-                    4599,
-                    450,
-                    1210,
-                    4700,
-                    5000,
-            };
-            String timeWin ="{28800, 86400},\n" +
-                    "{21600, 46800},\n" +
-                    "{28800, 86400},\n" +
-                    "{28800, 86400},\n" +
-                    "{50400, 72000},\n" +
-                    "{28800, 86400},";
-            idStrLst.add("100121");
-            idStrLst.add("207744");
-            idStrLst.add("100113");
-            idStrLst.add("100044");
-            idStrLst.add("100362");
-            idStrLst.add("100243");
+};
+String timeWin ="{25200, 72000},\n" +
+        "{21600, 46800},\n" +
+        "{46800, 64800},\n" +
+        "{28800, 86400},\n";
+
+            idStrLst.add("100741");
+            idStrLst.add("100303");
+            idStrLst.add("100765");
+            idStrLst.add("100156");
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -262,7 +266,8 @@ public class FirstExample {
                 }
                 vCap_vector += vCapacity[vehicleID[i] - 1];
                 sumV_Kg += vCapacity[vehicleID[i] - 1];
-                vehicleID_vector += vehicleID[i];
+                if ((i % 2) == 0) {vehicleID_vector += vehicleID[i]+"001";}
+                else {vehicleID_vector += vehicleID[i]+"002";}
                 if (i == vehicleID.length -1) {
                     serv_vector += "};\n";  vCap_vector += "};\n"; vehicleID_vector += "};\n";
                 }
